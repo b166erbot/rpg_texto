@@ -1,23 +1,19 @@
 from random import randint, choices, choice
 from readchar import readchar
-from jogo.excecoes.locais import CavernaEnorme
+from typing import Generator
+from time import sleep
+from jogo.excecoes import CavernaEnorme
 from jogo.personagens.classes import (
     Arqueiro, Guerreiro, Mago, Assassino, Clerigo
 )
 from jogo.assincrono.combate import combate
-from typing import Generator
-from time import sleep
+from jogo.decoradores import validador
 
 
-def trava(func):
-    def inner(*args):
-        if args[1] > 15:
-            raise CavernaEnorme('profundidade_maxima precisa ser menor que 16.')
-        return func(*args)
-    return inner
+texto = 'É necessário inserir uma profundidade máxima (<= 15) para essa função'
 
 
-@trava
+@validador(lambda x: x[1] > 15, CavernaEnorme, texto)
 def gerar_fluxo(locais: list, profundidade_maxima: int, local: str) -> dict:
     dicio = {}
     rotas = ['bifurcação', 'outra passagem']
@@ -61,15 +57,9 @@ class Caverna:
             for x in caminhos:
                 print(f'entrando em {x}')
                 sleep(1)
-                if all((x not in self._rotas, randint(0, 1))):
-                    print('Monstros encontrados.')
-                    sleep(1)
-                    for y in (1,):  # range(randint(1, 5))
-                        combate(choice(self._classes)('qualquer nome'),
-                                self.personagem)
+                self.combate(x)
                 print(f'saindo de {x}')
                 sleep(1)
-
 
     def organizar_rotas(self, dicio: dict) -> Generator:
         """ Método que transforma um dicionário em um gerador. """
@@ -79,3 +69,12 @@ class Caverna:
                 yield from self.organizar_rotas(dicio[x])
         else:
             yield dicio
+
+    def combate(self, local: str):
+        if all((local not in self._rotas, randint(0, 1))):
+            print('Monstros encontrados.')
+            sleep(1)
+
+            for y in (1,):  # range(randint(1, 5))
+                inimigo = choice(self._classes)('inimigo')
+                combate(self.personagem, inimigo)

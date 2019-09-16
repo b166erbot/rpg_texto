@@ -1,6 +1,6 @@
 from unittest import TestCase
 from unittest.mock import MagicMock
-from game.personagens.classes import (
+from jogo.personagens.classes import (
     Humano, Arqueiro, Guerreiro, Mago, Assassino, Clerigo
 )
 

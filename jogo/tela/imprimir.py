@@ -3,7 +3,6 @@ from itertools import cycle
 
 from colored import fg, attr
 from screen import Screen
-from sys import stdout
 
 
 # tela = Screen()
@@ -67,19 +66,43 @@ def _formatar(atributo: str, cor_blocos: str) -> str:
     return f"{shapes[191]}{blocos_coloridos}{shapes[192]}"
 
 
-def imprimir(texto: str, ciclo: cycle, tela: Screen):
-    """
-    Função que imprime um texto em uma posição conforme a gerada pelo ciclo.
-    """
-    eixo_y = next(ciclo)
-    if eixo_y == 0:
-        tela.erase_display()
-    tela.writexy(0, eixo_y, texto)
+class Imprimir:
+    _tamanho = 0
+    _tela = Screen()
+    _ciclo = cycle((0,))
+
+    # botar o init novamente com classmethod
+
+    @classmethod
+    def gerar_ciclo(cls, tamanho):
+        cls._tamanho = tamanho
+        cls._ciclo = cycle(range(tamanho))
+
+    @classmethod
+    def reiniciar_ciclo_menos_1(cls):
+        if cls._tamanho > 0:
+            cls._tamanho -= 1
+        cls._ciclo = cycle(range(cls._tamanho))
+
+    def imprimir(self, texto: str):
+        self._tela.writexy(0, next(self._ciclo), texto)
+
+    def limpar_tela(self):
+        self._tela.erase_display()
+
+
+# def imprimir(texto: str, ciclo: cycle, tela: Screen):
+#     """
+#     Função que imprime um texto em uma posição conforme a gerada pelo ciclo.
+#     """
+#     eixo_y = next(ciclo)
+#     if eixo_y == 0:
+#         tela.erase_display()
+#     tela.writexy(0, eixo_y, texto)
 
 
 def texto_efeito_pausa(texto: str):
     for a in texto:
-        print(a, end='')
-        stdout.flush()
+        print(a, end='', flush=True)
         sleep(0.04)
     print()

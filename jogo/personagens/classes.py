@@ -1,10 +1,7 @@
 from collections import Counter
 from asyncio import sleep
-from jogo.tela.imprimir import formatar_status, colorir, imprimir
+from jogo.tela.imprimir import formatar_status, colorir, Imprimir
 from screen import Screen
-
-
-tela = Screen()
 
 
 class Humano:
@@ -20,6 +17,7 @@ class Humano:
     destreza - velocidade ataque, habilidade com armas
     movimentação - velocidade movimentação
     """
+    tela = Imprimir()
 
     def __init__(
         self, nome, jogador = 'bot', level = 1, status = {}, atributos = {}
@@ -38,25 +36,27 @@ class Humano:
         self.jogador = jogador
         # self.quantidade_habilidades = ''
 
-    def atacar(self, other, ciclo):
+    def atacar(self, other):
         if self.jogador != 'humano':
-            return self._atacar_como_bot(other, ciclo)
-        return self._atacar_como_jogador(other, ciclo)
+            return self._atacar_como_bot(other)
+        return self._atacar_como_jogador(other)
 
-    async def _atacar_como_bot(self, other, ciclo):
+    async def _atacar_como_bot(self, other):
         while all([other.status['vida'] > 0, self.status['vida'] > 0]):
             dano = self.status[self.habi] * 100
             other.status['vida'] -= dano // self.habilidades.get(self.habi, 100)
             self.habi = 'dano'
-            imprimir(formatar_status(self), ciclo, tela)
+            self.tela.imprimir(formatar_status(self))
             await sleep(0.1)
         if self.status['vida'] > 0:
             print(colorir(f"\n{self.nome} venceu!", 'verde'))
         else:
-            imprimir(formatar_status(self), ciclo, tela)
-        await sleep(0.1)
+            self.tela.imprimir(formatar_status(self))
+        self.tela.reiniciar_ciclo_menos_1()
+        await sleep(1)
+        self.tela.limpar_tela()
 
-    async def _atacar_como_jogador(self, other, ciclo):
+    async def _atacar_como_jogador(self, other):
         raise NotImplementedError()
 
     def ressucitar(self):
