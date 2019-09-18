@@ -17,12 +17,16 @@ class Humano:
     destreza - velocidade ataque, habilidade com armas
     movimentação - velocidade movimentação
     """
+    # não importe ou use essa classe na história, só herde dela seus atributos.
     tela = Imprimir()
 
     def __init__(
-        self, nome, jogador = 'bot', level = 1, status = {}, atributos = {}
+        self, nome, jogador = 'bot', level = 1, status = {}, atributos = {},
+        experiencia = 0
     ):
         self.nome = nome
+        self.level = level
+        self.experiencia = experiencia
         self.status = Counter(status or
             {'vida': 100, 'dano': 5, 'resis': 5, 'velo-ataque': 1, 'criti': 5,
              'armadura': 5, 'magia': 100, 'stamina': 100, 'velo-movi': 1})
@@ -30,8 +34,10 @@ class Humano:
             {'vitalidade': 0, 'fortividade': 0, 'inteligência': 0,
              'crítico': 0, 'destreza': 0, 'resistência': 0, 'movimentação': 0}
         )
-        self.level = level
+        # for x in self.status:
+        #     self.status[x] += self.status[x] * 100 // self.level  # teste
         self.habilidades = {}
+        self.inventario = {'pratas': 1500}
         self.habi = 'dano'
         self.jogador = jogador
         # self.quantidade_habilidades = ''
@@ -45,6 +51,8 @@ class Humano:
         while all([other.status['vida'] > 0, self.status['vida'] > 0]):
             dano = self.status[self.habi] * 100
             other.status['vida'] -= dano // self.habilidades.get(self.habi, 100)
+            if other.status['vida'] < 0:
+                other.status['vida'] = 0
             self.habi = 'dano'
             self.tela.imprimir(formatar_status(self))
             await sleep(0.1)

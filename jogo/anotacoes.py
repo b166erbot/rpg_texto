@@ -1,4 +1,6 @@
-from typing import Any
+from typing import Union  # , TypeVar
+from jogo.personagens.classes import (
+    Arqueiro, Guerreiro, Mago, Assassino, Clerigo
+)
 
-
-# arrumar isso. assistir a live de anotações do dunossauro.
+Personagens = Union[Arqueiro, Guerreiro, Mago, Assassino, Clerigo]

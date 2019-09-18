@@ -7,6 +7,7 @@ from jogo.personagens.classes import (
 from jogo.tela.imprimir import Imprimir
 from jogo.excecoes import QuantidadeDiferente
 from jogo.decoradores import validador
+from jogo.anotacoes import Personagens
 
 
 # class Combate:
@@ -24,7 +25,7 @@ from jogo.decoradores import validador
 texto = 'É necessário inserir exatamente 2 personagens para esta função'
 
 @validador(lambda x: len(x) != 2, QuantidadeDiferente, texto)
-def combate(*personagens: Tuple[Arqueiro, Assassino, Guerreiro, Mago, Clerigo]):
+def combate(*personagens: Tuple[Personagens]):
     """
     Função que faz os combates entre personagens.
     """

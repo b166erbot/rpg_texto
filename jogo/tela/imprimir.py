@@ -1,12 +1,15 @@
 from re import sub
 from itertools import cycle
+from time import sleep
+from os import get_terminal_size as get
 
 from colored import fg, attr
 from screen import Screen
+# anotacoes aqui gera erro de importação causado pelo loop.
 
 
 # tela = Screen()
-shapes = (
+formas = (
     '▲▼◀▶◢◣◥◤△▽◿◺◹◸▴▾◂▸▵▿◃▹◁▷◅▻◬⟁⧋⧊⊿∆∇◭◮⧩⧨⌔⟐◇◆◈⬖⬗⬘⬙⬠⬡⎔⋄◊⧫⬢⬣▰▪◼▮◾▗▖■∎▃▄▅▆▇'
     '█▌▐▍▎▉▊▋❘❙❚▀▘▝▙▚▛▜▟▞░▒▓▂▁▬▔▫▯▭▱◽□◻▢⊞⊡⊟⊠▣▤▥▦⬚▧▨▩⬓◧⬒◨◩◪⬔⬕❏❐❑❒⧈◰◱◳◲◫⧇⧅⧄⍁⍂⟡⧉'
     '⚬○⚪◌◍◎◯❍◉⦾⊙⦿⊜⊖⊘⊚⊛⊝●⚫⦁◐◑◒◓◔◕⦶⦸◵◴◶◷⊕⊗⦇⦈⦉⦊❨❩⸨⸩◖◗❪❫❮❯❬❭❰❱⊏⊐⊑⊒◘◙◚◛◜◝◞◟◠◡⋒⋓⋐⋑'
@@ -60,10 +63,10 @@ def _formatar(atributo: str, cor_blocos: str) -> str:
     quantidade_blocos = 10 if cor_blocos == 'vermelho' else 5
     p = atributo / 100 * quantidade_blocos
     porcentagem = int(p) + 1 if int(p) < p else int(p)
-    blocos = shapes[53] * porcentagem
-    blocos += (quantidade_blocos - len(blocos)) * shapes[48]
+    blocos = formas[53] * porcentagem
+    blocos += (quantidade_blocos - len(blocos)) * formas[48]
     blocos_coloridos = colorir(blocos, cor_blocos)
-    return f"{shapes[191]}{blocos_coloridos}{shapes[192]}"
+    return f"{formas[191]}{blocos_coloridos}{formas[192]}"
 
 
 class Imprimir:
@@ -71,7 +74,7 @@ class Imprimir:
     _tela = Screen()
     _ciclo = cycle((0,))
 
-    # botar o init novamente com classmethod
+    # botar o init novamente com classmethod?
 
     @classmethod
     def gerar_ciclo(cls, tamanho):
@@ -88,21 +91,12 @@ class Imprimir:
         self._tela.writexy(0, next(self._ciclo), texto)
 
     def limpar_tela(self):
+        self._tela.gotoxy(0, 0)
         self._tela.erase_display()
 
 
-# def imprimir(texto: str, ciclo: cycle, tela: Screen):
-#     """
-#     Função que imprime um texto em uma posição conforme a gerada pelo ciclo.
-#     """
-#     eixo_y = next(ciclo)
-#     if eixo_y == 0:
-#         tela.erase_display()
-#     tela.writexy(0, eixo_y, texto)
-
-
-def texto_efeito_pausa(texto: str):
+def efeito_digitando(texto: str, dormir: float = 0.04):
     for a in texto:
         print(a, end='', flush=True)
-        sleep(0.04)
-    print()
+        sleep(dormir)
+    print()  # end='\r'
