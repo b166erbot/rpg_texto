@@ -1,4 +1,5 @@
 from jogo.tela.imprimir import colorir
+from jogo.itens.pocoes import curas
 
 
 class Npc:
@@ -11,32 +12,28 @@ class Npc:
 class Comerciante(Npc):
     def __init__(self, nome: str):
         super().__init__(nome)
-        self.itens = {
-            'poção de vida fraca': 15, 'poção de vida média': 30,
-            'poção de vida grande': 45, 'poção de vida extra grande': 60,
-            'elixir de vida': 100, 'elixir de vida média': 200,
-            'elixir de vida grande': 300, 'elixir de vida extra grande': 400
-        }
+        self.itens = {x: y for x, y in enumerate(curas, 1)}
+        self.tabela = list(map(
+            lambda x: f"{x[0]} - {colorir(x[1].nome, 'cyan')}",
+            self.itens.items()
+        ))
 
-    # anotações aqui geraria bug?
-    def comprar(self, item: str, quantidade: int, personagem) -> dict:
-        preço = quantidade * self.itens[item]
+    # anotações aqui geraria bug? criar anotação de objeto poção?
+    def comprar(self, item, quantidade: int, personagem) -> dict:
+        preço = quantidade * item.custo
         if personagem.inventario['pratas'] > preço:
             personagem.inventario['pratas'] -= preço
-            personagem.inventario[item] = quantidade
+            # += força o personagem a ter um objeto já criado no inventario.
+            personagem.inventario[item.nome] += item(quantidade)
         else:
             texto = 'compra não realizada: {}'
             print(texto.format(colorir('dinheiro insuficiente', 'vermelho')))
 
     def interagir(self, personagem):
-        itens_dicio = dict(enumerate(tuple(self.itens), 1))  # funciona?
-        itens = list(map(
-            lambda x: f"{x[0]} - {colorir(x[1], 'cyan')}", itens_dicio.items()
-        ))
-        print('', *itens, sep='\n')
-        item = int(input('O que deseja comprar?: '))
-        while item:
+        print('\n' + '\n'.join(self.tabela) + '\n')
+        numero = int(input('O que deseja comprar?: '))
+        while numero:
             quantidade = int(input('Quantidade: '))
-            self.comprar(itens_dicio[item], quantidade, personagem)
-            print('', *itens, sep='\n')
-            item = input('Deseja mais alguma coisa?: ')
+            self.comprar(self.itens[numero], quantidade, personagem)
+            print('\n' + '\n'.join(self.tabela) + '\n')
+            numero = input('Deseja mais alguma coisa?: ')

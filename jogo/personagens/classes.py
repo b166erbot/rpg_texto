@@ -1,6 +1,8 @@
 from collections import Counter
 from asyncio import sleep
+from random import randint, choice
 from jogo.tela.imprimir import formatar_status, colorir, Imprimir
+from jogo.itens.pocoes import PocaoDeVidaFraca
 from screen import Screen
 
 
@@ -37,7 +39,9 @@ class Humano:
         # for x in self.status:
         #     self.status[x] += self.status[x] * 100 // self.level  # teste
         self.habilidades = {}
-        self.inventario = {'pratas': 1500}
+        self.inventario = {
+            'pratas': 1500, 'poção de vida fraca': PocaoDeVidaFraca(0)
+        }
         self.habi = 'dano'
         self.jogador = jogador
         # self.quantidade_habilidades = ''
@@ -49,11 +53,15 @@ class Humano:
 
     async def _atacar_como_bot(self, other):
         while all([other.status['vida'] > 0, self.status['vida'] > 0]):
-            dano = self.status[self.habi] * 100
-            other.status['vida'] -= dano // self.habilidades.get(self.habi, 100)
+            self._comsumir_pocoes_bot()
+            dano = self.status['dano']
+            if randint(0, 1):
+                keys = tuple(self.habilidades)
+                # dano = dano * 100 // self.habilidades[choice(keys)]  # dano errado
+                dano = self.habilidades[choice(keys)]
+            other.status['vida'] -= dano
             if other.status['vida'] < 0:
                 other.status['vida'] = 0
-            self.habi = 'dano'
             self.tela.imprimir(formatar_status(self))
             await sleep(0.1)
         if self.status['vida'] > 0:
@@ -69,6 +77,22 @@ class Humano:
 
     def ressucitar(self):
         self.status['vida'] = 100
+
+    def _comsumir_pocoes_bot(self):
+        pocoes = self._achar_pocoes()
+        if all((self.status['vida'] <= 30, pocoes)):
+            self.status['vida'] += pocoes[0].consumir()
+
+    def _achar_pocoes(self) -> list:
+        nomes = [
+            'poção de vida fraca', 'poção de vida média',
+            'poção de vida grande', 'poção de vida extra grande',
+            'elixir de vida fraca', 'elixir de vida média',
+            'elixir de vida grande', 'elixir de vida extra grande'
+        ]
+        poções = [self.inventario[x] for x in nomes if x in self.inventario]
+        poções = sorted(poções, key=lambda x: x.pontos_cura)
+        return poções
 
     # async def escolher_habilidade(self, habilidade=1):
     #     if habilidade in self.quantidade_habilidades:

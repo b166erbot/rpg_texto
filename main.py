@@ -27,8 +27,8 @@ def main():
     # combate(guerreiro, mago)
     # combate(*personagens)
     print('para explorar uma caverna você precisa comprar no mínimo 15 poções.')
-    farkas = Comerciante('Farkas')
-    farkas.interagir(guerreiro)
+    mercante = Comerciante('Farkas')
+    mercante.interagir(guerreiro)
     Caverna('local fictício', guerreiro).explorar()
 
 
@@ -38,3 +38,7 @@ if __name__ == '__main__':
         main()
     finally:
         cursor.show()
+
+
+# TODO: botar pra cantar canções ao mesmo tempo que a letra ou ressitar uma lingua
+# antiga ao mesmo tempo que o texto gerado na tela.

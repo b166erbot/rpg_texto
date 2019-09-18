@@ -81,8 +81,8 @@ class Caverna:
                 print(colorir('loot', 'amarelo'))  # temporário, adicionar loot depois
 
     def verificar_requisitos(self):
-        quantidade = self.personagem.inventario.get('poção de vida fraca')
-        if not quantidade or quantidade < 15:
+        item = self.personagem.inventario.get('poção de vida fraca')
+        if not item or item.quantidade < 15:
             texto = ('garanta que você tenha ao menos 15 poções no inventário'
                      'para explorar essa caverna.')
             print(colorir(texto, 'vermelho'))
