@@ -63,9 +63,10 @@ class Humano:
             if other.status['vida'] < 0:
                 other.status['vida'] = 0
             self.tela.imprimir(formatar_status(self))
-            await sleep(0.1)
+            await sleep(0.8)
         if self.status['vida'] > 0:
-            print(colorir(f"\n{self.nome} venceu!", 'verde'))
+            # print(colorir(f"\n{self.nome} venceu!", 'verde'))
+            self.tela.imprimir(colorir(f"- {self.nome} -  venceu!", 'verde'))
         else:
             self.tela.imprimir(formatar_status(self))
         self.tela.reiniciar_ciclo_menos_1()

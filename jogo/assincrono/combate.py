@@ -10,18 +10,6 @@ from jogo.decoradores import validador
 from jogo.anotacoes import Personagens
 
 
-# class Combate:
-#     """ Classe que cria todas as threads em um combate. """
-#     def __init__(self, gerador: zip):
-#         import pdb; pdb.set_trace()
-#         self.threads = [Thread(target=x, args=y, daemon=True)
-#                         for x, y in gerador]
-#
-#     def rodar(self):
-#         for x in self.threads:
-#             x.start()
-#             x.join()
-
 texto = 'É necessário inserir exatamente 2 personagens para esta função'
 
 @validador(lambda x: len(x) != 2, QuantidadeDiferente, texto)

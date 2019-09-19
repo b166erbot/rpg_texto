@@ -13,7 +13,7 @@ from jogo.tela.imprimir import efeito_digitando, Imprimir, colorir
 
 texto = 'É necessário inserir uma profundidade máxima (<= 15) para essa função.'
 
-# ['local estreito e sem saída', 'mineiração', 'sem saída', 'cachoeira interna'] remover!
+
 # refatorar
 @validador(lambda x: x[1] > 15, CavernaEnorme, texto)
 def gerar_fluxo(locais: list, profundidade_maxima: int, local: str) -> list:
@@ -31,8 +31,8 @@ def gerar_fluxo(locais: list, profundidade_maxima: int, local: str) -> list:
         else:
             local = colorir(local, 'amarelo')
             retorno = (f"entrando em {local}", f"saindo de {local}")
-    else:
-        local = colorir(local, 'amarelo')
+    else:  # como fazer para deletar esse else e continuar funcionando.
+        local = colorir(local, 'cyan' if local in rotas else 'amarelo')
         retorno = (f"entrando em {local}", f"saindo de {local}")
     return retorno
 

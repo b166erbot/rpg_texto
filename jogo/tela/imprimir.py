@@ -73,8 +73,13 @@ class Imprimir:
     _tamanho = 0
     _tela = Screen()
     _ciclo = cycle((0,))
+    _ids_textos = {}
 
     # botar o init novamente com classmethod?
+
+    @classmethod
+    def reiniciar_posicoes(cls):
+        cls._ids_textos = {}
 
     @classmethod
     def gerar_ciclo(cls, tamanho):
@@ -88,11 +93,22 @@ class Imprimir:
         cls._ciclo = cycle(range(cls._tamanho))
 
     def imprimir(self, texto: str):
-        self._tela.writexy(0, next(self._ciclo), texto)
+        texto_id = self.remover_cores(texto).split()[0]
+        if not self._ids_textos:
+            self._ids_textos[texto_id] = 0
+        elif texto_id not in self._ids_textos:
+            ultimo_numero = self._ids_textos[list(self._ids_textos)[-1]]
+            self._ids_textos[texto_id] = ultimo_numero + 1
+        self._tela.writexy(0, self._ids_textos[texto_id], texto)  # next(self._ciclo)
 
     def limpar_tela(self):
+        self.reiniciar_posicoes()
         self._tela.gotoxy(0, 0)
         self._tela.erase_display()
+
+    def remover_cores(self, texto: str) -> str:
+        """ Método que remove quaisquer cores em um texto. """
+        return sub('\\x1b\[[\d;]+m', '', texto)
 
 
 def efeito_digitando(texto: str, dormir: float = 0.04):

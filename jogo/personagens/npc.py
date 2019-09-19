@@ -1,4 +1,4 @@
-from jogo.tela.imprimir import colorir
+from jogo.tela.imprimir import colorir, Imprimir
 from jogo.itens.pocoes import curas
 
 
@@ -10,6 +10,7 @@ class Npc:
 
 # desacopla os itens para que outros módulos do código possam usá-los.
 class Comerciante(Npc):
+    tela = Imprimir()
     def __init__(self, nome: str):
         super().__init__(nome)
         self.itens = {x: y for x, y in enumerate(curas, 1)}
@@ -23,7 +24,6 @@ class Comerciante(Npc):
         preço = quantidade * item.custo
         if personagem.inventario['pratas'] > preço:
             personagem.inventario['pratas'] -= preço
-            # += força o personagem a ter um objeto já criado no inventario.
             personagem.inventario[item.nome] += item(quantidade)
         else:
             texto = 'compra não realizada: {}'
@@ -37,3 +37,5 @@ class Comerciante(Npc):
             self.comprar(self.itens[numero], quantidade, personagem)
             print('\n' + '\n'.join(self.tabela) + '\n')
             numero = input('Deseja mais alguma coisa?: ')
+        self.tela.limpar_tela()
+        print('volte sempre!')
