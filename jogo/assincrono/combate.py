@@ -1,19 +1,16 @@
 from asyncio import get_event_loop, wait
 from typing import Tuple
 from itertools import permutations
-from jogo.personagens.classes import (
-    Arqueiro, Assassino, Guerreiro, Mago, Clerigo
-)
 from jogo.tela.imprimir import Imprimir
 from jogo.excecoes import QuantidadeDiferente
 from jogo.decoradores import validador
-from jogo.anotacoes import Personagens
 
 
 texto = 'É necessário inserir exatamente 2 personagens para esta função'
 
+
 @validador(lambda x: len(x) != 2, QuantidadeDiferente, texto)
-def combate(*personagens: Tuple[Personagens]):
+def combate(*personagens: Tuple):
     """
     Função que faz os combates entre personagens.
     """

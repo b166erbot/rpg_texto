@@ -1,11 +1,9 @@
 from re import sub
 from itertools import cycle
 from time import sleep
-from os import get_terminal_size as get
 
 from colored import fg, attr
 from screen import Screen
-# anotacoes aqui gera erro de importação causado pelo loop.
 
 
 # tela = Screen()
@@ -58,6 +56,7 @@ def formatar_status(personagem) -> str:
     blocos_com_barras = _formatar(stamina, cores[2])
     return texto + colorir(f"{blocos_com_barras} {stamina:3d}%", cores[3])
 
+
 def _formatar(atributo: str, cor_blocos: str) -> str:
     """ Função auxiliar para a função formatar. """
     quantidade_blocos = 10 if cor_blocos == 'vermelho' else 5
@@ -99,7 +98,7 @@ class Imprimir:
         elif texto_id not in self._ids_textos:
             ultimo_numero = self._ids_textos[list(self._ids_textos)[-1]]
             self._ids_textos[texto_id] = ultimo_numero + 1
-        self._tela.writexy(0, self._ids_textos[texto_id], texto)  # next(self._ciclo)
+        self._tela.writexy(0, self._ids_textos[texto_id], texto)
 
     def limpar_tela(self):
         self.reiniciar_posicoes()

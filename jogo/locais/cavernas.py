@@ -1,13 +1,11 @@
-from random import randint, choices, choice
+from random import randint, choice
 from readchar import readchar
-from typing import Generator
 from time import sleep
 from re import compile
 from jogo.excecoes import CavernaEnorme
 from jogo.personagens.monstros import Cascudinho
 from jogo.assincrono.combate import combate
 from jogo.decoradores import validador
-from jogo.anotacoes import Personagens
 from jogo.tela.imprimir import efeito_digitando, Imprimir, colorir
 
 
@@ -39,10 +37,10 @@ def gerar_fluxo(locais: list, profundidade_maxima: int, local: str) -> list:
 
 class Caverna:
     """ Classe que constroi uma caverna com caminhos aleatórios. """
-    def __init__(self, nome_caverna: str, personagem: Personagens):
+    def __init__(self, nome_caverna: str, personagem):
         self.nome = nome_caverna
         self.personagem = personagem
-        self._rotas = ['bifurcação' , 'outra_passagem']
+        self._rotas = ['bifurcação', 'outra_passagem']
         self._locais = [
             'local estreito e sem saída', 'mineiração', 'local sem saída',
             'cachoeira interna'
@@ -50,7 +48,7 @@ class Caverna:
         self._caminho = gerar_fluxo(self._locais, 4, choice(self._rotas))
         self._mostros = [Cascudinho]
         self._tela = Imprimir()
-        self._pegar_local = compile('(\w+ )?|(\\x1b\[(\d+;?)*m)|[ ]').sub
+        self._pegar_local = compile('(\w+ )?|(\\x1b\[(\d+;?)*m)|[ ]').sub  # noqa
 
     # refatorar
     def explorar(self):
@@ -61,7 +59,7 @@ class Caverna:
                     efeito_digitando(x)
                     condicoes = all(
                         ('entrando' in x,
-                        self._pegar_local('', x) not in self._rotas)
+                         self._pegar_local('', x) not in self._rotas)
                     )
                     if condicoes:
                         self.sortear_inimigos_loot()

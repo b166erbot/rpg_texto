@@ -28,49 +28,64 @@ class PocaoDeCura:
 class PocaoDeVidaFraca(PocaoDeCura):
     nome = 'poção de vida fraca'
     custo = 15
+
     def __init__(self, quantidade: int = 1):
         super().__init__(30, quantidade)
+
 
 class PocaoDeVidaMedia(PocaoDeCura):
     nome = 'poção de vida média'
     custo = 30
+
     def __init__(self, quantidade: int = 1):
         super().__init__(60, quantidade)
+
 
 class PocaoDeVidaGrande(PocaoDeCura):
     nome = 'poção de vida grande'
     custo = 45
+
     def __init__(self, quantidade: int = 1):
         super().__init__(90, quantidade)
+
 
 class PocaoDeVidaExtraGrande(PocaoDeCura):
     nome = 'poção de vida extra grande'
     custo = 60
+
     def __init__(self, quantidade: int = 1):
         super().__init__(120, quantidade)
+
 
 # elixir deve regenerar porcentagem de vida. implementar isso futuramente.
 class ElixirDeVidaFraca(PocaoDeCura):
     nome = 'elixir de vida fraca'
     custo = 100
+
     def __init__(self, quantidade: int = 1):
         super().__init__(150, quantidade)
+
 
 class ElixirDeVidaMedia(PocaoDeCura):
     nome = 'elixir de vida média'
     custo = 200
+
     def __init__(self, quantidade: int = 1):
         super().__init__(180, quantidade)
+
 
 class ElixirDeVidaGrande(PocaoDeCura):
     nome = 'elixir de vida grande'
     custo = 300
+
     def __init__(self, quantidade: int = 1):
         super().__init__(210, quantidade)
+
 
 class ElixirDeVidaExtraGrande(PocaoDeCura):
     nome = 'elixir de vida extra grande'
     custo = 400
+
     def __init__(self, quantidade: int = 1):
         super().__init__(240, quantidade)
 

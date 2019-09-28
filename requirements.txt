@@ -1,0 +1,4 @@
+colorama==0.4.1
+colored==1.3.93
+dosbox-screen==1.1.5
+readchar==2.0.1

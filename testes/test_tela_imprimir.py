@@ -1,9 +1,5 @@
 from unittest import TestCase
-from unittest.mock import patch
-from itertools import cycle
 from jogo.tela.imprimir import colorir  # , imprimir
-from io import StringIO
-from screen import Screen
 
 
 class TestesColorir(TestCase):

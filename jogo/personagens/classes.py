@@ -3,7 +3,6 @@ from asyncio import sleep
 from random import randint, choice
 from jogo.tela.imprimir import formatar_status, colorir, Imprimir
 from jogo.itens.pocoes import PocaoDeVidaFraca
-from screen import Screen
 
 
 class Humano:
@@ -23,18 +22,24 @@ class Humano:
     tela = Imprimir()
 
     def __init__(
-        self, nome, jogador = 'bot', level = 1, status = {}, atributos = {},
-        experiencia = 0
+        self, nome, jogador='bot', level=1, status={}, atributos={},
+        experiencia=0
     ):
         self.nome = nome
         self.level = level
         self.experiencia = experiencia
-        self.status = Counter(status or
-            {'vida': 100, 'dano': 5, 'resis': 5, 'velo-ataque': 1, 'criti': 5,
-             'armadura': 5, 'magia': 100, 'stamina': 100, 'velo-movi': 1})
-        self.atributos = Counter(status or
-            {'vitalidade': 0, 'fortividade': 0, 'inteligência': 0,
-             'crítico': 0, 'destreza': 0, 'resistência': 0, 'movimentação': 0}
+        self.status = Counter(
+            status or {
+                'vida': 100, 'dano': 5, 'resis': 5, 'velo-ataque': 1,
+                'criti': 5, 'armadura': 5, 'magia': 100, 'stamina': 100,
+                'velo-movi': 1
+            }
+        )
+        self.atributos = Counter(
+            status or {
+                'vitalidade': 0, 'fortividade': 0, 'inteligência': 0,
+                'crítico': 0, 'destreza': 0, 'resistência': 0, 'movimentação': 0
+            }
         )
         # for x in self.status:
         #     self.status[x] += self.status[x] * 100 // self.level  # teste
