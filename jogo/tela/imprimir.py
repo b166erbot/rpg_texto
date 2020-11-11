@@ -99,6 +99,7 @@ class Imprimir:
             ultimo_numero = self._ids_textos[list(self._ids_textos)[-1]]
             self._ids_textos[texto_id] = ultimo_numero + 1
         self._tela.writexy(0, self._ids_textos[texto_id], texto)
+        # self._tela.write(texto)
 
     def limpar_tela(self):
         self.reiniciar_posicoes()

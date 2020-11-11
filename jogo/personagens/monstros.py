@@ -22,23 +22,20 @@ class Monstro:
     async def atacar(self, other):
         while all([other.status['vida'] > 0, self.status['vida'] > 0]):
             dano = self.status['dano']
-            if randint(0, 1):
-                keys = tuple(self.habilidades)
-                # dano = dano * 100 // self.habilidades[choice(keys)]  # dano errado
-                dano = self.habilidades[choice(keys)]
             other.status['vida'] -= dano
             if other.status['vida'] < 0:
                 other.status['vida'] = 0
+            print() # para cada imprimir, precisa de um print. #bug#
             self.tela.imprimir(formatar_status(self))
-            await sleep(0.8)
-        if self.status['vida'] > 0:
-            # print(colorir(f"\n{self.nome} venceu!", 'verde'))
-            self.tela.imprimir(colorir(f"- {self.nome} -  venceu!", 'verde'))
-        else:
-            self.tela.imprimir(formatar_status(self))
-        self.tela.reiniciar_ciclo_menos_1()
+            await sleep(0.2)
+        # if self.status['vida'] > 0:
+        #     # print(colorir(f"\n{self.nome} venceu!", 'verde'))
+        #     self.tela.imprimir(colorir(f"- {self.nome} -  venceu!", 'verde'))
+        # if self.status['vida'] > 0:
+        #     self.tela.imprimir(formatar_status(self))
+        print() # para cada imprimir, precisa de um print. #bug#
+        self.tela.imprimir(formatar_status(self))
         await sleep(1)
-        self.tela.limpar_tela()
 
     def ressucitar(self):
         self.status['vida'] = 100
@@ -51,3 +48,12 @@ class Cascudinho(Monstro):
         self.nome = 'Cascudinho'
         self.classe = 'Monstro comum'
         self.tipo = 'Tatu bola'
+
+
+# class Traquinagem(Mostro):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.habilidades = {}
+#         self.nome = 'Traquinagem'
+#         self.classe = 'Mostro comum'
+#         self.tipo = 'trolador'

@@ -62,9 +62,10 @@ class Caverna:
                          self._pegar_local('', x) not in self._rotas)
                     )
                     if condicoes:
-                        self.sortear_inimigos_loot()
+                        self.sortear_inimigos()
+                        self.sortear_loot()
 
-    def sortear_inimigos_loot(self):
+    def sortear_inimigos(self):
         if randint(0, 1):
             efeito_digitando('Monstros encontrados.')
             sleep(1)
@@ -72,6 +73,10 @@ class Caverna:
             for y in (1,):  # range(randint(1, 5))
                 inimigo = choice(self._mostros)()
                 combate(self.personagem, inimigo)
+            self._tela.reiniciar_ciclo_menos_1()
+            self._tela.limpar_tela()
+
+    def sortear_loot(self):
         if randint(0, 1):
             efeito_digitando('Loot encontrado.')
             sleep(1)

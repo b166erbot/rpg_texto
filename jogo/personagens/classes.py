@@ -60,23 +60,15 @@ class Humano:
         while all([other.status['vida'] > 0, self.status['vida'] > 0]):
             self._comsumir_pocoes_bot()
             dano = self.status['dano']
-            if randint(0, 1):
-                keys = tuple(self.habilidades)
-                # dano = dano * 100 // self.habilidades[choice(keys)]  # dano errado
-                dano = self.habilidades[choice(keys)]
             other.status['vida'] -= dano
             if other.status['vida'] < 0:
                 other.status['vida'] = 0
+            print() # para cada imprimir, precisa de um print. #bug#
             self.tela.imprimir(formatar_status(self))
-            await sleep(0.8)
-        if self.status['vida'] > 0:
-            # print(colorir(f"\n{self.nome} venceu!", 'verde'))
-            self.tela.imprimir(colorir(f"- {self.nome} -  venceu!", 'verde'))
-        else:
-            self.tela.imprimir(formatar_status(self))
-        self.tela.reiniciar_ciclo_menos_1()
+            await sleep(0.2)
+        print() # para cada imprimir, precisa de um print. #bug#
+        self.tela.imprimir(formatar_status(self))
         await sleep(1)
-        self.tela.limpar_tela()
 
     async def _atacar_como_jogador(self, other):
         raise NotImplementedError()
@@ -97,6 +89,7 @@ class Humano:
             'elixir de vida grande', 'elixir de vida extra grande'
         ]
         poções = [self.inventario[x] for x in nomes if x in self.inventario]
+        # cuidado ^ remover pode causar bug.
         poções = sorted(poções, key=lambda x: x.pontos_cura)
         return poções
 
