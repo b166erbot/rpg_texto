@@ -18,6 +18,7 @@ class Monstro:
         # for x in self.status:
         #     self.status[x] += self.status[x] * 100 // self.level
         self.habilidades = {}
+        self.local_imprimir = 2
 
     async def atacar(self, other):
         while all([other.status['vida'] > 0, self.status['vida'] > 0]):
@@ -26,7 +27,7 @@ class Monstro:
             if other.status['vida'] < 0:
                 other.status['vida'] = 0
             print() # para cada imprimir, precisa de um print. #bug#
-            self.tela.imprimir(formatar_status(self))
+            self.tela.imprimir(formatar_status(self), self)
             await sleep(0.2)
         # if self.status['vida'] > 0:
         #     # print(colorir(f"\n{self.nome} venceu!", 'verde'))
@@ -50,10 +51,10 @@ class Cascudinho(Monstro):
         self.tipo = 'Tatu bola'
 
 
-# class Traquinagem(Mostro):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.habilidades = {}
-#         self.nome = 'Traquinagem'
-#         self.classe = 'Mostro comum'
-#         self.tipo = 'trolador'
+class Traquinagem(Monstro):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.habilidades = {'trapasseiro': 4, 'salto': 5}
+        self.nome = 'Traquinagem'
+        self.classe = 'Mostro comum'
+        self.tipo = 'trolador'

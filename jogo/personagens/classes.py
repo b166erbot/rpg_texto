@@ -50,6 +50,7 @@ class Humano:
         self.habi = 'dano'
         self.jogador = jogador
         # self.quantidade_habilidades = ''
+        self.local_imprimir = 1
 
     def atacar(self, other):
         if self.jogador != 'humano':
@@ -64,7 +65,7 @@ class Humano:
             if other.status['vida'] < 0:
                 other.status['vida'] = 0
             print() # para cada imprimir, precisa de um print. #bug#
-            self.tela.imprimir(formatar_status(self))
+            self.tela.imprimir(formatar_status(self), self)
             await sleep(0.2)
         print() # para cada imprimir, precisa de um print. #bug#
         self.tela.imprimir(formatar_status(self))

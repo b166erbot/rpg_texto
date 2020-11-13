@@ -3,36 +3,36 @@ from readchar import readchar
 from time import sleep
 from re import compile
 from jogo.excecoes import CavernaEnorme
-from jogo.personagens.monstros import Cascudinho
+from jogo.personagens.monstros import Cascudinho, Traquinagem
 from jogo.assincrono.combate import combate
 from jogo.decoradores import validador
 from jogo.tela.imprimir import efeito_digitando, Imprimir, colorir
 
 
-texto = 'É necessário inserir uma profundidade máxima (<= 15) para essa função.'
+def local_linear(passagens, locais):
+    fluxo = []
+    for n in range(randint(2, 5)):
+        passagem = colorir(choice(passagens), 'cyan')
+        fluxo.append(f"entrando em {passagem}")
+    passagem = colorir(choice(locais), 'amarelo')
+    fluxo.append(f"entrando em {passagem}")
+    return fluxo
 
 
-# refatorar
-@validador(lambda x: x[1] > 15, CavernaEnorme, texto)
-def gerar_fluxo(locais: list, profundidade_maxima: int, local: str) -> list:
-    rotas = ['bifurcação', 'outra_passagem']
-    if profundidade_maxima > 0:
-        if local in rotas:
-            novo_local = lambda: choice(rotas if randint(0, 1) else locais)
-            local = colorir(local, 'cyan')
-            retorno = [
-                f"entrando em {local}",
-                *gerar_fluxo(locais, profundidade_maxima - 1, novo_local()),
-                *gerar_fluxo(locais, profundidade_maxima - 1, novo_local()),
-                f"saindo de {local}"
-            ]
-        else:
-            local = colorir(local, 'amarelo')
-            retorno = (f"entrando em {local}", f"saindo de {local}")
-    else:  # como fazer para deletar esse else e continuar funcionando.
-        local = colorir(local, 'cyan' if local in rotas else 'amarelo')
-        retorno = (f"entrando em {local}", f"saindo de {local}")
-    return retorno
+def gerar_fluxo():
+    passagens = [
+        'bifurcação', 'outra passagem', 'passagem estreita',
+        'área com pedregulhos', 'lago subterraneo', 'fisuras na parede'
+    ]
+    locais = [
+        'local estreito e sem saída', 'mineiração', 'local sem saída',
+        'cachoeira interna'
+    ]
+    fluxo = (
+        local_linear(passagens, locais) + local_linear(passagens, locais)
+        + local_linear(passagens, locais)
+    )
+    return fluxo
 
 
 class Caverna:
@@ -40,15 +40,10 @@ class Caverna:
     def __init__(self, nome_caverna: str, personagem):
         self.nome = nome_caverna
         self.personagem = personagem
-        self._rotas = ['bifurcação', 'outra_passagem']
-        self._locais = [
-            'local estreito e sem saída', 'mineiração', 'local sem saída',
-            'cachoeira interna'
-        ]
-        self._caminho = gerar_fluxo(self._locais, 4, choice(self._rotas))
-        self._mostros = [Cascudinho]
+        self._caminho = gerar_fluxo()
+        self._mostros = [Cascudinho, Traquinagem]
         self._tela = Imprimir()
-        self._pegar_local = compile('(\w+ )?|(\\x1b\[(\d+;?)*m)|[ ]').sub  # noqa
+        self._procurar = compile('\\x1b\[38;5;3m.*').search  # noqa
 
     # refatorar
     def explorar(self):
@@ -58,8 +53,7 @@ class Caverna:
                 for x in self._caminho:
                     efeito_digitando(x)
                     condicoes = all(
-                        ('entrando' in x,
-                         self._pegar_local('', x) not in self._rotas)
+                        ('entrando' in x, self._procurar(x))
                     )
                     if condicoes:
                         self.sortear_inimigos()
@@ -73,7 +67,6 @@ class Caverna:
             for y in (1,):  # range(randint(1, 5))
                 inimigo = choice(self._mostros)()
                 combate(self.personagem, inimigo)
-            self._tela.reiniciar_ciclo_menos_1()
             self._tela.limpar_tela()
 
     def sortear_loot(self):
