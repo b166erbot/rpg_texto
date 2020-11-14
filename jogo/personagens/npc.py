@@ -22,9 +22,9 @@ class Comerciante(Npc):
     # anotações aqui geraria bug? criar anotação de objeto poção?
     def comprar(self, item, quantidade: int, personagem) -> dict:
         preço = quantidade * item.custo
-        if personagem.inventario['pratas'] > preço:
-            personagem.inventario['pratas'] -= preço
-            personagem.inventario[item.nome] += item(quantidade)
+        if int(personagem.pratas) > preço:
+            personagem.pratas.desacrescentar(preço)
+            personagem.inventario.append(item(quantidade))
         else:
             texto = 'compra não realizada: {}'
             print(texto.format(colorir('dinheiro insuficiente', 'vermelho')))

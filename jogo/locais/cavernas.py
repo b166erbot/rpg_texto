@@ -22,7 +22,7 @@ def local_linear(passagens, locais):
 def gerar_fluxo():
     passagens = [
         'bifurcação', 'outra passagem', 'passagem estreita',
-        'área com pedregulhos', 'lago subterraneo', 'fisuras na parede'
+        'área com pedregulhos', 'lago subterraneo'
     ]
     locais = [
         'local estreito e sem saída', 'mineiração', 'local sem saída',
@@ -77,7 +77,10 @@ class Caverna:
                 print(colorir('loot', 'amarelo'))  # temporário, adicionar loot depois
 
     def verificar_requisitos(self):
-        item = self.personagem.inventario.get('poção de vida fraca')
+        item = next(filter(
+            lambda x: x.nome == 'poção de vida fraca',
+            self.personagem.inventario
+        ))
         if not item or item.quantidade < 15:
             texto = ('garanta que você tenha ao menos 15 poções no inventário'
                      'para explorar essa caverna.')

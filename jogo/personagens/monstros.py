@@ -35,7 +35,7 @@ class Monstro:
         # if self.status['vida'] > 0:
         #     self.tela.imprimir(formatar_status(self))
         print() # para cada imprimir, precisa de um print. #bug#
-        self.tela.imprimir(formatar_status(self))
+        self.tela.imprimir(formatar_status(self), self)
         await sleep(1)
 
     def ressucitar(self):
