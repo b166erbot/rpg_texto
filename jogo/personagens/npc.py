@@ -1,4 +1,4 @@
-from jogo.tela.imprimir import colorir, Imprimir
+from jogo.tela.imprimir import Imprimir
 from jogo.itens.pocoes import curas
 
 
@@ -15,7 +15,7 @@ class Comerciante(Npc):
         super().__init__(nome)
         self.itens = {x: y for x, y in enumerate(curas, 1)}
         self.tabela = list(map(
-            lambda x: f"{x[0]} - {colorir(x[1].nome, 'cyan')}",
+            lambda x: f"{x[0]} - {x[1].nome}",
             self.itens.items()
         ))
 
@@ -27,15 +27,26 @@ class Comerciante(Npc):
             personagem.inventario.append(item(quantidade))
         else:
             texto = 'compra não realizada: {}'
-            print(texto.format(colorir('dinheiro insuficiente', 'vermelho')))
+            print(texto.format('dinheiro insuficiente', 'vermelho'))
 
     def interagir(self, personagem):
-        print('\n' + '\n'.join(self.tabela) + '\n')
-        numero = int(input('O que deseja comprar?: '))
+        # print('\n' + '\n'.join(self.tabela) + '\n')
+        for texto in self.tabela:
+            self.tela.imprimir(texto + '\n')
+        # numero = int(input('O que deseja comprar?: '))
+        self.tela.imprimir('O que deseja comprar?: ')
+        numero = self.tela.obter_string()
         while numero:
-            quantidade = int(input('Quantidade: '))
-            self.comprar(self.itens[numero], quantidade, personagem)
-            print('\n' + '\n'.join(self.tabela) + '\n')
-            numero = input('Deseja mais alguma coisa?: ')
-        self.tela.limpar_tela()
-        print('volte sempre!')
+            # quantidade = int(input('Quantidade: '))
+            self.tela.imprimir('Quantidade: ')
+            quantidade = self.tela.obter_string()
+            self.comprar(self.itens[int(numero)], int(quantidade), personagem)
+            self.tela.limpar_tela()
+            # print('\n' + '\n'.join(self.tabela) + '\n')
+            for texto in self.tabela:
+                self.tela.imprimir(texto + '\n')
+            # numero = input('Deseja mais alguma coisa?: ')
+            self.tela.imprimir('Deseja mais alguma coisa?: ')
+            numero = self.tela.obter_string()
+        self.tela.limpar_tela2()
+        self.tela.imprimir('volte sempre!\n')

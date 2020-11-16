@@ -6,15 +6,15 @@ from jogo.excecoes import CavernaEnorme
 from jogo.personagens.monstros import Cascudinho, Traquinagem
 from jogo.assincrono.combate import combate
 from jogo.decoradores import validador
-from jogo.tela.imprimir import efeito_digitando, Imprimir, colorir
+from jogo.tela.imprimir import efeito_digitando, Imprimir
 
 
 def local_linear(passagens, locais):
     fluxo = []
     for n in range(randint(2, 5)):
-        passagem = colorir(choice(passagens), 'cyan')
+        passagem = choice(passagens)
         fluxo.append(f"entrando em {passagem}")
-    passagem = colorir(choice(locais), 'amarelo')
+    passagem = choice(locais)
     fluxo.append(f"entrando em {passagem}")
     return fluxo
 
@@ -43,38 +43,43 @@ class Caverna:
         self._caminho = gerar_fluxo()
         self._mostros = [Cascudinho, Traquinagem]
         self._tela = Imprimir()
-        self._procurar = compile('\\x1b\[38;5;3m.*').search  # noqa
+        self._locais = [
+            'local estreito e sem saída', 'mineiração', 'local sem saída',
+            'cachoeira interna'
+        ]
+        self._substituir = compile('entrando em ').sub  # noqa
 
     # refatorar
     def explorar(self):
         if self.verificar_requisitos():
-            print(f'deseja explorar a caverna: {self.nome} s/n?')
+            self._tela.limpar_tela()
+            self._tela.imprimir(
+                f'deseja explorar a caverna: {self.nome} s/n?\n'
+            )
             if readchar().lower() == 's':
                 for x in self._caminho:
                     efeito_digitando(x)
-                    condicoes = all(
-                        ('entrando' in x, self._procurar(x))
-                    )
-                    if condicoes:
+                    if self._substituir('', x) in self._locais:
                         self.sortear_inimigos()
                         self.sortear_loot()
+                        self._tela.limpar_tela()
 
     def sortear_inimigos(self):
         if randint(0, 1):
             efeito_digitando('Monstros encontrados.')
             sleep(1)
             self._tela.limpar_tela()
-            for y in (1,):  # range(randint(1, 5))
+            for y in range(randint(1, 3)):
                 inimigo = choice(self._mostros)()
                 combate(self.personagem, inimigo)
-            self._tela.limpar_tela()
+            self._tela.limpar_tela2()
 
     def sortear_loot(self):
         if randint(0, 1):
             efeito_digitando('Loot encontrado.')
             sleep(1)
             for y in (1,):  # range(randint(0, 4))
-                print(colorir('loot', 'amarelo'))  # temporário, adicionar loot depois
+                self._tela.imprimir('loot')
 
     def verificar_requisitos(self):
         item = next(filter(
@@ -84,6 +89,6 @@ class Caverna:
         if not item or item.quantidade < 15:
             texto = ('garanta que você tenha ao menos 15 poções no inventário'
                      'para explorar essa caverna.')
-            print(colorir(texto, 'vermelho'))
+            self._tela.imprimir(texto)
             return False
         return True

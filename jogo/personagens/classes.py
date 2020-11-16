@@ -1,7 +1,7 @@
 from collections import Counter
 from asyncio import sleep
 from random import randint, choice
-from jogo.tela.imprimir import formatar_status, colorir, Imprimir
+from jogo.tela.imprimir import formatar_status, Imprimir
 from jogo.itens.moedas import Pratas
 
 
@@ -22,7 +22,7 @@ class Humano:
     tela = Imprimir()
 
     def __init__(
-        self, nome, jogador='bot', level=1, status={}, atributos={},
+        self, nome, jogador=False, level=1, status={}, atributos={},
         experiencia=0
     ):
         self.nome = nome
@@ -46,35 +46,46 @@ class Humano:
         self.pratas = Pratas(1500)
         self.habi = 'dano'
         self.jogador = jogador
-        # self.quantidade_habilidades = ''
-        self.local_imprimir = 1
+        self.local_imprimir = 0
 
     def atacar(self, other):
-        if self.jogador != 'humano':
-            return self._atacar_como_bot(other)
-        return self._atacar_como_jogador(other)
+        if self.jogador:
+            return self._atacar_como_jogador(other)
+        return self._atacar_como_bot(other)
 
     async def _atacar_como_bot(self, other):
         while all([other.status['vida'] > 0, self.status['vida'] > 0]):
-            self._comsumir_pocoes_bot()
+            self._consumir_pocoes_bot()
             dano = self.status['dano']
             other.status['vida'] -= dano
             if other.status['vida'] < 0:
                 other.status['vida'] = 0
-            print() # para cada imprimir, precisa de um print. #bug#
-            self.tela.imprimir(formatar_status(self), self)
+            self.tela.imprimir_combate(formatar_status(self), self)
             await sleep(0.2)
-        print() # para cada imprimir, precisa de um print. #bug#
-        self.tela.imprimir(formatar_status(self), self)
+        self.tela.imprimir_combate(formatar_status(self), self)
         await sleep(1)
 
     async def _atacar_como_jogador(self, other):
-        raise NotImplementedError()
+        # raise NotImplementedError()
+        while all([other.status['vida'] > 0, self.status['vida'] > 0]):
+            self._consumir_pocoes_bot()
+            dano = self.status['dano']
+            other.status['vida'] -= dano
+            caracter = self.tela.obter_caracter()
+            if caracter != -1:
+                habilidade = self.habilidades[int(chr(caracter))]
+                habilidade(other)
+            if other.status['vida'] < 0:
+                other.status['vida'] = 0
+            self.tela.imprimir_combate(formatar_status(self), self)
+            await sleep(0.2)
+        self.tela.imprimir_combate(formatar_status(self), self)
+        await sleep(1)
 
     def ressucitar(self):
         self.status['vida'] = 100
 
-    def _comsumir_pocoes_bot(self):
+    def _consumir_pocoes_bot(self):
         pocoes = self._achar_pocoes()
         if all((self.status['vida'] <= 30, pocoes)):
             self.status['vida'] += pocoes[0].consumir()
@@ -92,50 +103,81 @@ class Humano:
         poções = sorted(poções, key=lambda x: x.pontos_cura)
         return poções
 
-    # async def escolher_habilidade(self, habilidade=1):
-    #     if habilidade in self.quantidade_habilidades:
-    #         self.habilidade_ = list(self.habilidades)[habilidade - 1]
-    #     await sleep(0.01)
-
 
 class Arqueiro(Humano):
     def __init__(self, nome):
         super().__init__(nome)
-        self.habilidades = {'flecha de fogo': 10, 'tres flechas': 15}
+        self._habilidades = [self.flecha, self.tres_flechas]
+        self.habilidades = dict(enumerate(self._habilidades, 1))
         self.classe = 'Arqueiro'
         self.quantidade_habilidades = range(1, 3)
 
+    def flecha(self, other):
+        other.status['vida'] -= 10
+
+    def tres_flechas(self, other):
+        other.status['vida'] -= 15
+
 
 class Guerreiro(Humano):
-    def __init__(self, nome):
-        super().__init__(nome)
-        self.habilidades = {'investida': 10, 'esmagar': 15}
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._habilidades = [self.investida, self.esmagar]
+        self.habilidades = dict(enumerate(self._habilidades, 1))
         self.classe = 'Guerreiro'
         self.quantidade_habilidades = range(1, 3)
 
+    def investida(self, other):
+        other.status['vida'] -= 10
+
+    def esmagar(self, other):
+        other.status['vida'] -= 15
+
 
 class Mago(Humano):
-    def __init__(self, nome):
-        super().__init__(nome)
-        self.habilidades = {'bola de fogo': 10, 'bola de gelo': 10}
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._habilidades = [self.bola_de_fogo, self.lanca_de_gelo]
+        self.habilidades = dict(enumerate(self._habilidades, 1))
         self.classe = 'Mago'
         self.quantidade_habilidades = range(1, 3)
 
+    def bola_de_fogo(self, other):
+        other.status['vida'] -= 10
+
+    def lanca_de_gelo(self, other):
+        other.status['vida'] -= 10
+
 
 class Assassino(Humano):
-    def __init__(self, nome):
-        super().__init__(nome)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._habilidades = [self.lancar_faca, self.ataque_furtivo]
+        self.habilidades = dict(enumerate(self._habilidades, 1))
         self.habilidades = {}
         self.classe = 'Assassino'
         self.quantidade_habilidades = range(1, 3)
 
+    def lancar_faca(self, other):
+        other.status['vida'] -= 10
+
+    def ataque_furtivo(self, other):
+        other.status['vida'] -= 15
+
 
 class Clerigo(Humano):  # curandeiro?
-    def __init__(self, nome):
-        super().__init__(nome)
-        self.habilidades = {}
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._habilidades = [self.curar, self.luz]
+        self.habilidades = dict(enumerate(self._habilidades, 1))
         self.classe = 'Clerigo'
         self.quantidade_habilidades = range(1, 3)
+
+    def curar(self, other):
+        self.status['vida'] += 25
+
+    def luz(self, other):
+        other.status['vida'] -= 10
 
 
 # druida?

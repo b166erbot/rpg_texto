@@ -1,7 +1,7 @@
 from asyncio import sleep
 from collections import Counter
 from random import randint, choice
-from jogo.tela.imprimir import Imprimir, formatar_status, colorir
+from jogo.tela.imprimir import Imprimir, formatar_status
 
 
 class Monstro:
@@ -15,10 +15,8 @@ class Monstro:
         self.status = Counter(status or
             {'vida': 100, 'dano': 3, 'resis': 5, 'velo-ataque': 1, 'critico':5,
             'armadura': 5, 'magia': 100, 'stamina': 100, 'velo-movi': 1})
-        # for x in self.status:
-        #     self.status[x] += self.status[x] * 100 // self.level
         self.habilidades = {}
-        self.local_imprimir = 2
+        self.local_imprimir = 1
 
     async def atacar(self, other):
         while all([other.status['vida'] > 0, self.status['vida'] > 0]):
@@ -26,16 +24,9 @@ class Monstro:
             other.status['vida'] -= dano
             if other.status['vida'] < 0:
                 other.status['vida'] = 0
-            print() # para cada imprimir, precisa de um print. #bug#
-            self.tela.imprimir(formatar_status(self), self)
+            self.tela.imprimir_combate(formatar_status(self), self)
             await sleep(0.2)
-        # if self.status['vida'] > 0:
-        #     # print(colorir(f"\n{self.nome} venceu!", 'verde'))
-        #     self.tela.imprimir(colorir(f"- {self.nome} -  venceu!", 'verde'))
-        # if self.status['vida'] > 0:
-        #     self.tela.imprimir(formatar_status(self))
-        print() # para cada imprimir, precisa de um print. #bug#
-        self.tela.imprimir(formatar_status(self), self)
+        self.tela.imprimir_combate(formatar_status(self), self)
         await sleep(1)
 
     def ressucitar(self):
