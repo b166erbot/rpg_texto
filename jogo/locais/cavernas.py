@@ -7,6 +7,8 @@ from jogo.personagens.monstros import Cascudinho, Traquinagem
 from jogo.assincrono.combate import combate
 from jogo.decoradores import validador
 from jogo.tela.imprimir import efeito_digitando, Imprimir
+from jogo.itens.pocoes import curas
+from jogo.itens.vestes import tudo
 
 
 def local_linear(passagens, locais):
@@ -78,15 +80,21 @@ class Caverna:
         if randint(0, 1):
             efeito_digitando('Loot encontrado.')
             sleep(1)
-            for y in (1,):  # range(randint(0, 4))
-                self._tela.imprimir('loot')
+            item = choice(tudo)
+            item_ = item(
+                armadura = randint(1, 3), dano = randint(0, 3),
+                vida = randint(0, 3), resistencias = randint(1, 3)
+            )
+            self.personagem.inventario.append(item_)
+            self._tela.imprimir('loot')
 
     def verificar_requisitos(self):
-        item = next(filter(
-            lambda x: x.nome == 'poção de vida fraca',
+        pocoes = list(map(lambda x: x.nome, curas))
+        quantidade = len(list(filter(
+            lambda x: x.nome in pocoes,
             self.personagem.inventario
-        ))
-        if not item or item.quantidade < 15:
+        )))
+        if quantidade < 15:
             texto = ('garanta que você tenha ao menos 15 poções no inventário'
                      'para explorar essa caverna.')
             self._tela.imprimir(texto)

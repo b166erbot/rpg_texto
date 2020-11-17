@@ -16,3 +16,15 @@ class Pratas:
 
     def __int__(self):
         return self._pratas
+
+    def __add__(self, other):
+        if isinstance(other, self.__class__):
+            return self.__class__(self._pratas + other._pratas)
+        else:
+            raise TypeError(f"tipo não suportavel {other.__class__}")
+
+    def __radd__(self, other):
+        if isinstance(other, self.__class__):
+            return self.__class__(self._pratas + other._pratas)
+        else:
+            raise TypeError(f"tipo não suportavel {other.__class__}")

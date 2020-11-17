@@ -8,29 +8,24 @@ import curses
 curses.initscr()
 
 from jogo.personagens.classes import Arqueiro, Guerreiro, Mago, Assassino
-from jogo.personagens.monstros import Cascudinho
 from jogo.personagens.npc import Comerciante
-from jogo.assincrono.combate import combate
 from jogo.locais.cavernas import Caverna
+from jogo.tela.tela_principal import Tela_principal
 
 
 def main():
     ### daqui para baixo é somente teste, nada oficial. ###
-    ressucitar_todos = lambda personagens: [x.ressucitar() for x in personagens]  # remover
-    arqueiro = Arqueiro('argonian')
+    # arqueiro = Arqueiro('argonian')
+    # mago = Mago('high elf')
+    # assassino = Assassino('khajiit')
+    # personagens = [guerreiro, arqueiro, mago, assassino]
     guerreiro = Guerreiro('nord', True)
-    mago = Mago('high elf')
-    assassino = Assassino('khajiit')
-    personagens = [guerreiro, arqueiro, mago, assassino]
-    # monstro = Cascudinho()
-    # combate(guerreiro, monstro)
-    # combate(guerreiro, arqueiro)
-    # ressucitar_todos(personagens)
-    # combate(guerreiro, mago)
-    # combate(*personagens)
-    mercante = Comerciante('Farkas')
-    mercante.interagir(guerreiro)
-    Caverna('local fictício', guerreiro).explorar()
+    tela = Tela_principal(guerreiro)
+    tela.ciclo()
+    # mercante = Comerciante('Farkas')
+    # mercante.interagir(guerreiro)
+    # Caverna('Caverna', guerreiro).explorar()
+
 
 
 if __name__ == '__main__':

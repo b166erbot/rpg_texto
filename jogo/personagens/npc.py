@@ -24,29 +24,25 @@ class Comerciante(Npc):
         preço = quantidade * item.custo
         if int(personagem.pratas) > preço:
             personagem.pratas.desacrescentar(preço)
-            personagem.inventario.append(item(quantidade))
+            for n in range(quantidade):
+                personagem.inventario.append(item())
         else:
             texto = 'compra não realizada: {}'
-            print(texto.format('dinheiro insuficiente', 'vermelho'))
+            print(texto.format('dinheiro insuficiente'))
 
     def interagir(self, personagem):
-        # print('\n' + '\n'.join(self.tabela) + '\n')
         for texto in self.tabela:
             self.tela.imprimir(texto + '\n')
-        # numero = int(input('O que deseja comprar?: '))
         self.tela.imprimir('O que deseja comprar?: ')
         numero = self.tela.obter_string()
         while numero:
-            # quantidade = int(input('Quantidade: '))
             self.tela.imprimir('Quantidade: ')
             quantidade = self.tela.obter_string()
             self.comprar(self.itens[int(numero)], int(quantidade), personagem)
             self.tela.limpar_tela()
-            # print('\n' + '\n'.join(self.tabela) + '\n')
             for texto in self.tabela:
                 self.tela.imprimir(texto + '\n')
-            # numero = input('Deseja mais alguma coisa?: ')
             self.tela.imprimir('Deseja mais alguma coisa?: ')
             numero = self.tela.obter_string()
         self.tela.limpar_tela2()
-        self.tela.imprimir('volte sempre!\n')
+        self.tela.imprimir('volte sempre!')

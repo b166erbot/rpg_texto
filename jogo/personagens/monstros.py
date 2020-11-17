@@ -22,6 +22,9 @@ class Monstro:
         while all([other.status['vida'] > 0, self.status['vida'] > 0]):
             dano = self.status['dano']
             other.status['vida'] -= dano
+            if randint(0, 2) == 2:
+                habilidade = choice(self.habilidades)
+                habilidade(other)
             if other.status['vida'] < 0:
                 other.status['vida'] = 0
             self.tela.imprimir_combate(formatar_status(self), self)
@@ -36,16 +39,28 @@ class Monstro:
 class Cascudinho(Monstro):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.habilidades = {'investida': 4, 'garras afiadas': 6}
+        self.habilidades = [self.investida, self.garras_afiadas]
         self.nome = 'Cascudinho'
         self.classe = 'Monstro comum'
         self.tipo = 'Tatu bola'
+
+    def investida(self, other):
+        other.status['vida'] -= 4
+
+    def garras_afiadas(self, other):
+        other.status['vida'] -= 6
 
 
 class Traquinagem(Monstro):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.habilidades = {'trapasseiro': 4, 'salto': 5}
+        self.habilidades = [self.trapasseiro, self.roubo]
         self.nome = 'Traquinagem'
         self.classe = 'Mostro comum'
         self.tipo = 'trolador'
+
+    def trapasseiro(self, other):
+        other.status['vida'] -= 4
+
+    def roubo(self, other):
+        other.status['vida'] -= 5

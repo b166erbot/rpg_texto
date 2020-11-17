@@ -3,6 +3,9 @@ from asyncio import sleep
 from random import randint, choice
 from jogo.tela.imprimir import formatar_status, Imprimir
 from jogo.itens.moedas import Pratas
+from jogo.itens.pocoes import curas
+
+nome_pocoes = list(map(lambda x: x.nome, curas))
 
 
 class Humano:
@@ -23,7 +26,8 @@ class Humano:
 
     def __init__(
         self, nome, jogador=False, level=1, status={}, atributos={},
-        experiencia=0
+        experiencia=0, pratas = 0, peitoral = False, elmo = False,
+        calca = False, botas = False
     ):
         self.nome = nome
         self.level = level
@@ -43,10 +47,31 @@ class Humano:
         )
         self.habilidades = {}
         self.inventario = []
-        self.pratas = Pratas(1500)
-        self.habi = 'dano'
+        self.pratas = Pratas(pratas or 1500)
         self.jogador = jogador
         self.local_imprimir = 0
+        self.peitoral = peitoral
+        self.elmo = elmo
+        self.calca = calca
+        self.botas = botas
+
+        # @property
+        # def vida(self):
+        #     vida = self.status['vida']
+        #     if self.peitoral:
+        #         vida += self.peitoral.vida
+        #     if self.elmo:
+        #         vida += self.elmo.vida
+        #     if self.calca:
+        #         vida += self.calca.vida
+        #     if self.botas:
+        #         vida += self.botas.vida
+        #     return vida
+        #
+        # @vida.setter
+        # def vida(self, valor):
+        #     self.status['vida'] = valor
+
 
     def atacar(self, other):
         if self.jogador:
@@ -66,7 +91,6 @@ class Humano:
         await sleep(1)
 
     async def _atacar_como_jogador(self, other):
-        # raise NotImplementedError()
         while all([other.status['vida'] > 0, self.status['vida'] > 0]):
             self._consumir_pocoes_bot()
             dano = self.status['dano']
@@ -86,27 +110,25 @@ class Humano:
         self.status['vida'] = 100
 
     def _consumir_pocoes_bot(self):
-        pocoes = self._achar_pocoes()
-        if all((self.status['vida'] <= 30, pocoes)):
-            self.status['vida'] += pocoes[0].consumir()
-            if self.status['vida'] > 100:
-                self.status['vida'] = 100
+        if self.status['vida'] <= 30:
+            pocao = self._dropar_pocoes()
+            if pocao:
+                self.status['vida'] += pocao.consumir()
+                if self.status['vida'] > 100:
+                    self.status['vida'] = 100
 
-    def _achar_pocoes(self) -> list:
-        nomes = [
-            'poção de vida fraca', 'poção de vida média',
-            'poção de vida grande', 'poção de vida extra grande',
-            'elixir de vida fraca', 'elixir de vida média',
-            'elixir de vida grande', 'elixir de vida extra grande'
-        ]
-        poções = [x for x in self.inventario if x.nome in nomes]
-        poções = sorted(poções, key=lambda x: x.pontos_cura)
-        return poções
+    def _dropar_pocoes(self) -> list:
+        poções = [x for x in self.inventario if x.nome in nome_pocoes]
+        if poções:
+            index = self.inventario.index(poções[0])
+            poção = self.inventario.pop(index)
+            return poção
+        return False
 
 
 class Arqueiro(Humano):
-    def __init__(self, nome):
-        super().__init__(nome)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self._habilidades = [self.flecha, self.tres_flechas]
         self.habilidades = dict(enumerate(self._habilidades, 1))
         self.classe = 'Arqueiro'
