@@ -3,8 +3,8 @@ class PocaoDeCura:
         self.pontos_cura = pontos_cura
         self.consumida = False
 
-    def repr(self):
-        return (f"{self.nome.captalize()} - "
+    def __repr__(self):
+        return (f"{self.nome.capitalize()} - "
                 f"Cura: {self.pontos_cura}")
 
     def consumir(self):

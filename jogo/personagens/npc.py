@@ -31,6 +31,7 @@ class Comerciante(Npc):
             print(texto.format('dinheiro insuficiente'))
 
     def interagir(self, personagem):
+        self.tela.limpar_tela()
         for texto in self.tabela:
             self.tela.imprimir(texto + '\n')
         self.tela.imprimir('O que deseja comprar?: ')

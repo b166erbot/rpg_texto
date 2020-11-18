@@ -27,7 +27,7 @@ class Humano:
     def __init__(
         self, nome, jogador=False, level=1, status={}, atributos={},
         experiencia=0, pratas = 0, peitoral = False, elmo = False,
-        calca = False, botas = False
+        calca = False, botas = False, arma = False
     ):
         self.nome = nome
         self.level = level
@@ -54,6 +54,7 @@ class Humano:
         self.elmo = elmo
         self.calca = calca
         self.botas = botas
+        self.arma = arma
 
         # @property
         # def vida(self):
@@ -124,6 +125,24 @@ class Humano:
             poção = self.inventario.pop(index)
             return poção
         return False
+
+    def equipar(self, equipamento):
+        if equipamento.nome == 'Peitoral':
+            self.peitoral = equipamento
+        if equipamento.nome == 'Elmo':
+            self.elmo = equipamento
+        if equipamento.nome == 'Calca':
+            self.calca = equipamento
+        if equipamento.nome == 'Bota':
+            self.botas == equipamento
+        if equipamento.nome == 'Arma':
+            self.arma = equipamento
+
+    def obter_equipamentos(self):
+        equipamentos = [
+            self.arma, self.elmo, self.peitoral, self.calca, self.botas
+        ]
+        return equipamentos
 
 
 class Arqueiro(Humano):

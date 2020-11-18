@@ -82,7 +82,7 @@ class Caverna:
             sleep(1)
             item = choice(tudo)
             item_ = item(
-                armadura = randint(1, 3), dano = randint(0, 3),
+                armadura = randint(1, 3), velo_movi = randint(0, 3),
                 vida = randint(0, 3), resistencias = randint(1, 3)
             )
             self.personagem.inventario.append(item_)

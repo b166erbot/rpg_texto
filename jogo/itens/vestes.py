@@ -1,16 +1,18 @@
 class Roupa:
     def __init__(
-        self, vida = 0, dano = 0, resistencias = 0, velo_ataque = 0,
-        critico = 0, armadura = 0, velo_movi = 0, nome = ''
+        self, nome = '', vida = 0, resistencias = 0,
+        armadura = 0, velo_movi = 0
     ):
-        self.vida = vida
-        self.dano = dano
-        self.resistencias = resistencias
-        self.velo_ataque = velo_ataque
-        self.critico = critico
-        self.armadura = armadura
-        self.velo_movi = velo_movi
         self.nome = nome
+        self.vida = vida
+        self.resistencias = resistencias
+        self.armadura = armadura
+
+    def __repr__(self):
+        return (
+            f"{self.nome} - vida: {self.vida},"
+            f" resistencias: {self.resistencias}, armadura: {self.armadura}"
+        )
 
 
 class Peitoral(Roupa):
