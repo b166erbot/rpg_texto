@@ -7,24 +7,31 @@ import curses
 
 curses.initscr()
 
-from jogo.personagens.classes import Arqueiro, Guerreiro, Mago, Assassino
+from jogo.personagens.classes import (
+    Arqueiro, Guerreiro, Mago, Assassino, Clerigo
+)
 from jogo.personagens.npc import Comerciante
 from jogo.locais.cavernas import Caverna
 from jogo.tela.tela_principal import Tela_principal
+from jogo.tela.imprimir import Imprimir
 
 
 def main():
     ### daqui para baixo é somente teste, nada oficial. ###
-    # arqueiro = Arqueiro('argonian')
-    # mago = Mago('high elf')
-    # assassino = Assassino('khajiit')
-    # personagens = [guerreiro, arqueiro, mago, assassino]
-    guerreiro = Guerreiro('nord', True)
-    tela = Tela_principal(guerreiro)
+    t = Imprimir()
+    t.imprimir('escolha um nome para seu personagem: ')
+    nome = t.obter_string()
+    t.limpar_tela()
+    classes = [Arqueiro, Guerreiro, Mago, Assassino, Clerigo]
+    dicionario = dict(enumerate(classes))
+    for numero, classe in dicionario.items():
+        t.imprimir(f"{numero} - {classe}\n")
+    t.imprimir('Escolha a classe do seu personagem: ')
+    numero = int(t.obter_string())
+    classe = dicionario[numero]
+    personagem = classe('nord', True)
+    tela = Tela_principal(personagem)
     tela.ciclo()
-    # mercante = Comerciante('Farkas')
-    # mercante.interagir(guerreiro)
-    # Caverna('Caverna', guerreiro).explorar()
 
 
 

@@ -144,6 +144,9 @@ class Humano:
         ]
         return equipamentos
 
+    def __repr__(self):
+        return self.classe
+
 
 class Arqueiro(Humano):
     def __init__(self, *args, **kwargs):
