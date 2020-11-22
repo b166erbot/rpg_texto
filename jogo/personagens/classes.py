@@ -21,7 +21,6 @@ class Humano:
     destreza - velocidade ataque, habilidade com armas
     movimentação - velocidade movimentação
     """
-    # não importe ou use essa classe na história, só herde dela seus atributos.
     tela = Imprimir()
 
     def __init__(
@@ -50,29 +49,16 @@ class Humano:
         self.pratas = Pratas(pratas or 1500)
         self.jogador = jogador
         self.local_imprimir = 0
-        self.peitoral = peitoral
-        self.elmo = elmo
-        self.calca = calca
-        self.botas = botas
+        self.equipamentos = {
+            'Peitoral': peitoral, 'Elmo': elmo, 'Calca': calca, 'Botas': botas
+        }
         self.arma = arma
 
-        # @property
-        # def vida(self):
-        #     vida = self.status['vida']
-        #     if self.peitoral:
-        #         vida += self.peitoral.vida
-        #     if self.elmo:
-        #         vida += self.elmo.vida
-        #     if self.calca:
-        #         vida += self.calca.vida
-        #     if self.botas:
-        #         vida += self.botas.vida
-        #     return vida
-        #
-        # @vida.setter
-        # def vida(self, valor):
-        #     self.status['vida'] = valor
-
+    @property
+    def vida_maxima(self):
+        vida = map(lambda x: x.vida if x else x, self.equipamentos.values())
+        vida = 100 + sum(vida)
+        return vida
 
     def atacar(self, other):
         if self.jogador:
@@ -98,8 +84,11 @@ class Humano:
             other.status['vida'] -= dano
             caracter = self.tela.obter_caracter()
             if caracter != -1:
-                habilidade = self.habilidades[int(chr(caracter))]
-                habilidade(other)
+                caracter = int(chr(caracter))
+                if caracter in [1, 2]:
+                    habilidade = self.habilidades[caracter]
+                    if self.consumir_magia_stamina():
+                        habilidade(other)
             if other.status['vida'] < 0:
                 other.status['vida'] = 0
             self.tela.imprimir_combate(formatar_status(self), self)
@@ -108,15 +97,15 @@ class Humano:
         await sleep(1)
 
     def ressucitar(self):
-        self.status['vida'] = 100
+        self.status['vida'] = self.vida_maxima
 
     def _consumir_pocoes_bot(self):
         if self.status['vida'] <= 30:
             pocao = self._dropar_pocoes()
             if pocao:
                 self.status['vida'] += pocao.consumir()
-                if self.status['vida'] > 100:
-                    self.status['vida'] = 100
+                if self.status['vida'] > self.vida_maxima:
+                    self.status['vida'] = self.vida_maxima
 
     def _dropar_pocoes(self) -> list:
         poções = [x for x in self.inventario if x.nome in nome_pocoes]
@@ -127,22 +116,20 @@ class Humano:
         return False
 
     def equipar(self, equipamento):
-        if equipamento.nome == 'Peitoral':
-            self.peitoral = equipamento
-        if equipamento.nome == 'Elmo':
-            self.elmo = equipamento
-        if equipamento.nome == 'Calca':
-            self.calca = equipamento
-        if equipamento.nome == 'Bota':
-            self.botas == equipamento
         if equipamento.nome == 'Arma':
             self.arma = equipamento
+        elif equipamento.nome in self.equipamentos:
+            self.equipamentos[equipamento.nome] = equipamento
 
     def obter_equipamentos(self):
         equipamentos = [
             self.arma, self.elmo, self.peitoral, self.calca, self.botas
         ]
         return equipamentos
+
+    def recuperar_magia_stamina(self):
+        self.status['magia'] = 100
+        self.status['stamina'] = 100
 
     def __repr__(self):
         return self.classe
@@ -162,6 +149,12 @@ class Arqueiro(Humano):
     def tres_flechas(self, other):
         other.status['vida'] -= 15
 
+    def consumir_magia_stamina(self):
+        if self.status['stamina'] >= 20:
+            self.status['stamina'] -= 20
+            return True
+        return False
+
 
 class Guerreiro(Humano):
     def __init__(self, *args, **kwargs):
@@ -177,6 +170,12 @@ class Guerreiro(Humano):
     def esmagar(self, other):
         other.status['vida'] -= 15
 
+    def consumir_magia_stamina(self):
+        if self.status['stamina'] >= 20:
+            self.status['stamina'] -= 20
+            return True
+        return False
+
 
 class Mago(Humano):
     def __init__(self, *args, **kwargs):
@@ -191,6 +190,12 @@ class Mago(Humano):
 
     def lanca_de_gelo(self, other):
         other.status['vida'] -= 10
+
+    def consumir_magia_stamina(self):
+        if self.status['magia'] >= 20:
+            self.status['magia'] -= 20
+            return True
+        return False
 
 
 class Assassino(Humano):
@@ -208,6 +213,12 @@ class Assassino(Humano):
     def ataque_furtivo(self, other):
         other.status['vida'] -= 15
 
+    def consumir_magia_stamina(self):
+        if self.status['stamina'] >= 20:
+            self.status['stamina'] -= 20
+            return True
+        return False
+
 
 class Clerigo(Humano):  # curandeiro?
     def __init__(self, *args, **kwargs):
@@ -219,9 +230,17 @@ class Clerigo(Humano):  # curandeiro?
 
     def curar(self, other):
         self.status['vida'] += 25
+        if self.status['vida'] >= self.vida_maxima:
+            self.status['vida'] = self.vida_maxima
 
     def luz(self, other):
         other.status['vida'] -= 10
+
+    def consumir_magia_stamina(self):
+        if self.status['magia'] >= 20:
+            self.status['magia'] -= 20
+            return True
+        return False
 
 
 # druida?

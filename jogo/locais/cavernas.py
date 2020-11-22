@@ -1,5 +1,4 @@
 from random import randint, choice
-from readchar import readchar
 from time import sleep
 from re import compile
 from jogo.excecoes import CavernaEnorme
@@ -23,7 +22,7 @@ def local_linear(passagens, locais):
 
 def gerar_fluxo():
     passagens = [
-        'bifurcação', 'outra passagem', 'passagem estreita',
+        'bifurcação', 'área aberta', 'passagem estreita',
         'área com pedregulhos', 'lago subterraneo'
     ]
     locais = [
@@ -51,20 +50,21 @@ class Caverna:
         ]
         self._substituir = compile('entrando em ').sub  # noqa
 
-    # refatorar
     def explorar(self):
         if self.verificar_requisitos():
             self._tela.limpar_tela()
             self._tela.imprimir(
                 f'deseja explorar a caverna: {self.nome} s/n?\n'
             )
-            if readchar().lower() == 's':
+            if self._tela.obter_string().decode().lower() == 's':
                 for x in self._caminho:
                     efeito_digitando(x)
                     if self._substituir('', x) in self._locais:
                         self.sortear_inimigos()
                         self.sortear_loot()
                         self._tela.limpar_tela()
+            self.personagem.recuperar_magia_stamina()
+            self.personagem.status['vida'] = 100
 
     def sortear_inimigos(self):
         if randint(0, 1):
@@ -74,6 +74,9 @@ class Caverna:
             for y in range(randint(1, 3)):
                 inimigo = choice(self._mostros)()
                 combate(self.personagem, inimigo)
+                if self.personagem.status['vida'] == 0:
+                    quit()
+                self.personagem.recuperar_magia_stamina()
             self._tela.limpar_tela2()
 
     def sortear_loot(self):

@@ -35,9 +35,11 @@ class Tela_principal:
             elif caracter == 3:
                 self.editar_equipamentos()
             elif caracter == 4:
-                equipamentos = self.personagem.obter_equipamentos()
+                equipamentos = self.personagem.equipamentos.values()
+                arma = self.personagem.arma
                 for item in equipamentos:
                     self.tela.imprimir(f"{item}\n")
+                self.tela.imprimir(f"{arma}\n")
                 sleep(4)
             elif caracter == 5:
                 quit()

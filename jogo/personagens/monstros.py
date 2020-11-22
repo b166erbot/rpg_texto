@@ -24,7 +24,9 @@ class Monstro:
             other.status['vida'] -= dano
             if randint(0, 2) == 2:
                 habilidade = choice(self.habilidades)
-                habilidade(other)
+                if self.status['stamina'] >= 20:
+                    self.status['stamina'] -= 20
+                    habilidade(other)
             if other.status['vida'] < 0:
                 other.status['vida'] = 0
             self.tela.imprimir_combate(formatar_status(self), self)
@@ -34,6 +36,10 @@ class Monstro:
 
     def ressucitar(self):
         self.status['vida'] = 100
+
+    @property
+    def vida_maxima(self):
+        return 100
 
 
 class Cascudinho(Monstro):

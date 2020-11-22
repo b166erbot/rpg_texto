@@ -27,8 +27,8 @@ class Calca(Roupa):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, nome = 'Calca', **kwargs)
 
-class Bota(Roupa):
+class Botas(Roupa):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome = 'Bota', **kwargs)
+        super().__init__(*args, nome = 'Botas', **kwargs)
 
-tudo = [Peitoral, Elmo, Calca, Bota]
+tudo = [Peitoral, Elmo, Calca, Botas]

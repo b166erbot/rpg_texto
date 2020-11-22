@@ -26,3 +26,23 @@ class Machado(Arma):
 class Espada_curta(Arma):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, nome = 'espada curta', **kwargs)
+
+
+class Cajado(Arma):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, nome = 'cajado', **kwargs)
+
+
+class Cajado_negro(Arma):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, nome = 'cajado negro', **kwargs)
+
+
+class Arco_longo(Arma):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, nome = 'arco longo', **kwargs)
+
+
+class Arco_curto(Arma):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, nome = 'arco curto', **kwargs)
