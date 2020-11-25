@@ -1,10 +1,8 @@
 from random import randint, choice
 from time import sleep
 from re import compile
-from jogo.excecoes import CavernaEnorme
 from jogo.personagens.monstros import Cascudinho, Traquinagem
 from jogo.assincrono.combate import combate
-from jogo.decoradores import validador
 from jogo.tela.imprimir import efeito_digitando, Imprimir
 from jogo.itens.pocoes import curas
 from jogo.itens.vestes import tudo

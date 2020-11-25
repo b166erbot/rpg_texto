@@ -1,14 +1,11 @@
 from asyncio import get_event_loop, wait
 from typing import Tuple
 from itertools import permutations
-from jogo.excecoes import QuantidadeDiferente
-from jogo.decoradores import validador
 
 
 texto = 'É necessário inserir exatamente 2 personagens para esta função'
 
 
-@validador(lambda x: len(x) != 2, QuantidadeDiferente, texto)
 def combate(*personagens: Tuple):
     """
     Função que faz os combates entre personagens.
