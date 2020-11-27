@@ -45,5 +45,5 @@ class Comerciante(Npc):
                 self.tela.imprimir(texto + '\n')
             self.tela.imprimir('Deseja mais alguma coisa?: ')
             numero = self.tela.obter_string()
-        self.tela.limpar_tela2()
+        self.tela.limpar_tela()
         self.tela.imprimir('volte sempre!')

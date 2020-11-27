@@ -5,8 +5,6 @@ from jogo.tela.imprimir import Imprimir, formatar_status
 
 
 class Monstro:
-    # classe generica para cada monstro no jogo.
-    # não importe ou use essa classe na história, só herde dela seus atributos.
     tela = Imprimir()
 
     def __init__(self, level = 1, status = {}):
@@ -16,7 +14,6 @@ class Monstro:
             {'vida': 100, 'dano': 3, 'resis': 5, 'velo-ataque': 1, 'critico':5,
             'armadura': 5, 'magia': 100, 'stamina': 100, 'velo-movi': 1})
         self.habilidades = {}
-        self.local_imprimir = 1
 
     async def atacar(self, other):
         while all([other.status['vida'] > 0, self.status['vida'] > 0]):
@@ -29,9 +26,9 @@ class Monstro:
                     habilidade(other)
             if other.status['vida'] < 0:
                 other.status['vida'] = 0
-            self.tela.imprimir_combate(formatar_status(self), self)
+            self.tela.imprimir_combate(formatar_status(self), 2)
             await sleep(0.2)
-        self.tela.imprimir_combate(formatar_status(self), self)
+        self.tela.imprimir_combate(formatar_status(self), 2)
         await sleep(1)
 
     def ressucitar(self):

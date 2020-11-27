@@ -15,27 +15,6 @@ formas = (
     '┴┵┶┷┸┹┺┻┼┽┾┿╀╁╂╃╄╅╆╇╈╉╊╋╏║╔╒╓╕╖╗╚╘╙╛╜╝╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬'
 )
 
-# cores = {
-#     'vermelho': fg('red'), 'verde': fg('green'), 'amarelo': fg('yellow'),
-#     'roxo': fg('purple_1a'), 'azul': fg('blue'), 'magenta': fg('magenta'),
-#     'cyan': fg('cyan'), 'cinza_escuro': fg('dark_gray'), 'preto': fg('grey_0'),
-#     'turquesa': fg('pale_turquoise_1'), 'laranja_escuro': fg('dark_orange')}
-
-
-# def colorir(texto: str, cor: str) -> str:
-#     """
-#     Função que retorna um texto colorido.
-#     [args]
-#         - texto: texto à ser colorido.
-#         - cor:   cor que irá colorir o texto.
-#
-#     cores: vermelho, verde, amarelo, roxo, azul, magenta, cyan, cinza_escuro,
-#            preto, turquesa, laranja_escuro.
-#     """
-#
-#     texto = sub(r'\x1b\[0m', cores[cor], texto)
-#     return f"{cores[cor]}{texto}{attr(0)}"
-
 
 def formatar_status(personagem):
     nome, vida = personagem.nome, personagem.status['vida']
@@ -59,16 +38,19 @@ def _formatar(atributo, vida_maxima, vida=False):
 
 
 class Imprimir:
-    _tela = curses.newwin(22, 80, 2, 0)
-    _tela2 = curses.newwin(2, 80)
+    _tela = curses.newwin(20, 80, 4, 0)
+    _tela2 = curses.newwin(4, 80)
     _tela2.nodelay(True)
+    _tela2.box()
+    _tela2.refresh()
 
     def imprimir(self, texto: str):
         self._tela.addstr(texto)
         self._tela.refresh()
 
-    def imprimir_combate(self, texto, personagem):
-        self._tela2.addstr(personagem.local_imprimir, 0, texto)
+    def imprimir_combate(self, texto, local):
+        self._tela2.addstr(local, 0, texto)  # linhas, colunas
+        self._tela2.box()
         self._tela2.refresh()
 
     def limpar_tela(self):
@@ -77,6 +59,7 @@ class Imprimir:
 
     def limpar_tela2(self):
         self._tela2.erase()
+        self._tela2.box()
         self._tela2.refresh()
 
     def obter_caracter(self):

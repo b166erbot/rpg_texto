@@ -15,7 +15,7 @@ class Humano:
     o que os atributos aumentão?
     vitalidade - vida
     fortividade - dano físico
-    resistência - resistência a magia[fogo, raio, veneno, magia do submundo]
+    resistência - resistência a magia[fogo, gelo, raio, veneno, magia do submundo]
     inteligência - dano mágico
     crítico - dano crítico
     destreza - velocidade ataque, habilidade com armas
@@ -48,7 +48,6 @@ class Humano:
         self.inventario = []
         self.pratas = Pratas(pratas or 1500)
         self.jogador = jogador
-        self.local_imprimir = 0
         self.equipamentos = {
             'Peitoral': peitoral, 'Elmo': elmo, 'Calca': calca, 'Botas': botas
         }
@@ -91,9 +90,9 @@ class Humano:
                         habilidade(other)
             if other.status['vida'] < 0:
                 other.status['vida'] = 0
-            self.tela.imprimir_combate(formatar_status(self), self)
+            self.tela.imprimir_combate(formatar_status(self), 1)
             await sleep(0.2)
-        self.tela.imprimir_combate(formatar_status(self), self)
+        self.tela.imprimir_combate(formatar_status(self), 1)
         await sleep(1)
 
     def ressucitar(self):

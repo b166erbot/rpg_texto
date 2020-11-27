@@ -3,9 +3,6 @@ from typing import Tuple
 from itertools import permutations
 
 
-texto = 'É necessário inserir exatamente 2 personagens para esta função'
-
-
 def combate(*personagens: Tuple):
     """
     Função que faz os combates entre personagens.
