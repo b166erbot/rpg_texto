@@ -1,5 +1,6 @@
 from jogo.tela.imprimir import Imprimir
 from jogo.itens.pocoes import curas
+from time import sleep
 
 
 class Npc:
@@ -47,3 +48,4 @@ class Comerciante(Npc):
             numero = self.tela.obter_string()
         self.tela.limpar_tela()
         self.tela.imprimir('volte sempre!')
+        sleep(1)

@@ -20,18 +20,19 @@ def formatar_status(personagem):
     nome, vida = personagem.nome, personagem.status['vida']
     magia, stamina = personagem.status['magia'], personagem.status['stamina']
     texto = f"{nome} [{personagem.classe}]: "
-    blocos_com_barras = _formatar(magia, personagem.vida_maxima)
+    blocos_com_barras = _formatar(magia, 100)
     texto += f"{blocos_com_barras} {magia:3d}% "
     blocos_com_barras = _formatar(vida, personagem.vida_maxima, True)
     texto += f"{blocos_com_barras} {vida:3d}%  "
-    blocos_com_barras = _formatar(stamina, personagem.vida_maxima)
+    blocos_com_barras = _formatar(stamina, 100)
     return texto + f"{blocos_com_barras} {stamina:3d}%"
 
 
 def _formatar(atributo, vida_maxima, vida=False):
     quantidade_blocos = 10 if vida else 5
     p = int(atributo / vida_maxima * quantidade_blocos)
-    porcentagem = p + 1 if p < p else p
+    # porcentagem = p + 1 if p < p else p
+    porcentagem = p
     blocos = formas[53] * porcentagem
     blocos += (quantidade_blocos - len(blocos)) * formas[48]
     return f"{formas[191]}{blocos}{formas[192]}"
@@ -49,7 +50,7 @@ class Imprimir:
         self._tela.refresh()
 
     def imprimir_combate(self, texto, local):
-        self._tela2.addstr(local, 0, texto)  # linhas, colunas
+        self._tela2.addstr(local, 2, texto)  # linhas, colunas
         self._tela2.box()
         self._tela2.refresh()
 

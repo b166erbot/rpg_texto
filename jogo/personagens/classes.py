@@ -130,17 +130,13 @@ class Humano:
         self.status['magia'] = 100
         self.status['stamina'] = 100
 
-    def __repr__(self):
-        return self.classe
-
 
 class Arqueiro(Humano):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._habilidades = [self.flecha, self.tres_flechas]
-        self.habilidades = dict(enumerate(self._habilidades, 1))
+        habilidades = [self.flecha, self.tres_flechas]
+        self.habilidades = dict(enumerate(habilidades, 1))
         self.classe = 'Arqueiro'
-        self.quantidade_habilidades = range(1, 3)
 
     def flecha(self, other):
         other.status['vida'] -= 10
@@ -154,14 +150,16 @@ class Arqueiro(Humano):
             return True
         return False
 
+    def repr(self):
+        return self.classe
+
 
 class Guerreiro(Humano):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._habilidades = [self.investida, self.esmagar]
-        self.habilidades = dict(enumerate(self._habilidades, 1))
+        habilidades = [self.investida, self.esmagar]
+        self.habilidades = dict(enumerate(habilidades, 1))
         self.classe = 'Guerreiro'
-        self.quantidade_habilidades = range(1, 3)
 
     def investida(self, other):
         other.status['vida'] -= 10
@@ -179,10 +177,9 @@ class Guerreiro(Humano):
 class Mago(Humano):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._habilidades = [self.bola_de_fogo, self.lanca_de_gelo]
-        self.habilidades = dict(enumerate(self._habilidades, 1))
+        habilidades = [self.bola_de_fogo, self.lanca_de_gelo]
+        self.habilidades = dict(enumerate(habilidades, 1))
         self.classe = 'Mago'
-        self.quantidade_habilidades = range(1, 3)
 
     def bola_de_fogo(self, other):
         other.status['vida'] -= 10
@@ -200,11 +197,9 @@ class Mago(Humano):
 class Assassino(Humano):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._habilidades = [self.lancar_faca, self.ataque_furtivo]
-        self.habilidades = dict(enumerate(self._habilidades, 1))
-        self.habilidades = {}
+        habilidades = [self.lancar_faca, self.ataque_furtivo]
+        self.habilidades = dict(enumerate(habilidades, 1))
         self.classe = 'Assassino'
-        self.quantidade_habilidades = range(1, 3)
 
     def lancar_faca(self, other):
         other.status['vida'] -= 10
@@ -222,10 +217,9 @@ class Assassino(Humano):
 class Clerigo(Humano):  # curandeiro?
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._habilidades = [self.curar, self.luz]
-        self.habilidades = dict(enumerate(self._habilidades, 1))
+        habilidades = [self.curar, self.luz]
+        self.habilidades = dict(enumerate(habilidades, 1))
         self.classe = 'Clerigo'
-        self.quantidade_habilidades = range(1, 3)
 
     def curar(self, other):
         self.status['vida'] += 25

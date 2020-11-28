@@ -19,7 +19,7 @@ from jogo.tela.imprimir import Imprimir
 def main():
     ### daqui para baixo é somente teste, nada oficial. ###
     t = Imprimir()
-    t.imprimir('escolha um nome para seu personagem: ')
+    t.imprimir('qual é o nome do seu personagem?: ')
     nome = t.obter_string()
     t.limpar_tela()
     classes = [Arqueiro, Guerreiro, Mago, Assassino, Clerigo]
@@ -29,7 +29,7 @@ def main():
     t.imprimir('Escolha a classe do seu personagem: ')
     numero = int(t.obter_string())
     classe = dicionario[numero]
-    personagem = classe('nord', True)
+    personagem = classe(nome, True)
     tela = Tela_principal(personagem)
     tela.ciclo()
 

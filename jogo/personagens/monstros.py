@@ -14,6 +14,7 @@ class Monstro:
             {'vida': 100, 'dano': 3, 'resis': 5, 'velo-ataque': 1, 'critico':5,
             'armadura': 5, 'magia': 100, 'stamina': 100, 'velo-movi': 1})
         self.habilidades = {}
+        self.vida_ = self.status['vida']
 
     async def atacar(self, other):
         while all([other.status['vida'] > 0, self.status['vida'] > 0]):
@@ -32,11 +33,11 @@ class Monstro:
         await sleep(1)
 
     def ressucitar(self):
-        self.status['vida'] = 100
+        self.status['vida'] = self.vida_
 
     @property
     def vida_maxima(self):
-        return 100
+        return self.vida_
 
 
 class Cascudinho(Monstro):
@@ -67,3 +68,19 @@ class Traquinagem(Monstro):
 
     def roubo(self, other):
         other.status['vida'] -= 5
+
+
+
+class Topera_boss(Monstro):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.habilidades = [self.pulo_fatal, self.terremoto]
+        self.nome = 'Topera-boss'
+        self.classe = 'Monstro chefe'
+        self.tipo = 'boss'
+
+    def pulo_fatal(self, other):
+        other.status['vida'] -= 7
+
+    def terremoto(self, other):
+        other.status['vida'] -= 10

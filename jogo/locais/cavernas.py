@@ -1,7 +1,7 @@
 from random import randint, choice
 from time import sleep
 from re import compile
-from jogo.personagens.monstros import Cascudinho, Traquinagem
+from jogo.personagens.monstros import Cascudinho, Traquinagem, Topera_boss
 from jogo.assincrono.combate import combate
 from jogo.tela.imprimir import efeito_digitando, Imprimir
 from jogo.itens.pocoes import curas
@@ -61,6 +61,16 @@ class Caverna:
                         self.sortear_inimigos()
                         self.sortear_loot()
                         self._tela.limpar_tela()
+                boss = Topera_boss(status = {
+                    'vida': 200, 'dano': 5, 'resis': 15, 'velo-ataque': 1,
+                    'critico':15, 'armadura': 15, 'magia': 100, 'stamina': 100,
+                    'velo-movi': 1}
+                )
+                combate(self.personagem, boss)
+                self._tela.limpar_tela()
+                self._tela.limpar_tela2()
+                if self.personagem.status['vida'] == 0:
+                    quit()
             self.personagem.recuperar_magia_stamina()
             self.personagem.status['vida'] = 100
 
