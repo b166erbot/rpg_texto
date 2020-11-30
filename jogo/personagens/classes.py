@@ -69,8 +69,7 @@ class Humano:
             self._consumir_pocoes_bot()
             dano = self.status['dano']
             other.status['vida'] -= dano
-            if other.status['vida'] < 0:
-                other.status['vida'] = 0
+            other.arrumar_vida()
             self.tela.imprimir_combate(formatar_status(self), self)
             await sleep(0.2)
         self.tela.imprimir_combate(formatar_status(self), self)
@@ -88,12 +87,17 @@ class Humano:
                     habilidade = self.habilidades[caracter]
                     if self.consumir_magia_stamina():
                         habilidade(other)
-            if other.status['vida'] < 0:
-                other.status['vida'] = 0
+            other.arrumar_vida()
             self.tela.imprimir_combate(formatar_status(self), 1)
             await sleep(0.2)
         self.tela.imprimir_combate(formatar_status(self), 1)
         await sleep(1)
+
+    def arrumar_vida(self):
+        if self.status['vida'] < 0:
+            self.status['vida'] = 0
+        if self.status['vida'] > self.vida_maxima:
+            self.status['vida'] = self.vida_maxima
 
     def ressucitar(self):
         self.status['vida'] = self.vida_maxima

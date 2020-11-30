@@ -20,19 +20,20 @@ def formatar_status(personagem):
     nome, vida = personagem.nome, personagem.status['vida']
     magia, stamina = personagem.status['magia'], personagem.status['stamina']
     texto = f"{nome} [{personagem.classe}]: "
+    porcentagem = int((magia * 100) / 100)
     blocos_com_barras = _formatar(magia, 100)
-    texto += f"{blocos_com_barras} {magia:3d}% "
+    texto += f"{blocos_com_barras} {porcentagem:3d}% "
+    porcentagem = int((vida * 100) / personagem.vida_maxima)
     blocos_com_barras = _formatar(vida, personagem.vida_maxima, True)
-    texto += f"{blocos_com_barras} {vida:3d}%  "
+    texto += f"{blocos_com_barras} {porcentagem:3d}%  "
     blocos_com_barras = _formatar(stamina, 100)
-    return texto + f"{blocos_com_barras} {stamina:3d}%"
+    porcentagem = int((stamina * 100) / 100)
+    return texto + f"{blocos_com_barras} {porcentagem:3d}%"
 
 
 def _formatar(atributo, vida_maxima, vida=False):
     quantidade_blocos = 10 if vida else 5
-    p = int(atributo / vida_maxima * quantidade_blocos)
-    # porcentagem = p + 1 if p < p else p
-    porcentagem = p
+    porcentagem = int(atributo / vida_maxima * quantidade_blocos)
     blocos = formas[53] * porcentagem
     blocos += (quantidade_blocos - len(blocos)) * formas[48]
     return f"{formas[191]}{blocos}{formas[192]}"

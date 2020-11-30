@@ -20,7 +20,7 @@ def main():
     ### daqui para baixo é somente teste, nada oficial. ###
     t = Imprimir()
     t.imprimir('qual é o nome do seu personagem?: ')
-    nome = t.obter_string()
+    nome = t.obter_string().decode()
     t.limpar_tela()
     classes = [Arqueiro, Guerreiro, Mago, Assassino, Clerigo]
     dicionario = dict(enumerate(classes))

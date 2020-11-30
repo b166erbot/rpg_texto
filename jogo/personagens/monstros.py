@@ -25,8 +25,7 @@ class Monstro:
                 if self.status['stamina'] >= 20:
                     self.status['stamina'] -= 20
                     habilidade(other)
-            if other.status['vida'] < 0:
-                other.status['vida'] = 0
+            other.arrumar_vida()
             self.tela.imprimir_combate(formatar_status(self), 2)
             await sleep(0.2)
         self.tela.imprimir_combate(formatar_status(self), 2)
@@ -39,6 +38,11 @@ class Monstro:
     def vida_maxima(self):
         return self.vida_
 
+    def arrumar_vida(self):
+        if self.status['vida'] < 0:
+            self.status['vida'] = 0
+        if self.status['vida'] > self.vida_maxima:
+            self.status['vida'] = self.vida_maxima
 
 class Cascudinho(Monstro):
     def __init__(self, *args, **kwargs):

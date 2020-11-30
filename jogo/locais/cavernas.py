@@ -62,11 +62,12 @@ class Caverna:
                         self.sortear_loot()
                         self._tela.limpar_tela()
                 boss = Topera_boss(status = {
-                    'vida': 200, 'dano': 5, 'resis': 15, 'velo-ataque': 1,
+                    'vida': 300, 'dano': 5, 'resis': 15, 'velo-ataque': 1,
                     'critico':15, 'armadura': 15, 'magia': 100, 'stamina': 100,
                     'velo-movi': 1}
                 )
                 combate(self.personagem, boss)
+                self.sortear_loot()
                 self._tela.limpar_tela()
                 self._tela.limpar_tela2()
                 if self.personagem.status['vida'] == 0:
