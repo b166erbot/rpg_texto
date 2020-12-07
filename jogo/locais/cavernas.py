@@ -54,7 +54,7 @@ class Caverna:
             self._tela.imprimir(
                 f'deseja explorar a caverna: {self.nome} s/n?\n'
             )
-            if self._tela.obter_string().decode().lower() == 's':
+            if self._tela.obter_string().lower() == 's':
                 for x in self._caminho:
                     efeito_digitando(x)
                     if self._substituir('', x) in self._locais:

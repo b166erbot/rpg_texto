@@ -20,7 +20,7 @@ def main():
     ### daqui para baixo é somente teste, nada oficial. ###
     t = Imprimir()
     t.imprimir('qual é o nome do seu personagem?: ')
-    nome = t.obter_string().decode()
+    nome = t.obter_string()
     t.limpar_tela()
     classes = [Arqueiro, Guerreiro, Mago, Assassino, Clerigo]
     dicionario = dict(enumerate(classes))
@@ -38,9 +38,7 @@ def main():
 if __name__ == '__main__':
     try:
         main()
+    except KeyboardInterrupt:
+        pass
     finally:
         curses.endwin()
-
-
-# TODO: botar pra cantar canções ao mesmo tempo que a letra ou ressitar uma lingua
-# antiga ao mesmo tempo que o texto gerado na tela.

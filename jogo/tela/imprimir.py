@@ -1,8 +1,6 @@
 from re import sub
 from itertools import cycle
 from time import sleep
-
-from colored import fg, attr
 import curses
 
 
@@ -20,18 +18,18 @@ def formatar_status(personagem):
     nome, vida = personagem.nome, personagem.status['vida']
     magia, stamina = personagem.status['magia'], personagem.status['stamina']
     texto = f"{nome} [{personagem.classe}]: "
-    porcentagem = int((magia * 100) / 100)
-    blocos_com_barras = _formatar(magia, 100)
+    porcentagem = int((magia * 100) / 100)  # manter mesmo que sem sentido
+    blocos_com_barras = _formatar_barras(magia, 100)
     texto += f"{blocos_com_barras} {porcentagem:3d}% "
     porcentagem = int((vida * 100) / personagem.vida_maxima)
-    blocos_com_barras = _formatar(vida, personagem.vida_maxima, True)
+    blocos_com_barras = _formatar_barras(vida, personagem.vida_maxima, True)
     texto += f"{blocos_com_barras} {porcentagem:3d}%  "
-    blocos_com_barras = _formatar(stamina, 100)
-    porcentagem = int((stamina * 100) / 100)
+    blocos_com_barras = _formatar_barras(stamina, 100)
+    porcentagem = int((stamina * 100) / 100)  # manter mesmo que sem sentido
     return texto + f"{blocos_com_barras} {porcentagem:3d}%"
 
 
-def _formatar(atributo, vida_maxima, vida=False):
+def _formatar_barras(atributo, vida_maxima, vida=False):
     quantidade_blocos = 10 if vida else 5
     porcentagem = int(atributo / vida_maxima * quantidade_blocos)
     blocos = formas[53] * porcentagem
@@ -68,7 +66,7 @@ class Imprimir:
         return self._tela2.getch()
 
     def obter_string(self):
-        return self._tela.getstr()
+        return self._tela.getstr().decode()
 
     def sem_delay(self):
         self._tela2.nodelay(True)
