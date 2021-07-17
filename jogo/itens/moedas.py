@@ -18,13 +18,17 @@ class Pratas:
         return self._pratas
 
     def __add__(self, other):
-        if isinstance(other, self.__class__):
+        if isinstance(other, int):
+            return self.__class__(self._pratas + other)
+        elif isinstance(other, self.__class__):
             return self.__class__(self._pratas + other._pratas)
         else:
             raise TypeError(f"tipo não suportavel {other.__class__}")
 
     def __radd__(self, other):
-        if isinstance(other, self.__class__):
+        if isinstance(other, int):
+            return self.__class__(self._pratas + other)
+        elif isinstance(other, self.__class__):
             return self.__class__(self._pratas + other._pratas)
         else:
             raise TypeError(f"tipo não suportavel {other.__class__}")
