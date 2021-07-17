@@ -24,3 +24,9 @@ def equipar(equipamento, personagem):
                     personagem.arma = equipamento
     if equipamento.nome in personagem.equipamentos:
         personagem.equipamentos[equipamento.nome] = equipamento
+
+
+def vender(equipamento, personagem):
+    index = personagem.inventario.index(equipamento)
+    personagem.pratas += equipamento.preco
+    personagem.inventario.pop(index)

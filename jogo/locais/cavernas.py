@@ -110,6 +110,4 @@ class Caverna:
                     armadura = randint(1, 3), velo_movi = randint(0, 3),
                     vida = randint(0, 3), resistencias = randint(1, 3)
                 )
-            else:
-                import pdb; pdb.set_trace()
             self.personagem.inventario.append(item)

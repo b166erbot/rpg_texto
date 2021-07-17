@@ -2,7 +2,7 @@ from jogo.tela.imprimir import formas, Imprimir
 from jogo.locais.cavernas import Caverna
 from jogo.personagens.npc import Comerciante
 from time import sleep
-from jogo.utils import equipar
+from jogo.utils import equipar, vender
 
 
 tela = Imprimir()
@@ -17,7 +17,8 @@ class Tela_principal:
             '3 - editar equipamentos',
             '4 - mostrar equipamentos equipados',
             '5 - mostrar seu dinheiro',
-            '6 - sair'
+            '6 - vender itens',
+            '7 - sair'
         ]
         self.personagem = personagem
 
@@ -48,12 +49,14 @@ class Tela_principal:
                 tela.imprimir(str(self.personagem.pratas))
                 sleep(4)
             elif caracter == 6:
+                self.vender_item()
+            elif caracter == 7:
                 quit()
 
     def editar_equipamentos(self):
         tela.limpar_tela()
         for numero, item in enumerate(self.personagem.inventario):
-            tela.imprimir(f"{numero} - {item}" + '\n')
+            tela.imprimir(f"{numero} - {item}\n")
         tela.imprimir('deseja equipar qual equipamento: ')
         numero = tela.obter_string()
         if numero.isnumeric():
@@ -62,7 +65,19 @@ class Tela_principal:
             if equipamento is not None:
                 equipar(equipamento, self.personagem)
 
+    def vender_item(self):
+        tela.limpar_tela()
+        for numero, item in enumerate(self.personagem.inventario):
+            tela.imprimir(f"{numero} - {item}\n")
+        tela.imprimir('deseja vender qual equipamento: ')
+        numero = tela.obter_string()
+        if numero.isnumeric():
+            inventario = dict(enumerate(self.personagem.inventario))
+            equipamento = inventario.get(int(numero))
+            if equipamento is not None:
+                vender(equipamento, self.personagem)
+
 
 # TODO: colocar dinheiro nas recompensas
-# TODO: vender itens
 # TODO: por os atributos dos itens no personagem
+# TODO: corrigir a morte durante combate entre monstros.

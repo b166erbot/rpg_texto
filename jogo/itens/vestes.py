@@ -7,6 +7,7 @@ class Roupa:
         self.vida = vida
         self.resistencias = resistencias
         self.armadura = armadura
+        self.preco = (vida + resistencias + armadura) * 8
 
     def __repr__(self):
         return (

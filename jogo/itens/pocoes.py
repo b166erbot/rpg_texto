@@ -2,6 +2,7 @@ class PocaoDeCura:
     def __init__(self, pontos_cura: int):
         self.pontos_cura = pontos_cura
         self.consumida = False
+        self.preco = self.custo
 
     def __repr__(self):
         return (f"{self.nome.capitalize()} - "

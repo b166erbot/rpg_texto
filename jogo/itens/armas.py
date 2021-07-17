@@ -6,6 +6,7 @@ class Arma:
         self.dano = dano
         self.velo_ataque = velo_ataque
         self.critico = critico
+        self.preco = (dano + velo_ataque + critico) * 8
 
     def __repr__(self):
         return (
