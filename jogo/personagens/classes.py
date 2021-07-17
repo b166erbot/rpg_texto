@@ -118,12 +118,6 @@ class Humano:
             return poção
         return False
 
-    def equipar(self, equipamento):
-        if equipamento.nome == 'Arma':
-            self.arma = equipamento
-        elif equipamento.nome in self.equipamentos:
-            self.equipamentos[equipamento.nome] = equipamento
-
     def obter_equipamentos(self):
         equipamentos = [
             self.arma, self.elmo, self.peitoral, self.calca, self.botas

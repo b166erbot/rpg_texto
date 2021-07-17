@@ -2,6 +2,7 @@ from jogo.tela.imprimir import formas, Imprimir
 from jogo.locais.cavernas import Caverna
 from jogo.personagens.npc import Comerciante
 from time import sleep
+from jogo.utils import equipar
 
 
 tela = Imprimir()
@@ -14,7 +15,7 @@ class Tela_principal:
             '1 - explorar uma caverna',
             '2 - visitar o comerciante',
             '3 - editar equipamentos',
-            '4 - imprimir equipamentos',
+            '4 - mostrar equipamentos equipados',
             '5 - mostrar seu dinheiro',
             '6 - sair'
         ]
@@ -53,10 +54,15 @@ class Tela_principal:
         tela.limpar_tela()
         for numero, item in enumerate(self.personagem.inventario):
             tela.imprimir(f"{numero} - {item}" + '\n')
-        tela.imprimir('deseja usar qual equipamento: ')
+        tela.imprimir('deseja equipar qual equipamento: ')
         numero = tela.obter_string()
         if numero.isnumeric():
             inventario = dict(enumerate(self.personagem.inventario))
             equipamento = inventario.get(int(numero))
             if equipamento is not None:
-                self.personagem.equipar(equipamento)
+                equipar(equipamento, self.personagem)
+
+
+# TODO: colocar dinheiro nas recompensas
+# TODO: vender itens
+# TODO: por os atributos dos itens no personagem

@@ -2,6 +2,7 @@ class Arma:
     def __init__(
         self, nome = '', dano = 1, velo_ataque = 1, critico = 0,
     ):
+        self.nome = nome
         self.dano = dano
         self.velo_ataque = velo_ataque
         self.critico = critico
@@ -46,3 +47,14 @@ class Arco_longo(Arma):
 class Arco_curto(Arma):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, nome = 'arco curto', **kwargs)
+
+
+class Adaga(Arma):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, nome = 'adaga', **kwargs)
+
+
+tudo = [
+    Espada_longa, Machado, Espada_curta, Cajado, Cajado_negro, Arco_longo,
+    Arco_curto, Adaga
+]
