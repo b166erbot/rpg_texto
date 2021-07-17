@@ -64,7 +64,13 @@ class Caverna:
             for x in self._caminho:
                 efeito_digitando(x)
                 if self._substituir('', x) in self._locais:
-                    self.sortear_inimigos()
+                    morto = self.sortear_inimigos()
+                    if morto:
+                        tela.limpar_tela()
+                        tela.limpar_tela2()
+                        tela.imprimir('você foi morto e foi ressucitado.')
+                        sleep(3)
+                        return
                     self.sortear_loot()
                     tela.limpar_tela()
             boss = Topera_boss(status = {
@@ -73,11 +79,12 @@ class Caverna:
                 'velo-movi': 1}
             )
             combate(self.personagem, boss)
+            if self.personagem.status['vida'] == 0:
+                self.personagem.ressucitar()
+                return
             self.sortear_loot()
             tela.limpar_tela()
             tela.limpar_tela2()
-            if self.personagem.status['vida'] == 0:
-                quit()
         self.personagem.recuperar_magia_stamina()
         self.personagem.status['vida'] = 100
 
@@ -88,12 +95,15 @@ class Caverna:
             sleep(1)
             tela.limpar_tela()
             for y in range(randint(1, 3)):
-                inimigo = choice(self._mostros)()
+                Inimigo = choice(self._mostros)
+                inimigo = Inimigo()
                 combate(self.personagem, inimigo)
                 if self.personagem.status['vida'] == 0:
-                    quit()
+                    self.personagem.ressucitar()
+                    return True
                 self.personagem.recuperar_magia_stamina()
             tela.limpar_tela2()
+            return False
 
     def sortear_loot(self):
         if randint(0, 1):
@@ -110,4 +120,5 @@ class Caverna:
                     armadura = randint(1, 3), velo_movi = randint(0, 3),
                     vida = randint(0, 3), resistencias = randint(1, 3)
                 )
+            self.personagem.pratas += randint(30, 150)
             self.personagem.inventario.append(item)

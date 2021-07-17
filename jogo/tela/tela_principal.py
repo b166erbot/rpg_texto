@@ -78,6 +78,4 @@ class Tela_principal:
                 vender(equipamento, self.personagem)
 
 
-# TODO: colocar dinheiro nas recompensas
 # TODO: por os atributos dos itens no personagem
-# TODO: corrigir a morte durante combate entre monstros.
