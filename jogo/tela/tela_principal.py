@@ -2,7 +2,7 @@ from jogo.tela.imprimir import formas, Imprimir
 from jogo.locais.cavernas import Caverna
 from jogo.personagens.npc import Comerciante
 from time import sleep
-from jogo.utils import equipar, vender
+from jogo.utils import vender
 
 
 tela = Imprimir()
@@ -14,7 +14,7 @@ class Tela_principal:
             'O que deseja fazer?',
             '1 - explorar uma caverna',
             '2 - visitar o comerciante',
-            '3 - editar equipamentos',
+            '3 - equipar equipamentos',
             '4 - mostrar equipamentos equipados',
             '5 - mostrar seu dinheiro',
             '6 - vender itens',
@@ -40,10 +40,8 @@ class Tela_principal:
                 self.editar_equipamentos()
             elif caracter == 4:
                 equipamentos = self.personagem.equipamentos.values()
-                arma = self.personagem.arma
                 for item in equipamentos:
                     tela.imprimir(f"{item}\n")
-                tela.imprimir(f"{arma}\n")
                 sleep(4)
             elif caracter == 5:
                 tela.imprimir(str(self.personagem.pratas))
@@ -63,7 +61,7 @@ class Tela_principal:
             inventario = dict(enumerate(self.personagem.inventario))
             equipamento = inventario.get(int(numero))
             if equipamento is not None:
-                equipar(equipamento, self.personagem)
+                self.personagem.equipar(equipamento)
 
     def vender_item(self):
         tela.limpar_tela()
@@ -79,3 +77,6 @@ class Tela_principal:
 
 
 # TODO: por os atributos dos itens no personagem
+# TODO: troca de arma volta para o inventario a equipada.
+# TODO: restaurar a estamina/magia estando parado nos turnos.
+# TODO: caso os itens sejam vendidos, os mesmos devem ser removidos do inventario.

@@ -4,6 +4,11 @@ from random import randint, choice
 from jogo.tela.imprimir import formatar_status, Imprimir
 from jogo.itens.moedas import Pratas
 from jogo.itens.pocoes import curas
+from jogo.itens.vestes import tudo as roupas
+from jogo.itens.armas import (
+    Espada_longa, Machado, Espada_curta, Cajado, Cajado_negro, Arco_longo,
+    Arco_curto, Adaga
+)
 
 nome_pocoes = list(map(lambda x: x.nome, curas))
 
@@ -49,9 +54,9 @@ class Humano:
         self.pratas = Pratas(pratas or 1500)
         self.jogador = jogador
         self.equipamentos = {
-            'Peitoral': peitoral, 'Elmo': elmo, 'Calca': calca, 'Botas': botas
+            'Peitoral': peitoral, 'Elmo': elmo, 'Calca': calca, 'Botas': botas,
+            'Arma': arma
         }
-        self.arma = arma
 
     @property
     def vida_maxima(self):
@@ -129,6 +134,7 @@ class Humano:
         self.status['stamina'] = 100
 
 
+
 class Arqueiro(Humano):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -151,6 +157,11 @@ class Arqueiro(Humano):
     def repr(self):
         return self.classe
 
+    def equipar(self, equipamento):
+        for classe in roupas + [Arco_longo, Arco_curto]:
+            if isinstance(equipamento, classe):
+                self.equipamentos[equipamento.tipo] = equipamento
+
 
 class Guerreiro(Humano):
     def __init__(self, *args, **kwargs):
@@ -170,6 +181,11 @@ class Guerreiro(Humano):
             self.status['stamina'] -= 20
             return True
         return False
+
+    def equipar(self, equipamento):
+        for classe in roupas + [Espada_longa, Espada_curta, Machado]:
+            if isinstance(equipamento, classe):
+                self.equipamentos[equipamento.tipo] = equipamento
 
 
 class Mago(Humano):
@@ -191,6 +207,11 @@ class Mago(Humano):
             return True
         return False
 
+    def equipar(self, equipamento):
+        for classe in roupas + [Cajado, Cajado_negro]:
+            if isinstance(equipamento, classe):
+                self.equipamentos[equipamento.tipo] = equipamento
+
 
 class Assassino(Humano):
     def __init__(self, *args, **kwargs):
@@ -210,6 +231,11 @@ class Assassino(Humano):
             self.status['stamina'] -= 20
             return True
         return False
+
+    def equipar(self, equipamento):
+        for classe in roupas + [Adaga]:
+            if isinstance(equipamento, classe):
+                self.equipamentos[equipamento.tipo] = equipamento
 
 
 class Clerigo(Humano):  # curandeiro?
@@ -232,6 +258,11 @@ class Clerigo(Humano):  # curandeiro?
             self.status['magia'] -= 20
             return True
         return False
+
+    def equipar(self, equipamento):
+        for classe in roupas + [Cajado]:
+            if isinstance(equipamento, classe):
+                self.equipamentos[equipamento.tipo] = equipamento
 
 
 # druida?

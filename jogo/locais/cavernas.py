@@ -55,7 +55,7 @@ class Caverna:
         tela.limpar_tela()
         tela.imprimir(
             'Esta caverna é difícil, necessita de algumas poções de vida'
-            '. Recomendo comprar 15 poções de vida fraca.'
+            '. Recomendo comprar 10 poções de vida média.'
         )
         tela.imprimir(
             f'deseja explorar a caverna: {self.nome} s/n?\n'
@@ -81,6 +81,10 @@ class Caverna:
             combate(self.personagem, boss)
             if self.personagem.status['vida'] == 0:
                 self.personagem.ressucitar()
+                tela.limpar_tela()
+                tela.limpar_tela2()
+                tela.imprimir('você foi morto e foi ressucitado.')
+                sleep(3)
                 return
             self.sortear_loot()
             tela.limpar_tela()
@@ -120,5 +124,5 @@ class Caverna:
                     armadura = randint(1, 3), velo_movi = randint(0, 3),
                     vida = randint(0, 3), resistencias = randint(1, 3)
                 )
-            self.personagem.pratas += randint(30, 150)
+            self.personagem.pratas += randint(100, 300)
             self.personagem.inventario.append(item)

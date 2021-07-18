@@ -19,17 +19,21 @@ class Roupa:
 class Peitoral(Roupa):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, nome = 'Peitoral', **kwargs)
+        self.tipo = 'Peitoral'
 
 class Elmo(Roupa):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, nome = 'Elmo', **kwargs)
+        self.tipo = 'Elmo'
 
 class Calca(Roupa):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, nome = 'Calca', **kwargs)
+        self.tipo = 'Calca'
 
 class Botas(Roupa):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, nome = 'Botas', **kwargs)
+        self.tipo = 'Botas'
 
 tudo = [Peitoral, Elmo, Calca, Botas]
