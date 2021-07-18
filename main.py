@@ -23,12 +23,14 @@ def main():
     nome = t.obter_string()
     t.limpar_tela()
     classes = [Arqueiro, Guerreiro, Mago, Assassino, Clerigo]
-    dicionario = dict(enumerate(classes))
+    classes_nomes = ['arqueiro', 'guerreiro', 'mago', 'assassino', 'clerigo']
+    classes_dict = dict(zip(classes_nomes, classes))
+    dicionario = dict(enumerate(classes_nomes))
     for numero, classe in dicionario.items():
         t.imprimir(f"{numero} - {classe}\n")
     t.imprimir('Escolha a classe do seu personagem: ')
     numero = int(t.obter_string())
-    classe = dicionario[numero]
+    classe = classes_dict[dicionario[numero]]
     personagem = classe(nome, True)
     tela = Tela_principal(personagem)
     tela.ciclo()

@@ -4,9 +4,10 @@ from random import randint, choice
 from jogo.tela.imprimir import Imprimir, formatar_status
 
 
-class Monstro:
-    tela = Imprimir()
+tela = Imprimir()
 
+
+class Monstro:
     def __init__(self, level = 1, status = {}):
         self.level = level
         self.experiencia = 5 * 100 // self.level
@@ -26,9 +27,9 @@ class Monstro:
                     self.status['stamina'] -= 20
                     habilidade(other)
             other.arrumar_vida()
-            self.tela.imprimir_combate(formatar_status(self), 2)
+            tela.imprimir_combate(formatar_status(self), 2)
             await sleep(0.2)
-        self.tela.imprimir_combate(formatar_status(self), 2)
+        tela.imprimir_combate(formatar_status(self), 2)
         await sleep(1)
 
     def ressucitar(self):

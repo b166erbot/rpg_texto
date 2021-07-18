@@ -66,10 +66,7 @@ class Caverna:
                 if self._substituir('', x) in self._locais:
                     morto = self.sortear_inimigos()
                     if morto:
-                        tela.limpar_tela()
-                        tela.limpar_tela2()
-                        tela.imprimir('você foi morto e foi ressucitado.')
-                        sleep(3)
+                        self.morto()
                         return
                     self.sortear_loot()
                     tela.limpar_tela()
@@ -80,12 +77,10 @@ class Caverna:
             )
             combate(self.personagem, boss)
             if self.personagem.status['vida'] == 0:
-                self.personagem.ressucitar()
-                tela.limpar_tela()
-                tela.limpar_tela2()
-                tela.imprimir('você foi morto e foi ressucitado.')
-                sleep(3)
+                self.morto()
                 return
+            elif self.personagem.status['vida'] > 0:
+                self.personagem.experiencia += boss.experiencia
             self.sortear_loot()
             tela.limpar_tela()
             tela.limpar_tela2()
@@ -103,8 +98,9 @@ class Caverna:
                 inimigo = Inimigo()
                 combate(self.personagem, inimigo)
                 if self.personagem.status['vida'] == 0:
-                    self.personagem.ressucitar()
                     return True
+                elif self.personagem.status['vida'] > 0:
+                    self.personagem.experiencia += inimigo.experiencia
                 self.personagem.recuperar_magia_stamina()
             tela.limpar_tela2()
             return False
@@ -126,3 +122,10 @@ class Caverna:
                 )
             self.personagem.pratas += randint(100, 300)
             self.personagem.inventario.append(item)
+
+    def morto(self):
+        self.personagem.ressucitar()
+        tela.limpar_tela()
+        tela.limpar_tela2()
+        tela.imprimir('você foi morto e foi ressucitado.')
+        sleep(3)

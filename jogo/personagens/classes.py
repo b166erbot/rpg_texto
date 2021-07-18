@@ -13,6 +13,9 @@ from jogo.itens.armas import (
 nome_pocoes = list(map(lambda x: x.nome, curas))
 
 
+tela = Imprimir()
+
+
 class Humano:
     """
     Classe geral para cada classe no jogo.
@@ -26,7 +29,6 @@ class Humano:
     destreza - velocidade ataque, habilidade com armas
     movimentação - velocidade movimentação
     """
-    tela = Imprimir()
 
     def __init__(
         self, nome, jogador=False, level=1, status={}, atributos={},
@@ -44,7 +46,7 @@ class Humano:
             }
         )
         self.atributos = Counter(
-            status or {
+            atributos or {
                 'vitalidade': 0, 'fortividade': 0, 'inteligência': 0,
                 'crítico': 0, 'destreza': 0, 'resistência': 0, 'movimentação': 0
             }
@@ -75,9 +77,9 @@ class Humano:
             dano = self.status['dano']
             other.status['vida'] -= dano
             other.arrumar_vida()
-            self.tela.imprimir_combate(formatar_status(self), self)
+            tela.imprimir_combate(formatar_status(self), self)
             await sleep(0.2)
-        self.tela.imprimir_combate(formatar_status(self), self)
+        tela.imprimir_combate(formatar_status(self), self)
         await sleep(1)
 
     async def _atacar_como_jogador(self, other):
@@ -85,7 +87,7 @@ class Humano:
             self._consumir_pocoes_bot()
             dano = self.status['dano']
             other.status['vida'] -= dano
-            caracter = self.tela.obter_caracter()
+            caracter = tela.obter_caracter()
             if caracter != -1:
                 caracter = int(chr(caracter))
                 if caracter in [1, 2]:
@@ -93,9 +95,9 @@ class Humano:
                     if self.consumir_magia_stamina():
                         habilidade(other)
             other.arrumar_vida()
-            self.tela.imprimir_combate(formatar_status(self), 1)
+            tela.imprimir_combate(formatar_status(self), 1)
             await sleep(0.2)
-        self.tela.imprimir_combate(formatar_status(self), 1)
+        tela.imprimir_combate(formatar_status(self), 1)
         await sleep(1)
 
     def arrumar_vida(self):
@@ -123,16 +125,16 @@ class Humano:
             return poção
         return False
 
-    def obter_equipamentos(self):
-        equipamentos = [
-            self.arma, self.elmo, self.peitoral, self.calca, self.botas
-        ]
-        return equipamentos
-
     def recuperar_magia_stamina(self):
         self.status['magia'] = 100
         self.status['stamina'] = 100
 
+    def vender(self, equipamento):
+        index = self.inventario.index(equipamento)
+        if self.equipamentos[equipamento.tipo] is equipamento:
+            self.equipamentos[equipamento.tipo] = False
+        self.pratas += equipamento.preco
+        self.inventario.pop(index)
 
 
 class Arqueiro(Humano):
