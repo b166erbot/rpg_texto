@@ -63,7 +63,12 @@ class Humano:
 
     @property
     def vida_maxima(self):
-        vida = map(lambda x: x.vida if x else x, self.equipamentos.values())
+        equipamentos = filter(lambda x: x, self.equipamentos.values())
+        equipamentos = filter(
+            lambda x: x.tipo in ['Elmo', 'Peitoral', 'Calca', 'Botas', 'Anel'],
+            equipamentos
+        )
+        vida = map(lambda x: x.vida if x else x, equipamentos)
         vida = 100 + sum(vida)
         return vida
 
@@ -86,7 +91,7 @@ class Humano:
     async def _atacar_como_jogador(self, other):
         while all([other.status['vida'] > 0, self.status['vida'] > 0]):
             self._consumir_pocoes_bot()
-            dano = self.status['dano']
+            dano = self.dano
             other.status['vida'] -= dano
             caracter = tela.obter_caracter()
             if caracter != -1:
@@ -137,6 +142,28 @@ class Humano:
         self.pratas += equipamento.preco
         self.inventario.pop(index)
 
+    @property
+    def dano(self):
+        dano = self.status['dano']
+        if self.equipamentos['Anel']:
+            dano += self.equipamentos['Anel'].dano
+        if self.equipamentos['Arma']:
+            dano += self.equipamentos['Arma'].dano
+        return dano
+
+    @property  # não funciona
+    def vida(self):
+        return self.status['vida']
+
+    @vida.setter
+    def vida(self, dano):
+        dano_ = dano - self.status['armadura']
+        self.status['vida'] -= dano_
+
+    def desequipar(self, equipamento):
+        if self.equipamentos[equipamento.tipo] is equipamento:
+            self.equipamentos[equipamento.tipo] = False
+
 
 class Arqueiro(Humano):
     def __init__(self, *args, **kwargs):
@@ -146,10 +173,10 @@ class Arqueiro(Humano):
         self.classe = 'Arqueiro'
 
     def flecha(self, other):
-        other.status['vida'] -= 10
+        other.status['vida'] -= (10 + self.dano)
 
     def tres_flechas(self, other):
-        other.status['vida'] -= 15
+        other.status['vida'] -= (15 + self.dano)
 
     def consumir_magia_stamina(self):
         if self.status['stamina'] >= 20:
@@ -175,10 +202,10 @@ class Guerreiro(Humano):
         self.classe = 'Guerreiro'
 
     def investida(self, other):
-        other.status['vida'] -= 10
+        other.status['vida'] -= (10 + self.dano)
 
     def esmagar(self, other):
-        other.status['vida'] -= 15
+        other.status['vida'] -= (15 + self.dano)
 
     def consumir_magia_stamina(self):
         if self.status['stamina'] >= 20:
@@ -201,10 +228,10 @@ class Mago(Humano):
         self.classe = 'Mago'
 
     def bola_de_fogo(self, other):
-        other.status['vida'] -= 15
+        other.status['vida'] -= (15 + self.dano)
 
     def lanca_de_gelo(self, other):
-        other.status['vida'] -= 10
+        other.status['vida'] -= (10 + self.dano)
 
     def consumir_magia_stamina(self):
         if self.status['magia'] >= 20:
@@ -227,10 +254,10 @@ class Assassino(Humano):
         self.classe = 'Assassino'
 
     def lancar_faca(self, other):
-        other.status['vida'] -= 10
+        other.status['vida'] -= (10 + self.dano)
 
     def ataque_furtivo(self, other):
-        other.status['vida'] -= 15
+        other.status['vida'] -= (15 + self.dano)
 
     def consumir_magia_stamina(self):
         if self.status['stamina'] >= 20:
@@ -253,12 +280,12 @@ class Clerigo(Humano):  # curandeiro?
         self.classe = 'Clerigo'
 
     def curar(self, other):
-        self.status['vida'] += 25
+        self.status['vida'] += (25 + self.dano)
         if self.status['vida'] >= self.vida_maxima:
             self.status['vida'] = self.vida_maxima
 
     def luz(self, other):
-        other.status['vida'] -= 10
+        other.status['vida'] -= (10 + self.dano)
 
     def consumir_magia_stamina(self):
         if self.status['magia'] >= 20:

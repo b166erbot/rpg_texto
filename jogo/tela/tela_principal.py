@@ -14,11 +14,12 @@ class Tela_principal:
             '1 - explorar uma caverna',
             '2 - visitar o comerciante',
             '3 - equipar equipamentos',
-            '4 - mostrar equipamentos equipados',
-            '5 - vender itens',
-            '6 - mostrar seu dinheiro',
-            '7 - mostrar sua experiência',
-            '8 - sair'
+            '4 - desequipar equipamentos',
+            '5 - mostrar equipamentos equipados',
+            '6 - vender itens',
+            '7 - mostrar seu dinheiro',
+            '8 - mostrar sua experiência',
+            '9 - sair'
         ]
         self.personagem = personagem
 
@@ -38,19 +39,21 @@ class Tela_principal:
             elif caracter == 3:
                 self.editar_equipamentos()
             elif caracter == 4:
+                self.desequipar()
+            elif caracter == 5:
                 equipamentos = self.personagem.equipamentos.values()
                 for item in equipamentos:
                     tela.imprimir(f"{item}\n")
                 sleep(4)
-            elif caracter == 5:
-                self.vender_item()
             elif caracter == 6:
+                self.vender_item()
+            elif caracter == 7:
                 tela.imprimir(str(self.personagem.pratas))
                 sleep(4)
-            elif caracter == 7:
+            elif caracter == 8:
                 tela.imprimir(f"{formas[230]} {self.personagem.experiencia}")
                 sleep(4)
-            elif caracter == 8:
+            elif caracter == 9:
                 quit()
 
     def editar_equipamentos(self):
@@ -89,6 +92,18 @@ class Tela_principal:
             Caverna_ = cavernas[int(numero)]
             caverna = Caverna_('caverna', self.personagem)
             caverna.explorar()
+
+    def desequipar(self):
+        tela.limpar_tela()
+        for numero, item in enumerate(self.personagem.inventario):
+            tela.imprimir(f"{numero} - {item}\n")
+        tela.imprimir('deseja desequipar qual equipamento: ')
+        numero = tela.obter_string()
+        if numero.isnumeric():
+            inventario = dict(enumerate(self.personagem.inventario))
+            equipamento = inventario.get(int(numero))
+            if equipamento is not None:
+                self.personagem.desequipar(equipamento)
 
 
 # TODO: por os atributos dos itens no personagem
