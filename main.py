@@ -18,23 +18,22 @@ from jogo.tela.imprimir import Imprimir
 
 def main():
     ### daqui para baixo é somente teste, nada oficial. ###
-    t = Imprimir()
-    t.imprimir('qual é o nome do seu personagem?: ')
-    nome = t.obter_string()
-    t.limpar_tela()
+    tela = Imprimir()
+    tela.imprimir('qual é o nome do seu personagem?: ')
+    nome = tela.obter_string()
+    tela.limpar_tela()
     classes = [Arqueiro, Guerreiro, Mago, Assassino, Clerigo]
-    classes_nomes = ['arqueiro', 'guerreiro', 'mago', 'assassino', 'clerigo']
+    classes_nomes = ['Arqueiro', 'Guerreiro', 'Mago', 'Assassino', 'Clerigo']
     classes_dict = dict(zip(classes_nomes, classes))
-    dicionario = dict(enumerate(classes_nomes))
-    for numero, classe in dicionario.items():
-        t.imprimir(f"{numero} - {classe}\n")
-    t.imprimir('Escolha a classe do seu personagem: ')
-    numero = int(t.obter_string())
-    classe = classes_dict[dicionario[numero]]
+    classes_dict2 = dict(enumerate(classes_nomes))
+    for numero, classe in classes_dict2.items():
+        tela.imprimir(f"{numero} - {classe}\n")
+    tela.imprimir('Escolha a classe do seu personagem: ')
+    numero = int(tela.obter_string())
+    classe = classes_dict[classes_dict2[numero]]
     personagem = classe(nome, True)
     tela = Tela_principal(personagem)
     tela.ciclo()
-
 
 
 if __name__ == '__main__':

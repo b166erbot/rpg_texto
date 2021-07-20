@@ -75,8 +75,10 @@ class Imprimir:
         self._tela2.nodelay(False)
 
 
+tela = Imprimir()
+
+
 def efeito_digitando(texto: str, dormir: float = 0.04):
-    tela = Imprimir()
     for a in texto:
         tela.imprimir(a)
         sleep(dormir)

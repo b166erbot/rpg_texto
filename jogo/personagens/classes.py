@@ -33,7 +33,8 @@ class Humano:
     def __init__(
         self, nome, jogador=False, level=1, status={}, atributos={},
         experiencia=0, pratas = 0, peitoral = False, elmo = False,
-        calca = False, botas = False, arma = False
+        calca = False, botas = False, arma = False, Anel = False,
+        Anel2 = False
     ):
         self.nome = nome
         self.level = level
@@ -57,7 +58,7 @@ class Humano:
         self.jogador = jogador
         self.equipamentos = {
             'Peitoral': peitoral, 'Elmo': elmo, 'Calca': calca, 'Botas': botas,
-            'Arma': arma
+            'Arma': arma, "Anel": Anel
         }
 
     @property
@@ -96,9 +97,9 @@ class Humano:
                         habilidade(other)
             other.arrumar_vida()
             tela.imprimir_combate(formatar_status(self), 1)
-            await sleep(0.2)
+            await sleep(0.5)
         tela.imprimir_combate(formatar_status(self), 1)
-        await sleep(1)
+        await sleep(0.5)
 
     def arrumar_vida(self):
         if self.status['vida'] < 0:
@@ -163,6 +164,7 @@ class Arqueiro(Humano):
         for classe in roupas + [Arco_longo, Arco_curto]:
             if isinstance(equipamento, classe):
                 self.equipamentos[equipamento.tipo] = equipamento
+                self.status['vida'] = self.vida_maxima
 
 
 class Guerreiro(Humano):
@@ -188,6 +190,7 @@ class Guerreiro(Humano):
         for classe in roupas + [Espada_longa, Espada_curta, Machado]:
             if isinstance(equipamento, classe):
                 self.equipamentos[equipamento.tipo] = equipamento
+                self.status['vida'] = self.vida_maxima
 
 
 class Mago(Humano):
@@ -198,7 +201,7 @@ class Mago(Humano):
         self.classe = 'Mago'
 
     def bola_de_fogo(self, other):
-        other.status['vida'] -= 10
+        other.status['vida'] -= 15
 
     def lanca_de_gelo(self, other):
         other.status['vida'] -= 10
@@ -213,6 +216,7 @@ class Mago(Humano):
         for classe in roupas + [Cajado, Cajado_negro]:
             if isinstance(equipamento, classe):
                 self.equipamentos[equipamento.tipo] = equipamento
+                self.status['vida'] = self.vida_maxima
 
 
 class Assassino(Humano):
@@ -238,6 +242,7 @@ class Assassino(Humano):
         for classe in roupas + [Adaga]:
             if isinstance(equipamento, classe):
                 self.equipamentos[equipamento.tipo] = equipamento
+                self.status['vida'] = self.vida_maxima
 
 
 class Clerigo(Humano):  # curandeiro?
@@ -265,6 +270,7 @@ class Clerigo(Humano):  # curandeiro?
         for classe in roupas + [Cajado]:
             if isinstance(equipamento, classe):
                 self.equipamentos[equipamento.tipo] = equipamento
+                self.status['vida'] = self.vida_maxima
 
 
 # druida?

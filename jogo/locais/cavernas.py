@@ -5,7 +5,7 @@ from jogo.personagens.monstros import Cascudinho, Traquinagem, Topera_boss
 from jogo.assincrono.combate import combate
 from jogo.tela.imprimir import efeito_digitando, Imprimir
 from jogo.itens.pocoes import curas
-from jogo.itens.vestes import tudo as vestes, Roupa
+from jogo.itens.vestes import tudo as vestes, Roupa, Anel
 from jogo.itens.armas import tudo as armas, Arma
 
 
@@ -119,6 +119,11 @@ class Caverna:
                 item = Item(
                     armadura = randint(1, 3), velo_movi = randint(0, 3),
                     vida = randint(0, 3), resistencias = randint(1, 3)
+                )
+            elif issubclass(Item, Anel):
+                item = Item(
+                    nome = 'Anel', dano = randint(1, 3), vida = randint(1, 3),
+                    resistencias = randint(1, 3), armadura = randint(1, 3)
                 )
             self.personagem.pratas += randint(100, 300)
             self.personagem.inventario.append(item)

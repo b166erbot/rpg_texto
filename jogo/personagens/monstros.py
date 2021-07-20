@@ -28,9 +28,9 @@ class Monstro:
                     habilidade(other)
             other.arrumar_vida()
             tela.imprimir_combate(formatar_status(self), 2)
-            await sleep(0.2)
+            await sleep(0.5)
         tela.imprimir_combate(formatar_status(self), 2)
-        await sleep(1)
+        await sleep(0.5)
 
     def ressucitar(self):
         self.status['vida'] = self.vida_
@@ -73,7 +73,6 @@ class Traquinagem(Monstro):
 
     def roubo(self, other):
         other.status['vida'] -= 5
-
 
 
 class Topera_boss(Monstro):
