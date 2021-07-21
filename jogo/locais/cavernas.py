@@ -122,7 +122,7 @@ class Caverna:
                 )
             elif issubclass(Item, Anel):
                 item = Item(
-                    nome = 'Anel', dano = randint(1, 3), vida = randint(1, 3),
+                    nome = 'Anel', dano = randint(1, 10), vida = randint(1, 3),
                     resistencias = randint(1, 3), armadura = randint(1, 3)
                 )
             self.personagem.pratas += randint(100, 300)

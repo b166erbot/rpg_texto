@@ -83,7 +83,7 @@ class Tela_principal:
     def cavernas(self):
         tela.limpar_tela()
         cavernas = [Caverna]
-        for numero, caverna in enumerate(cavernas):
+        for numero, caverna in enumerate(['primeira caverna']):
             tela.imprimir(f"{numero} - {caverna}\n")
         tela.imprimir('qual caverna deseja explorar: ')
         numero = tela.obter_string()
@@ -106,7 +106,5 @@ class Tela_principal:
                 self.personagem.desequipar(equipamento)
 
 
-# TODO: por os atributos dos itens no personagem
 # TODO: restaurar a estamina/magia estando parado nos turnos.
-# TODO: inserir aneis
 # TODO: colocar mais cavernas

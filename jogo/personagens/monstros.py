@@ -20,7 +20,7 @@ class Monstro:
     async def atacar(self, other):
         while all([other.status['vida'] > 0, self.status['vida'] > 0]):
             dano = self.status['dano']
-            other.status['vida'] -= dano
+            other.receber_dano(dano, self.tipo_dano)
             if randint(0, 2) == 2:
                 habilidade = choice(self.habilidades)
                 if self.status['stamina'] >= 20:
@@ -52,6 +52,7 @@ class Cascudinho(Monstro):
         self.nome = 'Cascudinho'
         self.classe = 'Monstro comum'
         self.tipo = 'Tatu bola'
+        self.tipo_dano = 'fisico'
 
     def investida(self, other):
         other.status['vida'] -= 4
@@ -67,6 +68,7 @@ class Traquinagem(Monstro):
         self.nome = 'Traquinagem'
         self.classe = 'Mostro comum'
         self.tipo = 'trolador'
+        self.tipo_dano = 'fisico'
 
     def trapasseiro(self, other):
         other.status['vida'] -= 4
@@ -82,6 +84,7 @@ class Topera_boss(Monstro):
         self.nome = 'Topera-boss'
         self.classe = 'Monstro chefe'
         self.tipo = 'boss'
+        self.tipo_dano = 'fisico'
 
     def pulo_fatal(self, other):
         other.status['vida'] -= 7

@@ -3,6 +3,7 @@ class PocaoDeCura:
         self.pontos_cura = pontos_cura
         self.consumida = False
         self.preco = self.custo
+        self.tipo = 'Poções'
 
     def __repr__(self):
         return (f"{self.nome.capitalize()} - "

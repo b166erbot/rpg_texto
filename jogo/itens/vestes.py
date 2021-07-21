@@ -40,6 +40,12 @@ class Botas(Roupa):
         self.tipo = 'Botas'
 
 
+class Luvas(Roupa):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, nome = 'Luvas', **kwargs)
+        self.tipo = 'Luvas'
+
+
 class Anel:
     def __init__(
         self, nome = '', dano = 0, vida = 0, resistencias = 0, armadura = 0
@@ -57,4 +63,4 @@ class Anel:
             f" resistencias: {self.resistencias}, armadura: {self.armadura}"
         )
 
-tudo = [Peitoral, Elmo, Calca, Botas, Anel]
+tudo = [Peitoral, Elmo, Calca, Botas, Luvas, Anel]

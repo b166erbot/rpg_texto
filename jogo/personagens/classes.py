@@ -33,16 +33,16 @@ class Humano:
     def __init__(
         self, nome, jogador=False, level=1, status={}, atributos={},
         experiencia=0, pratas = 0, peitoral = False, elmo = False,
-        calca = False, botas = False, arma = False, Anel = False,
-        Anel2 = False
+        calca = False, botas = False, luvas = False, arma = False,
+        Anel = False
     ):
         self.nome = nome
         self.level = level
         self.experiencia = experiencia
         self.status = Counter(
             status or {
-                'vida': 100, 'dano': 5, 'resis': 5, 'velo-ataque': 1,
-                'criti': 5, 'armadura': 5, 'magia': 100, 'stamina': 100,
+                'vida': 100, 'dano': 5, 'resis': 0, 'velo-ataque': 1,
+                'criti': 0, 'armadura': 0, 'magia': 100, 'stamina': 100,
                 'velo-movi': 1
             }
         )
@@ -58,7 +58,7 @@ class Humano:
         self.jogador = jogador
         self.equipamentos = {
             'Peitoral': peitoral, 'Elmo': elmo, 'Calca': calca, 'Botas': botas,
-            'Arma': arma, "Anel": Anel
+            'Luvas': luvas, 'Arma': arma, "Anel": Anel
         }
 
     @property
@@ -68,7 +68,7 @@ class Humano:
             lambda x: x.tipo in ['Elmo', 'Peitoral', 'Calca', 'Botas', 'Anel'],
             equipamentos
         )
-        vida = map(lambda x: x.vida if x else x, equipamentos)
+        vida = map(lambda x: x.vida, equipamentos)
         vida = 100 + sum(vida)
         return vida
 
@@ -91,7 +91,7 @@ class Humano:
     async def _atacar_como_jogador(self, other):
         while all([other.status['vida'] > 0, self.status['vida'] > 0]):
             self._consumir_pocoes_bot()
-            dano = self.dano
+            dano = self.status['dano']
             other.status['vida'] -= dano
             caracter = tela.obter_caracter()
             if caracter != -1:
@@ -142,27 +142,41 @@ class Humano:
         self.pratas += equipamento.preco
         self.inventario.pop(index)
 
-    @property
-    def dano(self):
-        dano = self.status['dano']
-        if self.equipamentos['Anel']:
-            dano += self.equipamentos['Anel'].dano
-        if self.equipamentos['Arma']:
-            dano += self.equipamentos['Arma'].dano
-        return dano
+    def desequipar(self, equipamento):
+        equipamento2 = self.equipamentos.get(equipamento.tipo)
+        if equipamento2 and equipamento2 is equipamento:
+            self.equipamentos[equipamento.tipo] = False
 
-    @property  # não funciona
-    def vida(self):
-        return self.status['vida']
-
-    @vida.setter
-    def vida(self, dano):
-        dano_ = dano - self.status['armadura']
+    def receber_dano(self, dano, tipo):
+        if tipo == 'fisico':
+            dano_ = dano - self.status['armadura']
+        elif tipo == 'magico':
+            dano_ = dano - self.status['resis']
+        if dano_ < 0:
+            dano_ = 0
         self.status['vida'] -= dano_
 
-    def desequipar(self, equipamento):
-        if self.equipamentos[equipamento.tipo] is equipamento:
-            self.equipamentos[equipamento.tipo] = False
+    def atualizar_status(self):  # colocar o dano também
+        equipamentos = list(filter(lambda x: x, self.equipamentos.values()))
+        vestes = list(filter(
+            lambda x: x.tipo in ['Elmo', 'Peitoral', 'Calca', 'Botas', 'Anel'],
+            equipamentos
+        ))
+        equipamentos_dano = filter(
+            lambda x: x.tipo in ['Anel', 'Arma'], equipamentos
+        )
+        dano = map(lambda x: x.dano, equipamentos_dano)
+        dano = 5 + sum(dano)
+        vida = map(lambda x: x.vida, vestes)
+        vida = 100 + sum(vida)
+        resistencia = map(lambda x: x.resistencias, vestes)
+        resistencia = sum(resistencia)
+        armadura = map(lambda x: x.armadura, vestes)
+        armadura = sum(armadura)
+        self.status['vida'] = vida
+        self.status['resis'] = resistencia
+        self.status['armadura'] = armadura
+        self.status['dano'] = dano
 
 
 class Arqueiro(Humano):
@@ -173,10 +187,10 @@ class Arqueiro(Humano):
         self.classe = 'Arqueiro'
 
     def flecha(self, other):
-        other.status['vida'] -= (10 + self.dano)
+        other.status['vida'] -= 10 + self.status['dano']
 
     def tres_flechas(self, other):
-        other.status['vida'] -= (15 + self.dano)
+        other.status['vida'] -= 15 + self.status['dano']
 
     def consumir_magia_stamina(self):
         if self.status['stamina'] >= 20:
@@ -191,7 +205,7 @@ class Arqueiro(Humano):
         for classe in roupas + [Arco_longo, Arco_curto]:
             if isinstance(equipamento, classe):
                 self.equipamentos[equipamento.tipo] = equipamento
-                self.status['vida'] = self.vida_maxima
+                self.atualizar_status()
 
 
 class Guerreiro(Humano):
@@ -202,10 +216,10 @@ class Guerreiro(Humano):
         self.classe = 'Guerreiro'
 
     def investida(self, other):
-        other.status['vida'] -= (10 + self.dano)
+        other.status['vida'] -= 10 + self.status['dano']
 
     def esmagar(self, other):
-        other.status['vida'] -= (15 + self.dano)
+        other.status['vida'] -= 15 + self.status['dano']
 
     def consumir_magia_stamina(self):
         if self.status['stamina'] >= 20:
@@ -217,7 +231,7 @@ class Guerreiro(Humano):
         for classe in roupas + [Espada_longa, Espada_curta, Machado]:
             if isinstance(equipamento, classe):
                 self.equipamentos[equipamento.tipo] = equipamento
-                self.status['vida'] = self.vida_maxima
+                self.atualizar_status()
 
 
 class Mago(Humano):
@@ -228,10 +242,10 @@ class Mago(Humano):
         self.classe = 'Mago'
 
     def bola_de_fogo(self, other):
-        other.status['vida'] -= (15 + self.dano)
+        other.status['vida'] -= 15 + self.status['dano']
 
     def lanca_de_gelo(self, other):
-        other.status['vida'] -= (10 + self.dano)
+        other.status['vida'] -= 10 + self.status['dano']
 
     def consumir_magia_stamina(self):
         if self.status['magia'] >= 20:
@@ -243,7 +257,7 @@ class Mago(Humano):
         for classe in roupas + [Cajado, Cajado_negro]:
             if isinstance(equipamento, classe):
                 self.equipamentos[equipamento.tipo] = equipamento
-                self.status['vida'] = self.vida_maxima
+                self.atualizar_status()
 
 
 class Assassino(Humano):
@@ -254,10 +268,10 @@ class Assassino(Humano):
         self.classe = 'Assassino'
 
     def lancar_faca(self, other):
-        other.status['vida'] -= (10 + self.dano)
+        other.status['vida'] -= 10 + self.status['dano']
 
     def ataque_furtivo(self, other):
-        other.status['vida'] -= (15 + self.dano)
+        other.status['vida'] -= 15 + self.status['dano']
 
     def consumir_magia_stamina(self):
         if self.status['stamina'] >= 20:
@@ -269,7 +283,7 @@ class Assassino(Humano):
         for classe in roupas + [Adaga]:
             if isinstance(equipamento, classe):
                 self.equipamentos[equipamento.tipo] = equipamento
-                self.status['vida'] = self.vida_maxima
+                self.atualizar_status()
 
 
 class Clerigo(Humano):  # curandeiro?
@@ -280,12 +294,12 @@ class Clerigo(Humano):  # curandeiro?
         self.classe = 'Clerigo'
 
     def curar(self, other):
-        self.status['vida'] += (25 + self.dano)
+        self.status['vida'] += 25 + self.status['dano']
         if self.status['vida'] >= self.vida_maxima:
             self.status['vida'] = self.vida_maxima
 
     def luz(self, other):
-        other.status['vida'] -= (10 + self.dano)
+        other.status['vida'] -= 10 + self.status['dano']
 
     def consumir_magia_stamina(self):
         if self.status['magia'] >= 20:
@@ -297,7 +311,7 @@ class Clerigo(Humano):  # curandeiro?
         for classe in roupas + [Cajado]:
             if isinstance(equipamento, classe):
                 self.equipamentos[equipamento.tipo] = equipamento
-                self.status['vida'] = self.vida_maxima
+                self.atualizar_status()
 
 
 # druida?
