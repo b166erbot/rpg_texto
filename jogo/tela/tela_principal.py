@@ -20,7 +20,8 @@ class Tela_principal:
             '6 - vender itens',
             '7 - mostrar seu dinheiro',
             '8 - mostrar sua experiência',
-            '9 - sair'
+            '9 - mostrar o status',
+            '10 - sair'
         ]
         self.personagem = personagem
 
@@ -57,7 +58,15 @@ class Tela_principal:
             elif caracter == 8:
                 tela.imprimir(f"{formas[230]} {self.personagem.experiencia}")
                 sleep(4)
-            elif caracter == 9:
+            elif caracter == 9:  # depois colocar o resto dos status aqui.
+                p = self.personagem
+                tela.imprimir(
+                    f"{p.nome}: vida - {p.status['vida']}, armadura - "
+                    f"{p.status['armadura']}, resistencias - "
+                    f"{p.status['resis']}, dano - {p.status['dano']}"
+                )
+                sleep(4)
+            elif caracter == 10:
                 quit()
 
     def editar_equipamentos(self):
@@ -103,4 +112,4 @@ class Tela_principal:
 # TODO: colocar mais npcs com quests
 # TODO: lutar ou fugir
 # TODO: imprimir quais botões digitar na batalha
-# TODO: fazer a quest dar xp
+# TODO: mostrar status na tela principal?

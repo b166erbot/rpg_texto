@@ -78,7 +78,6 @@ class Caverna:
                     if morto:
                         self.morto()
                         return
-                    self.sortear_loot()
                     tela.limpar_tela()
             bosses = [Topera_boss, Mico_boss, Sucuri_boss]
             Boss = choice(bosses)
@@ -93,7 +92,7 @@ class Caverna:
                 return
             elif self.personagem.status['vida'] > 0:
                 self.personagem.experiencia += boss.experiencia
-            self.sortear_loot()
+                boss.sortear_drops(self.personagem)
             tela.limpar_tela()
             tela.limpar_tela2()
 
@@ -110,32 +109,10 @@ class Caverna:
                     return True
                 elif self.personagem.status['vida'] > 0:
                     self.personagem.experiencia += inimigo.experiencia
+                    inimigo.sortear_drops(self.personagem)
                 self.personagem.recuperar_magia_stamina()
             tela.limpar_tela2()
             return False
-
-    def sortear_loot(self):
-        if randint(0, 1):
-            efeito_digitando('Loot encontrado.')
-            sleep(1)
-            Item = choice(vestes + armas)
-            if issubclass(Item, Arma):
-                item = Item(
-                    dano = randint(1, 3), velo_ataque = randint(1, 2),
-                    critico = randint(1, 3)
-                )
-            elif issubclass(Item, Roupa):
-                item = Item(
-                    armadura = randint(1, 3), velo_movi = randint(0, 3),
-                    vida = randint(0, 3), resistencias = randint(1, 3)
-                )
-            elif issubclass(Item, Anel):
-                item = Item(
-                    nome = 'Anel', dano = randint(1, 10), vida = randint(1, 3),
-                    resistencias = randint(1, 3), armadura = randint(1, 3)
-                )
-            self.personagem.pratas += randint(100, 300)
-            self.personagem.inventario.append(item)
 
     def morto(self):
         self.personagem.ressucitar()

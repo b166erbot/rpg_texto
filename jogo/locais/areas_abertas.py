@@ -27,9 +27,6 @@ def gerar_fluxo():
     passagens = [
         'matagal', 'area florestada', 'rio', 'trilha', 'gruta', 'corrego'
     ]
-    locais = [
-        'caverna', 'pessoa desconhecida'
-    ]
     fluxo = (
         local_linear(passagens) + ['pessoa desconhecida']
         + local_linear(passagens) + ['caverna']
@@ -79,7 +76,7 @@ class Floresta:
             return
         for quest in self.personagem.quests:
             condicoes = [
-                randint(1, 4) == 1,
+                randint(1, 6) == 1,
                 quest.item not in self.personagem.inventario,
                 not pessoa.missao_finalizada
             ]
@@ -101,6 +98,7 @@ class Floresta:
                     return True
                 elif self.personagem.status['vida'] > 0:
                     self.personagem.experiencia += inimigo.experiencia
+                    inimigo.sortear_drops(self.personagem)
                 self.personagem.recuperar_magia_stamina()
             tela.limpar_tela2()
             return False

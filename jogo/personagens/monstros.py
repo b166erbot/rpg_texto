@@ -1,7 +1,9 @@
 from asyncio import sleep
 from collections import Counter
 from random import randint, choice
-from jogo.tela.imprimir import Imprimir, formatar_status
+from jogo.tela.imprimir import Imprimir, formatar_status, efeito_digitando
+from jogo.itens.armas import tudo as armas, Arma
+from jogo.itens.vestes import tudo as vestes, Roupa, Anel
 
 
 tela = Imprimir()
@@ -44,6 +46,30 @@ class Monstro:
             self.status['vida'] = 0
         if self.status['vida'] > self.vida_maxima:
             self.status['vida'] = self.vida_maxima
+
+    def sortear_drops(self, personagem):
+        if randint(0, 2) == 1:
+            efeito_digitando('Loot encontrado.')
+            sleep(1)
+            Item = choice(vestes + armas)
+            if issubclass(Item, Arma):
+                item = Item(
+                    dano = randint(1, 3), velo_ataque = randint(1, 2),
+                    critico = randint(1, 3)
+                )
+            elif issubclass(Item, Roupa):
+                item = Item(
+                    armadura = randint(1, 3), velo_movi = randint(0, 3),
+                    vida = randint(0, 3), resistencias = randint(1, 3)
+                )
+            elif issubclass(Item, Anel):
+                item = Item(
+                    nome = 'Anel', dano = randint(1, 10), vida = randint(1, 3),
+                    resistencias = randint(1, 3), armadura = randint(1, 3)
+                )
+            personagem.pratas += randint(30, 50)
+            personagem.inventario.append(item)
+
 
 class Tartaruga(Monstro):
     def __init__(self, *args, **kwargs):
