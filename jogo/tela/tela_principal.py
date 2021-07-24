@@ -1,6 +1,7 @@
 from jogo.tela.imprimir import formas, Imprimir
 from jogo.locais.cavernas import Caverna
 from jogo.personagens.npc import Comerciante
+from jogo.locais.areas_abertas import Floresta
 from time import sleep
 
 
@@ -11,7 +12,7 @@ class Tela_principal:
     def __init__(self, personagem):
         self._texto = [
             'O que deseja fazer?',
-            '1 - explorar uma caverna',
+            '1 - explorar uma floresta',
             '2 - visitar o comerciante',
             '3 - equipar equipamentos',
             '4 - desequipar equipamentos',
@@ -32,7 +33,8 @@ class Tela_principal:
             tela.imprimir(': ')
             caracter = int(tela.obter_string())
             if caracter == 1:
-                self.cavernas()
+                floresta = Floresta('floresta negra', self.personagem)
+                floresta.explorar()
             elif caracter == 2:
                 mercante = Comerciante('farkas')
                 mercante.interagir(self.personagem)
@@ -80,19 +82,6 @@ class Tela_principal:
             if equipamento is not None:
                 self.personagem.vender(equipamento)
 
-    def cavernas(self):
-        tela.limpar_tela()
-        cavernas = [Caverna]
-        for numero, caverna in enumerate(['primeira caverna']):
-            tela.imprimir(f"{numero} - {caverna}\n")
-        tela.imprimir('qual caverna deseja explorar: ')
-        numero = tela.obter_string()
-        if numero.isnumeric():
-            cavernas = dict(enumerate(cavernas))
-            Caverna_ = cavernas[int(numero)]
-            caverna = Caverna_('caverna', self.personagem)
-            caverna.explorar()
-
     def desequipar(self):
         tela.limpar_tela()
         for numero, item in enumerate(self.personagem.inventario):
@@ -108,3 +97,7 @@ class Tela_principal:
 
 # TODO: restaurar a estamina/magia estando parado nos turnos.
 # TODO: colocar mais cavernas
+# TODO: colocar mais npcs com quests
+# TODO: lutar ou fugir
+# TODO: imprimir o status na tela principal?
+# TODO: imprimir quais botões digitar na batalha

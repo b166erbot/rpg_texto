@@ -2,12 +2,6 @@ class Pratas:
     def __init__(self, quantidade):
         self._pratas = quantidade
 
-    def acrescentar(self, quantidade):
-        self._pratas += quantidade
-
-    def desacrescentar(self, quantidade):
-        self._pratas -= quantidade
-
     def __repr__(self):
         return f"${self._pratas}"
 
@@ -30,5 +24,21 @@ class Pratas:
             return self.__class__(self._pratas + other)
         elif isinstance(other, self.__class__):
             return self.__class__(self._pratas + other._pratas)
+        else:
+            raise TypeError(f"tipo não suportavel {other.__class__}")
+
+    def __sub__(self, other):
+        if isinstance(other, int):
+            return self.__class__(self._pratas - other)
+        elif isinstance(other, self.__class__):
+            return self.__class__(self._pratas - other._pratas)
+        else:
+            raise TypeError(f"tipo não suportavel {other.__class__}")
+
+    def __rsub__(self, other):
+        if isinstance(other, int):
+            return self.__class__(self._pratas - other)
+        elif isinstance(other, self.__class__):
+            return self.__class__(self._pratas - other._pratas)
         else:
             raise TypeError(f"tipo não suportavel {other.__class__}")

@@ -1,7 +1,8 @@
 from random import randint, choice
 from time import sleep
-from re import compile
-from jogo.personagens.monstros import Cascudinho, Traquinagem, Topera_boss
+from jogo.personagens.monstros import (
+    Tartaruga, Camaleao, Topera_boss, Mico_boss, Sucuri_boss
+)
 from jogo.assincrono.combate import combate
 from jogo.tela.imprimir import efeito_digitando, Imprimir
 from jogo.itens.pocoes import curas
@@ -9,13 +10,26 @@ from jogo.itens.vestes import tudo as vestes, Roupa, Anel
 from jogo.itens.armas import tudo as armas, Arma
 
 
+tela = Imprimir()
+
+
+class Local:
+    def __init__(self, local):
+        self.local = local
+
+    def __str__(self):
+        return f"entrando em {self.local}"
+
+
 def local_linear(passagens, locais):
+    passagens = list(map(Local, passagens))
+    locais = list(map(Local, locais))
     fluxo = []
     for n in range(randint(2, 5)):
         passagem = choice(passagens)
-        fluxo.append(f"entrando em {passagem}")
+        fluxo.append(passagem)
     passagem = choice(locais)
-    fluxo.append(f"entrando em {passagem}")
+    fluxo.append(passagem)
     return fluxo
 
 
@@ -35,21 +49,17 @@ def gerar_fluxo():
     return fluxo
 
 
-tela = Imprimir()
-
-
 class Caverna:
     """ Classe que constroi uma caverna com caminhos aleatórios. """
     def __init__(self, nome_caverna: str, personagem):
         self.nome = nome_caverna
         self.personagem = personagem
-        self._caminho = gerar_fluxo()
-        self._mostros = [Cascudinho, Traquinagem]
-        self._locais = [
+        self._caminhos = gerar_fluxo()
+        self._mostros = [Tartaruga, Camaleao]
+        self._locais_com_monstros = [
             'local estreito e sem saída', 'mineiração', 'local sem saída',
             'cachoeira interna'
         ]
-        self._substituir = compile('entrando em ').sub  # noqa
 
     def explorar(self):
         tela.limpar_tela()
@@ -60,17 +70,19 @@ class Caverna:
         tela.imprimir(
             f'deseja explorar a caverna: {self.nome} s/n?\n'
         )
-        if tela.obter_string().lower() == 's':
-            for x in self._caminho:
-                efeito_digitando(x)
-                if self._substituir('', x) in self._locais:
+        if tela.obter_string().lower() in ['s', 'sim']:
+            for caminho in self._caminhos:
+                efeito_digitando(str(caminho))
+                if caminho.local in self._locais_com_monstros:
                     morto = self.sortear_inimigos()
                     if morto:
                         self.morto()
                         return
                     self.sortear_loot()
                     tela.limpar_tela()
-            boss = Topera_boss(status = {
+            bosses = [Topera_boss, Mico_boss, Sucuri_boss]
+            Boss = choice(bosses)
+            boss = Boss(status = {
                 'vida': 300, 'dano': 5, 'resis': 15, 'velo-ataque': 1,
                 'critico':15, 'armadura': 15, 'magia': 100, 'stamina': 100,
                 'velo-movi': 1}
@@ -86,7 +98,6 @@ class Caverna:
             tela.limpar_tela2()
         self.personagem.recuperar_magia_stamina()
         self.personagem.status['vida'] = 100
-
 
     def sortear_inimigos(self):
         if randint(0, 1):

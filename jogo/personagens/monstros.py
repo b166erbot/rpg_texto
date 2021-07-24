@@ -45,36 +45,68 @@ class Monstro:
         if self.status['vida'] > self.vida_maxima:
             self.status['vida'] = self.vida_maxima
 
-class Cascudinho(Monstro):
+class Tartaruga(Monstro):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.habilidades = [self.investida, self.garras_afiadas]
-        self.nome = 'Cascudinho'
+        self.nome = 'Tartaruga'
         self.classe = 'Monstro comum'
         self.tipo = 'Tatu bola'
         self.tipo_dano = 'fisico'
 
     def investida(self, other):
-        other.status['vida'] -= 4
+        other.receber_dano(4, self.tipo_dano)
 
     def garras_afiadas(self, other):
-        other.status['vida'] -= 6
+        other.receber_dano(6, self.tipo_dano)
 
 
-class Traquinagem(Monstro):
+class Camaleao(Monstro):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.habilidades = [self.trapasseiro, self.roubo]
-        self.nome = 'Traquinagem'
-        self.classe = 'Mostro comum'
+        self.nome = 'Camaleão'
+        self.classe = 'Monstro comum'
         self.tipo = 'trolador'
         self.tipo_dano = 'fisico'
 
     def trapasseiro(self, other):
-        other.status['vida'] -= 4
+        other.receber_dano(4, self.tipo_dano)
 
     def roubo(self, other):
-        other.status['vida'] -= 5
+        other.receber_dano(5, self.tipo_dano)
+
+
+class Tamandua(Monstro):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.habilidades = [self.abraco, self.linguada]
+        self.nome = 'Tamandua'
+        self.classe = 'Monstro comum'
+        self.tipo = 'trolador'
+        self.tipo_dano = 'fisico'
+
+    def abraco(self, other):
+        other.receber_dano(5, self.tipo_dano)
+
+    def linguada(self, other):
+        other.receber_dano(3, self.tipo_dano)
+
+
+class Sapo(Monstro):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.habilidades = [self.salto, self.linguada]
+        self.nome = 'Sapo'
+        self.classe = 'Monstro comum'
+        self.tipo = 'trolador'
+        self.tipo_dano = 'magico'
+
+    def salto(self, other):
+        other.receber_dano(5, self.tipo_dano)
+
+    def linguada(self, other):
+        other.receber_dano(3, self.tipo_dano)
 
 
 class Topera_boss(Monstro):
@@ -87,7 +119,39 @@ class Topera_boss(Monstro):
         self.tipo_dano = 'fisico'
 
     def pulo_fatal(self, other):
-        other.status['vida'] -= 7
+        other.receber_dano(7, self.tipo_dano)
 
     def terremoto(self, other):
-        other.status['vida'] -= 10
+        other.receber_dano(10, self.tipo_dano)
+
+
+class Mico_boss(Monstro):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.habilidades = [self.tacar_banana, self.esmagar]
+        self.nome =  'Mico-boss'
+        self.classe = 'Monstro chefe'
+        self.tipo = 'boss'
+        self.tipo_dano = 'magico'
+
+    def tacar_banana(self, other):
+        other.receber_dano(10, self.tipo_dano)
+
+    def esmagar(self, other):
+        other.receber_dano(15, self.tipo_dano)
+
+
+class Sucuri_boss(Monstro):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.habilidades = [self.lancamento_de_calda, self.bote]
+        self.nome = 'Sucuri-boss'
+        self.classe = 'Monstro chefe'
+        self.tipo = 'boss'
+        self.tipo_dano = 'magico'
+
+    def lancamento_de_calda(self, other):
+        other.receber_dano(10, self.tipo_dano)
+
+    def bote(self, other):
+        other.receber_dano(15, self.tipo_dano)

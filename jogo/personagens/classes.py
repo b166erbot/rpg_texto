@@ -60,6 +60,7 @@ class Humano:
             'Peitoral': peitoral, 'Elmo': elmo, 'Calca': calca, 'Botas': botas,
             'Luvas': luvas, 'Arma': arma, "Anel": Anel
         }
+        self.quests = []
 
     @property
     def vida_maxima(self):
@@ -156,7 +157,7 @@ class Humano:
             dano_ = 0
         self.status['vida'] -= dano_
 
-    def atualizar_status(self):  # colocar o dano também
+    def atualizar_status(self):
         equipamentos = list(filter(lambda x: x, self.equipamentos.values()))
         vestes = list(filter(
             lambda x: x.tipo in ['Elmo', 'Peitoral', 'Calca', 'Botas', 'Anel'],
@@ -169,10 +170,8 @@ class Humano:
         dano = 5 + sum(dano)
         vida = map(lambda x: x.vida, vestes)
         vida = 100 + sum(vida)
-        resistencia = map(lambda x: x.resistencias, vestes)
-        resistencia = sum(resistencia)
-        armadura = map(lambda x: x.armadura, vestes)
-        armadura = sum(armadura)
+        resistencia = sum(map(lambda x: x.resistencias, vestes))
+        armadura = sum(map(lambda x: x.armadura, vestes))
         self.status['vida'] = vida
         self.status['resis'] = resistencia
         self.status['armadura'] = armadura
@@ -286,7 +285,7 @@ class Assassino(Humano):
                 self.atualizar_status()
 
 
-class Clerigo(Humano):  # curandeiro?
+class Clerigo(Humano):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         habilidades = [self.curar, self.luz]
