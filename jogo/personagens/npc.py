@@ -66,13 +66,17 @@ def funcao_quest(nome, personagem, quest):
 
 
 class Quest:
-    def __init__(self, descricao, valor, item):
+    def __init__(self, descricao, valor, xp, item):
         self.descricao = descricao
         self.valor = valor
         self.item = item
+        self.xp = xp
 
     def pagar(self, personagem):
         personagem.pratas += self.valor
+
+    def depositar_xp(self, personagem):
+        personagem.experiencia += self.xp
 
 
 class Pessoa(Npc):
@@ -92,12 +96,16 @@ class Pessoa(Npc):
     def entregar_quest(self, personagem):
         if self.quest.item in personagem.inventario:
             self.quest.pagar(personagem)
+            self.quest.depositar_xp(personagem)
+            index = personagem.quests.index(self.quest)
+            personagem.quests.pop(index)
             index = personagem.inventario.index(self.quest.item)
             personagem.inventario.pop(index)
             self.missao_finalizada = True
             tela.imprimir(
                 f'{self.nome}: Muito obrigada. aqui está seu dinheiro'
             )
+            sleep(3)
 
     def interagir(self, personagem):
         if not self.missao_finalizada:

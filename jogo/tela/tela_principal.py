@@ -35,6 +35,8 @@ class Tela_principal:
             if caracter == 1:
                 floresta = Floresta('floresta negra', self.personagem)
                 floresta.explorar()
+                self.personagem.recuperar_magia_stamina()
+                self.personagem.status['vida'] = 100
             elif caracter == 2:
                 mercante = Comerciante('farkas')
                 mercante.interagir(self.personagem)
@@ -97,7 +99,8 @@ class Tela_principal:
 
 # TODO: restaurar a estamina/magia estando parado nos turnos.
 # TODO: colocar mais cavernas
+# TODO: colocar mais florestas
 # TODO: colocar mais npcs com quests
 # TODO: lutar ou fugir
-# TODO: imprimir o status na tela principal?
 # TODO: imprimir quais botões digitar na batalha
+# TODO: fazer a quest dar xp

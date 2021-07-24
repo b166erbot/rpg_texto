@@ -96,8 +96,6 @@ class Caverna:
             self.sortear_loot()
             tela.limpar_tela()
             tela.limpar_tela2()
-        self.personagem.recuperar_magia_stamina()
-        self.personagem.status['vida'] = 100
 
     def sortear_inimigos(self):
         if randint(0, 1):
