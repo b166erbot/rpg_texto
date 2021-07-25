@@ -2,8 +2,7 @@ from random import randint, choice
 from .cavernas import Local
 from jogo.tela.imprimir import Imprimir, efeito_digitando
 from jogo.locais.cavernas import Caverna
-from jogo.personagens.npc import Pessoa, funcao_quest, Quest
-from jogo.itens.quest import ItemQuest
+from jogo.personagens.npc import Pessoa
 from jogo.personagens.monstros import (
     Tartaruga, Camaleao, Tamandua, Sapo
 )
@@ -36,31 +35,28 @@ def gerar_fluxo():
 
 
 class Floresta:
-    def __init__(self, nome: str, personagem):
+    def __init__(self, nome: str, personagem, nivel: int):
         self.nome = nome
         self.personagem = personagem
         self._caminhos = gerar_fluxo()
+        self.nivel = nivel
 
-    def explorar(self):
+    def explorar(self, pessoa: Pessoa):
         tela.limpar_tela()
-        item = ItemQuest('gatinho')
-        pessoa = Pessoa(
-            'lorena', Quest('pegar o gatinho', 150, 2000, item),
-            item, funcao_quest
-        )
         tela.imprimir(self.nome + '\n')
         for caminho in self._caminhos:
             self.caverna_pessoa(caminho, pessoa)
         tela.imprimir('voltando ao início da floresta\n')
-        for caminho in self._caminhos[::-1][:-1]:
+        for caminho in self._caminhos[::-1]:
             self.caverna_pessoa(caminho, pessoa)
 
-    def caverna_pessoa(self, caminho, pessoa):  # pessoa != personagem
+    def caverna_pessoa(self, caminho: Local, pessoa: Pessoa):
+        # pessoa != personagem
         efeito_digitando(str(caminho))
         if str(caminho) == 'caverna':
             tela.imprimir('deseja entrar na caverna? s/n\n')
             if tela.obter_string().lower() in ['s', 'sim']:
-                caverna = Caverna('poço azul', self.personagem)
+                caverna = Caverna('poço azul', self.personagem, self.nivel)
                 caverna.explorar()
                 self.personagem.recuperar_magia_stamina()
                 self.personagem.status['vida'] = 100
@@ -68,7 +64,11 @@ class Floresta:
         elif str(caminho) == 'pessoa desconhecida':
             tela.imprimir('deseja interagir com pessoa desconhecida?: ')
             if tela.obter_string().lower() in ['s', 'sim']:
-                pessoa.interagir(self.personagem)
+                pessoa.interagir(
+                    self.personagem,
+                    f"{pessoa.nome}: você não encontrou meu gatinho."
+                    " Encontreo para mim e eu lhe darei dinheiro."
+                )
             tela.limpar_tela()
         morte = self.sortear_inimigos()
         if morte:
@@ -76,7 +76,7 @@ class Floresta:
             return
         for quest in self.personagem.quests:
             condicoes = [
-                randint(1, 6) == 1,
+                randint(1, 5) == 1,
                 quest.item not in self.personagem.inventario,
                 not pessoa.missao_finalizada
             ]
@@ -86,7 +86,7 @@ class Floresta:
                 sleep(1)
 
     def sortear_inimigos(self):
-        if randint(1, 8) == 1:
+        if randint(1, 5) == 1:
             efeito_digitando('Monstros encontrados.')
             sleep(1)
             tela.limpar_tela()

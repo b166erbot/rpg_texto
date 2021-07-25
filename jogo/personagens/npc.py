@@ -53,18 +53,6 @@ class Comerciante(Npc):
         sleep(1)
 
 
-def funcao_quest(nome, personagem, quest):
-    tela.imprimir(
-        f'{nome}: Faz tempo que não vejo meu gatinho, acho que o perdi.'
-    )
-    tela.imprimir('Ele sempre vai brincar na floresta. Traga ele para mim')
-    tela.imprimir(' que eu te dou dinheiro.\n')
-    tela.imprimir('deseja aceitar a quest? s/n: ')
-    resposta = tela.obter_string().lower()
-    if resposta in ['s', 'sim']:
-        personagem.quests.append(quest)
-
-
 class Quest:
     def __init__(self, descricao, valor, xp, item):
         self.descricao = descricao
@@ -90,10 +78,10 @@ class Pessoa(Npc):
 
     def missao(self, personagem):
         tela.limpar_tela()
-        self.funcao_quest(self.nome, personagem, self.quest)
-        self.missao_aceita = True
+        missao = self.funcao_quest(self.nome, personagem, self.quest)
+        self.missao_aceita = missao
 
-    def entregar_quest(self, personagem):
+    def entregar_quest(self, personagem, mensagem):
         if self.quest.item in personagem.inventario:
             self.quest.pagar(personagem)
             self.quest.depositar_xp(personagem)
@@ -106,11 +94,14 @@ class Pessoa(Npc):
                 f'{self.nome}: Muito obrigada. aqui está seu dinheiro'
             )
             sleep(3)
+        else:
+            tela.imprimir(mensagem)
+            sleep(3)
 
-    def interagir(self, personagem):
+    def interagir(self, personagem, mensagem):
         if not self.missao_finalizada:
             if self.missao_aceita:
-                self.entregar_quest(personagem)
+                self.entregar_quest(personagem, mensagem)
             else:
                 self.missao(personagem)
         else:
