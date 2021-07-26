@@ -17,7 +17,7 @@ class Monstro:
             'armadura': 5, 'magia': 100, 'stamina': 100, 'velo-movi': 1})
         for item in self.status:
             self.status[item] *= nivel
-        self.habilidades = {}
+        self.habilidades = []
         self.vida_ = self.status['vida']
         self.nivel = nivel
 

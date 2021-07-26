@@ -6,8 +6,15 @@ from time import sleep
 from jogo.itens.quest import ItemQuest
 from jogo.personagens.npc import Pessoa, Quest
 from jogo.quests.funcoes_quests import funcao_quest
+import sys
+from unittest.mock import MagicMock
+
+sys.stdin, sys.stdout = MagicMock(), MagicMock()
+from pygame import mixer
+sys.stdin, sys.stdout = sys.__stdin__, sys.__stdout__
 
 
+mixer.init()
 tela = Imprimir()
 
 
@@ -35,7 +42,10 @@ class Tela_principal:
             for texto in self._texto:
                 tela.imprimir(forma.format(texto) + '\n')
             tela.imprimir(': ')
-            caracter = int(tela.obter_string())
+            caracter = tela.obter_string()
+            if not caracter or not caracter.isnumeric():
+                continue
+            caracter = int(caracter)
             if caracter == 1:
                 self.floresta()
             elif caracter == 2:
@@ -118,6 +128,8 @@ class Tela_principal:
         tela.imprimir(': ')
         numero = tela.obter_string()
         if numero.isnumeric():
+            mixer.music.load('som_da_floresta.ogg')
+            mixer.music.play()
             numero = int(numero)
             floresta = nomes_florestas_dict[numero]
             item = ItemQuest('gatinho')
@@ -129,6 +141,7 @@ class Tela_principal:
             floresta.explorar(pessoa)
             self.personagem.recuperar_magia_stamina()
             self.personagem.status['vida'] = 100
+            mixer.music.stop()
 
 
 # TODO: restaurar a estamina/magia estando parado nos turnos.
