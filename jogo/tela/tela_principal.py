@@ -6,12 +6,15 @@ from time import sleep
 from jogo.itens.quest import ItemQuest
 from jogo.personagens.npc import Pessoa, Quest
 from jogo.quests.funcoes_quests import funcao_quest
+from jogo.utils import chunk
 import sys
 from unittest.mock import MagicMock
 
-sys.stdin, sys.stdout = MagicMock(), MagicMock()
+
+# Silenciar o pygame para não imprimir nada na tela
+sys.stdout = MagicMock()
 from pygame import mixer
-sys.stdin, sys.stdout = sys.__stdin__, sys.__stdout__
+sys.stdout = sys.__stdout__
 
 
 mixer.init()
@@ -80,36 +83,24 @@ class Tela_principal:
                 quit()
 
     def editar_equipamentos(self):
-        tela.limpar_tela()
-        for numero, item in enumerate(self.personagem.inventario):
-            tela.imprimir(f"{numero} - {item}\n")
-        tela.imprimir('deseja equipar qual equipamento: ')
-        numero = tela.obter_string()
-        if numero.isnumeric():
+        numero = self.obter_numero('deseja equipar qual equipamento: ')
+        if bool(numero):
             inventario = dict(enumerate(self.personagem.inventario))
             equipamento = inventario.get(int(numero))
             if equipamento is not None:
                 self.personagem.equipar(equipamento)
 
     def vender_item(self):
-        tela.limpar_tela()
-        for numero, item in enumerate(self.personagem.inventario):
-            tela.imprimir(f"{numero} - {item}\n")
-        tela.imprimir('deseja vender qual equipamento: ')
-        numero = tela.obter_string()
-        if numero.isnumeric():
+        numero = self.obter_numero('deseja vender qual equipamento: ')
+        if bool(numero):
             inventario = dict(enumerate(self.personagem.inventario))
             equipamento = inventario.get(int(numero))
             if equipamento is not None:
                 self.personagem.vender(equipamento)
 
     def desequipar(self):
-        tela.limpar_tela()
-        for numero, item in enumerate(self.personagem.inventario):
-            tela.imprimir(f"{numero} - {item}\n")
-        tela.imprimir('deseja desequipar qual equipamento: ')
-        numero = tela.obter_string()
-        if numero.isnumeric():
+        numero = self.obter_numero('deseja desequipar qual equipamento: ')
+        if bool(numero):
             inventario = dict(enumerate(self.personagem.inventario))
             equipamento = inventario.get(int(numero))
             if equipamento is not None:
@@ -142,6 +133,28 @@ class Tela_principal:
             self.personagem.recuperar_magia_stamina()
             self.personagem.status['vida'] = 100
             mixer.music.stop()
+
+    def obter_numero(self, mensagem):
+        itens = list(enumerate(self.personagem.inventario))
+        if len(itens) == 0:
+            tela.imprimir('você não tem itens no inventario.')
+            sleep(2)
+            return ''
+        itens = chunk(itens, 18)
+        numeros_paginas = {f":{n}": n for n in range(1, len(itens) + 1)}
+        numero = ':1'
+        while bool(numero) and not numero.isnumeric():
+            tela.limpar_tela()
+            tela.imprimir(
+                f"páginas: {len(itens)}"
+                " - Para passar de página digite :numero exemplo-> :1\n"
+            )
+            n = numeros_paginas.get(numero, 1)
+            for numero, item in itens[n -1]:
+                tela.imprimir(f"{numero} - {item}\n")
+            tela.imprimir(mensagem)
+            numero = tela.obter_string()
+        return numero
 
 
 # TODO: restaurar a estamina/magia estando parado nos turnos.
