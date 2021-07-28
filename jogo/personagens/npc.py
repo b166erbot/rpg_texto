@@ -1,5 +1,6 @@
 from jogo.tela.imprimir import Imprimir
 from jogo.itens.pocoes import curas
+from jogo.utils import Substantivo
 from time import sleep
 
 
@@ -68,20 +69,21 @@ class Quest:
 
 
 class Pessoa(Npc):
-    def __init__(self, nome, quest, item, funcao_quest):
+    def __init__(self, nome, quest, item, funcao_quest, mensagem):
         super().__init__(nome)
         self.item = item
         self.quest = quest
         self.funcao_quest = funcao_quest
         self.missao_aceita = False
         self.missao_finalizada = False
+        self.mensagem = mensagem
 
     def missao(self, personagem):
         tela.limpar_tela()
         missao = self.funcao_quest(self.nome, personagem, self.quest)
         self.missao_aceita = missao
 
-    def entregar_quest(self, personagem, mensagem):
+    def entregar_quest(self, personagem):
         if self.quest.item in personagem.inventario:
             self.quest.pagar(personagem)
             self.quest.depositar_xp(personagem)
@@ -91,17 +93,18 @@ class Pessoa(Npc):
             personagem.inventario.pop(index)
             self.missao_finalizada = True
             tela.imprimir(
-                f'{self.nome}: Muito obrigada. aqui está seu dinheiro'
+                f'{self.nome}: Muito obrigad{Substantivo(self.nome)}.'
+                ' aqui está seu dinheiro'
             )
             sleep(3)
         else:
-            tela.imprimir(mensagem)
+            tela.imprimir(self.mensagem)
             sleep(3)
 
-    def interagir(self, personagem, mensagem):
+    def interagir(self, personagem):
         if not self.missao_finalizada:
             if self.missao_aceita:
-                self.entregar_quest(personagem, mensagem)
+                self.entregar_quest(personagem)
             else:
                 self.missao(personagem)
         else:

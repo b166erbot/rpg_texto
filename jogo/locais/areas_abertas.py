@@ -64,11 +64,7 @@ class Floresta:
         elif str(caminho) == 'pessoa desconhecida':
             tela.imprimir('deseja interagir com pessoa desconhecida?: ')
             if tela.obter_string().lower() in ['s', 'sim']:
-                pessoa.interagir(
-                    self.personagem,
-                    f"{pessoa.nome}: você não encontrou meu gatinho."
-                    " Encontreo para mim e eu lhe darei dinheiro."
-                )
+                pessoa.interagir(self.personagem)
             tela.limpar_tela()
         morte = self.sortear_inimigos()
         if morte:

@@ -17,7 +17,6 @@ from jogo.tela.imprimir import Imprimir
 
 
 def main():
-    ### daqui para baixo é somente teste, nada oficial. ###
     tela = Imprimir()
     tela.imprimir('qual é o nome do seu personagem?: ')
     nome = tela.obter_string()

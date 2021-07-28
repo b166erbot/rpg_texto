@@ -83,7 +83,7 @@ class Tela_principal:
                 quit()
 
     def editar_equipamentos(self):
-        numero = self.obter_numero('deseja equipar qual equipamento: ')
+        numero = self._obter_numero('deseja equipar qual equipamento: ')
         if bool(numero):
             inventario = dict(enumerate(self.personagem.inventario))
             equipamento = inventario.get(int(numero))
@@ -91,7 +91,7 @@ class Tela_principal:
                 self.personagem.equipar(equipamento)
 
     def vender_item(self):
-        numero = self.obter_numero('deseja vender qual equipamento: ')
+        numero = self._obter_numero('deseja vender qual equipamento: ')
         if bool(numero):
             inventario = dict(enumerate(self.personagem.inventario))
             equipamento = inventario.get(int(numero))
@@ -99,7 +99,7 @@ class Tela_principal:
                 self.personagem.vender(equipamento)
 
     def desequipar(self):
-        numero = self.obter_numero('deseja desequipar qual equipamento: ')
+        numero = self._obter_numero('deseja desequipar qual equipamento: ')
         if bool(numero):
             inventario = dict(enumerate(self.personagem.inventario))
             equipamento = inventario.get(int(numero))
@@ -126,7 +126,9 @@ class Tela_principal:
             item = ItemQuest('gatinho')
             pessoa = Pessoa(
                 'lorena', Quest('pegar o gatinho', 150, 2000, item),
-                item, funcao_quest
+                item, funcao_quest,
+                f"lorena: você não encontrou meu gatinho."
+                " Encontreo para mim e eu lhe darei dinheiro."
             )
             floresta = Floresta(floresta, self.personagem, numero)
             floresta.explorar(pessoa)
@@ -134,7 +136,7 @@ class Tela_principal:
             self.personagem.status['vida'] = 100
             mixer.music.stop()
 
-    def obter_numero(self, mensagem):
+    def _obter_numero(self, mensagem):
         itens = list(enumerate(self.personagem.inventario))
         if len(itens) == 0:
             tela.imprimir('você não tem itens no inventario.')

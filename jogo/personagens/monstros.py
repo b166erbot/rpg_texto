@@ -16,6 +16,8 @@ class Monstro:
             {'vida': 100, 'dano': 3, 'resis': 5, 'velo-ataque': 1, 'critico':5,
             'armadura': 5, 'magia': 100, 'stamina': 100, 'velo-movi': 1})
         for item in self.status:
+            if item in ['magia', 'stamina']:
+                continue
             self.status[item] *= nivel
         self.habilidades = []
         self.vida_ = self.status['vida']

@@ -86,8 +86,6 @@ class Caverna:
                 'vida': 300, 'dano': 5, 'resis': 15, 'velo-ataque': 1,
                 'critico':15, 'armadura': 15, 'magia': 100, 'stamina': 100,
                 'velo-movi': 1}
-            for item in status:
-                status[item] *= self.nivel
             boss = Boss(self.nivel, status)
             combate(self.personagem, boss)
             if self.personagem.status['vida'] == 0:
