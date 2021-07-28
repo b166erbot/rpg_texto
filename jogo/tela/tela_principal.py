@@ -39,6 +39,8 @@ class Tela_principal:
         self.personagem = personagem
 
     def ciclo(self):
+        mixer.music.load('vilarejo.ogg')
+        mixer.music.play()
         forma = f"{formas[227]} {{}} {formas[228]}"
         while True:
             tela.limpar_tela()
@@ -50,7 +52,10 @@ class Tela_principal:
                 continue
             caracter = int(caracter)
             if caracter == 1:
+                mixer.music.stop()
                 self.floresta()
+                mixer.music.load('vilarejo.ogg')
+                mixer.music.play()
             elif caracter == 2:
                 mercante = Comerciante('farkas')
                 mercante.interagir(self.personagem)
