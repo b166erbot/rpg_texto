@@ -6,9 +6,10 @@ from time import sleep
 from jogo.itens.quest import ItemQuest
 from jogo.personagens.npc import Pessoa, Quest
 from jogo.quests.funcoes_quests import funcao_quest
-from jogo.utils import chunk
+from jogo.utils import chunk, salvar_jogo
 import sys
 from unittest.mock import MagicMock
+from pathlib import Path
 
 
 # Silenciar o pygame para não imprimir nada na tela
@@ -34,7 +35,8 @@ class Tela_principal:
             '7 - mostrar seu dinheiro',
             '8 - mostrar sua experiência',
             '9 - mostrar o status',
-            '10 - sair'
+            '10 - salvar jogo',
+            '11 - sair'
         ]
         self.personagem = personagem
 
@@ -60,10 +62,11 @@ class Tela_principal:
                 mercante = Comerciante('farkas')
                 mercante.interagir(self.personagem)
             elif caracter == 3:
-                self.editar_equipamentos()
+                self.equipar_equipamentos()
             elif caracter == 4:
                 self.desequipar()
             elif caracter == 5:
+                tela.limpar_tela()
                 equipamentos = self.personagem.equipamentos.values()
                 for item in equipamentos:
                     tela.imprimir(f"{item}\n")
@@ -85,9 +88,13 @@ class Tela_principal:
                 )
                 sleep(4)
             elif caracter == 10:
+                salvar_jogo(self.personagem, 'save.pk')
+                tela.imprimir('jogo salvo')
+                sleep(3)
+            elif caracter == 11:
                 quit()
 
-    def editar_equipamentos(self):
+    def equipar_equipamentos(self):
         numero = self._obter_numero('deseja equipar qual equipamento: ')
         if bool(numero):
             inventario = dict(enumerate(self.personagem.inventario))
@@ -170,3 +177,6 @@ class Tela_principal:
 # TODO: lutar ou fugir
 # TODO: imprimir quais botões digitar na batalha
 # TODO: bosses dão itens melhorados
+# TODO: salvar personagem para continuar depois
+# TODO: poções, venenos
+# TODO: dragões

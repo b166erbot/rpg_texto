@@ -140,6 +140,7 @@ class Humano:
         index = self.inventario.index(equipamento)
         if self.equipamentos[equipamento.tipo] is equipamento:
             self.equipamentos[equipamento.tipo] = False
+            self.atualizar_status()
         self.pratas += equipamento.preco
         self.inventario.pop(index)
 
@@ -147,6 +148,7 @@ class Humano:
         equipamento2 = self.equipamentos.get(equipamento.tipo)
         if equipamento2 and equipamento2 is equipamento:
             self.equipamentos[equipamento.tipo] = False
+            self.atualizar_status()
 
     def receber_dano(self, dano, tipo):
         if tipo == 'fisico':
