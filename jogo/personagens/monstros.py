@@ -81,6 +81,39 @@ class Monstro:
             personagem.inventario.append(item)
 
 
+class Boss(Monstro):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def dar_loot_boss(self, personagem):
+        efeito_digitando('Loot encontrado.')
+        Item = choice(vestes + armas)
+        if issubclass(Item, Arma):
+            status = [randint(3, 5), randint(2, 2), randint(2, 3)]
+            status = map(lambda x: x * self.nivel, status)
+            status_nomes = ['dano', 'velo_ataque', 'critico']
+            status_dict = dict(zip(status_nomes, status))
+            item = Item(**status_dict)
+        elif issubclass(Item, Roupa):
+            status = [
+                randint(2, 3), randint(2, 3), randint(2, 3), randint(2, 3)
+            ]
+            status = map(lambda x: x * self.nivel, status)
+            status_nomes = ['armadura', 'velo_movi', 'vida', 'resistencias']
+            status_dict = dict(zip(status_nomes, status))
+            item = Item(**status_dict)
+        elif issubclass(Item, Anel):
+            status = [
+                randint(2, 3), randint(2, 3), randint(2, 3), randint(2, 3)
+            ]
+            status = map(lambda x: x * self.nivel, status)
+            status_nomes = ['dano', 'vida', 'resistencias', 'armadura']
+            status_dict = dict(zip(status_nomes, status))
+            item = Item(nome = 'Anel', **status_dict)
+        personagem.pratas += randint(30 * self.nivel, 50 * self.nivel)
+        personagem.inventario.append(item)
+
+
 class Tartaruga(Monstro):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -145,11 +178,11 @@ class Sapo(Monstro):
         other.receber_dano(3 * self.nivel, self.tipo_dano)
 
 
-class Topera_boss(Monstro):
+class Topera(Boss):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.habilidades = [self.pulo_fatal, self.terremoto]
-        self.nome = 'Topera-boss'
+        self.nome = 'Topera'
         self.classe = 'Monstro chefe'
         self.tipo = 'boss'
         self.tipo_dano = 'fisico'
@@ -161,11 +194,11 @@ class Topera_boss(Monstro):
         other.receber_dano(10 * self.nivel, self.tipo_dano)
 
 
-class Mico_boss(Monstro):
+class Mico(Boss):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.habilidades = [self.tacar_banana, self.esmagar]
-        self.nome =  'Mico-boss'
+        self.nome =  'Mico'
         self.classe = 'Monstro chefe'
         self.tipo = 'boss'
         self.tipo_dano = 'magico'
@@ -177,11 +210,11 @@ class Mico_boss(Monstro):
         other.receber_dano(15 * self.nivel, self.tipo_dano)
 
 
-class Sucuri_boss(Monstro):
+class Sucuri(Boss):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.habilidades = [self.lancamento_de_calda, self.bote]
-        self.nome = 'Sucuri-boss'
+        self.nome = 'Sucuri'
         self.classe = 'Monstro chefe'
         self.tipo = 'boss'
         self.tipo_dano = 'magico'
@@ -190,4 +223,20 @@ class Sucuri_boss(Monstro):
         other.receber_dano(10 * self.nivel, self.tipo_dano)
 
     def bote(self, other):
+        other.receber_dano(15 * self.nivel, self.tipo_dano)
+
+
+class ArvoreDeku(Boss):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.habilidades = [self.braçada, self.outono]
+        self.nome = "Arvore Deku"
+        self.classe = 'Monstro chefe'
+        self.tipo = 'boss'
+        self.tipo_dano = 'fisico'
+
+    def braçada(self, other):
+        other.receber_dano(10 * self.nivel, self.tipo_dano)
+
+    def outono(self, other):
         other.receber_dano(15 * self.nivel, self.tipo_dano)

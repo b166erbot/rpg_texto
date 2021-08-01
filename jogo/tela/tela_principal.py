@@ -10,6 +10,7 @@ from jogo.utils import chunk, salvar_jogo
 import sys
 from unittest.mock import MagicMock
 from pathlib import Path
+from os import remove
 
 
 # Silenciar o pygame para não imprimir nada na tela
@@ -36,7 +37,8 @@ class Tela_principal:
             '8 - mostrar sua experiência',
             '9 - mostrar o status',
             '10 - salvar jogo',
-            '11 - sair'
+            '11 - deletar save',
+            '12 - sair'
         ]
         self.personagem = personagem
 
@@ -92,6 +94,14 @@ class Tela_principal:
                 tela.imprimir('jogo salvo')
                 sleep(3)
             elif caracter == 11:
+                arquivo = Path('save.pk')
+                if arquivo.exists():
+                    remove('save.pk')
+                    tela.imprimir('save deletado')
+                else:
+                    tela.imprimir('save não existente')
+                sleep(3)
+            elif caracter == 12:
                 quit()
 
     def equipar_equipamentos(self):
@@ -161,11 +171,14 @@ class Tela_principal:
             tela.limpar_tela()
             tela.imprimir(
                 f"páginas: {len(itens)}"
-                " - Para passar de página digite :numero exemplo-> :1\n"
+                " - Para passar de página digite :numero exemplo-> :2\n"
             )
             n = numeros_paginas.get(numero, 1)
             for numero, item in itens[n -1]:
-                tela.imprimir(f"{numero} - {item}\n")
+                mensagem2 = f"{numero} - {item}"
+                if self.personagem.equipamentos.get(item.tipo) is item:
+                    mensagem2 += ' *equipado*'
+                tela.imprimir(mensagem2 + '\n')
             tela.imprimir(mensagem)
             numero = tela.obter_string()
         return numero
@@ -174,9 +187,8 @@ class Tela_principal:
 # TODO: restaurar a estamina/magia estando parado nos turnos.
 # TODO: colocar mais cavernas
 # TODO: colocar mais npcs com quests
-# TODO: lutar ou fugir
+# TODO: lutar ou fugir?
 # TODO: imprimir quais botões digitar na batalha
-# TODO: bosses dão itens melhorados
-# TODO: salvar personagem para continuar depois
 # TODO: poções, venenos
 # TODO: dragões
+# TODO: mostrar equipado nos itens equipados

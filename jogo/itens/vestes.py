@@ -56,6 +56,7 @@ class Anel:
         self.resistencias = resistencias
         self.armadura = armadura
         self.tipo = "Anel"
+        self.preco = (dano + vida + resistencias + armadura) * 8
 
     def __repr__(self):
         return (

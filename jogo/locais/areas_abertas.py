@@ -4,7 +4,7 @@ from jogo.tela.imprimir import Imprimir, efeito_digitando
 from jogo.locais.cavernas import Caverna
 from jogo.personagens.npc import Pessoa
 from jogo.personagens.monstros import (
-    Tartaruga, Camaleao, Tamandua, Sapo
+    Tartaruga, Camaleao, Tamandua, Sapo, ArvoreDeku
 )
 from jogo.assincrono.combate import combate
 from time import sleep
@@ -29,7 +29,7 @@ def gerar_fluxo():
     fluxo = (
         local_linear(passagens) + ['pessoa desconhecida']
         + local_linear(passagens) + ['caverna']
-        + local_linear(passagens) + ['caverna']
+        + local_linear(passagens) + ['caverna', 'arvore deku']
     )
     return fluxo
 
@@ -47,7 +47,7 @@ class Floresta:
         for caminho in self._caminhos:
             self.caverna_pessoa(caminho, pessoa)
         tela.imprimir('voltando ao início da floresta\n')
-        for caminho in self._caminhos[::-1]:
+        for caminho in self._caminhos[:0:-1]:
             self.caverna_pessoa(caminho, pessoa)
 
     def caverna_pessoa(self, caminho: Local, pessoa: Pessoa):
@@ -66,6 +66,19 @@ class Floresta:
             if tela.obter_string().lower() in ['s', 'sim']:
                 pessoa.interagir(self.personagem)
             tela.limpar_tela()
+        elif str(caminho) == 'arvore deku':
+            status = {
+                'vida': 300, 'dano': 5, 'resis': 15, 'velo-ataque': 1,
+                'critico':15, 'armadura': 15, 'magia': 100, 'stamina': 100,
+                'velo-movi': 1}
+            boss = ArvoreDeku(self.nivel, status)
+            combate(self.personagem, boss)
+            if self.personagem.status['vida'] == 0:
+                self.morto()
+                return
+            elif self.personagem.status['vida'] > 0:
+                self.personagem.experiencia += boss.experiencia
+                boss.dar_loot_boss(self.personagem)
         morte = self.sortear_inimigos()
         if morte:
             self.morto()

@@ -18,7 +18,7 @@ class Arma:
 
 class Espada_longa(Arma):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome = 'espada longa', **kwargs)
+        super().__init__(*args, nome = 'Espada longa', **kwargs)
 
 
 class Machado(Arma):
@@ -28,32 +28,32 @@ class Machado(Arma):
 
 class Espada_curta(Arma):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome = 'espada curta', **kwargs)
+        super().__init__(*args, nome = 'Espada curta', **kwargs)
 
 
 class Cajado(Arma):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome = 'cajado', **kwargs)
+        super().__init__(*args, nome = 'Cajado', **kwargs)
 
 
 class Cajado_negro(Arma):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome = 'cajado negro', **kwargs)
+        super().__init__(*args, nome = 'Cajado negro', **kwargs)
 
 
 class Arco_longo(Arma):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome = 'arco longo', **kwargs)
+        super().__init__(*args, nome = 'Arco longo', **kwargs)
 
 
 class Arco_curto(Arma):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome = 'arco curto', **kwargs)
+        super().__init__(*args, nome = 'Arco curto', **kwargs)
 
 
 class Adaga(Arma):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome = 'adaga', **kwargs)
+        super().__init__(*args, nome = 'Adaga', **kwargs)
 
 
 tudo = [

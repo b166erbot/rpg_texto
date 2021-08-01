@@ -1,7 +1,7 @@
 from random import randint, choice
 from time import sleep
 from jogo.personagens.monstros import (
-    Tartaruga, Camaleao, Topera_boss, Mico_boss, Sucuri_boss
+    Tartaruga, Camaleao, Topera, Mico, Sucuri
 )
 from jogo.assincrono.combate import combate
 from jogo.tela.imprimir import efeito_digitando, Imprimir
@@ -80,7 +80,7 @@ class Caverna:
                         self.morto()
                         return
                     tela.limpar_tela()
-            bosses = [Topera_boss, Mico_boss, Sucuri_boss]
+            bosses = [Topera, Mico, Sucuri]
             Boss = choice(bosses)
             status = {
                 'vida': 300, 'dano': 5, 'resis': 15, 'velo-ataque': 1,
@@ -93,7 +93,7 @@ class Caverna:
                 return
             elif self.personagem.status['vida'] > 0:
                 self.personagem.experiencia += boss.experiencia
-                boss.sortear_drops(self.personagem)
+                boss.dar_loot_boss(self.personagem)
             tela.limpar_tela()
             tela.limpar_tela2()
 
