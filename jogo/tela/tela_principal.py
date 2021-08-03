@@ -188,7 +188,6 @@ class Tela_principal:
 # TODO: colocar mais cavernas
 # TODO: colocar mais npcs com quests
 # TODO: lutar ou fugir?
-# TODO: imprimir quais botões digitar na batalha
 # TODO: poções, venenos
 # TODO: dragões
-# TODO: mostrar equipado nos itens equipados
+# TODO: combate entre personagens

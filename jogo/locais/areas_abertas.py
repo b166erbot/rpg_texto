@@ -47,7 +47,7 @@ class Floresta:
         for caminho in self._caminhos:
             self.caverna_pessoa(caminho, pessoa)
         tela.imprimir('voltando ao início da floresta\n')
-        for caminho in self._caminhos[:0:-1]:
+        for caminho in self._caminhos[-2::-1]:
             self.caverna_pessoa(caminho, pessoa)
 
     def caverna_pessoa(self, caminho: Local, pessoa: Pessoa):
@@ -60,8 +60,11 @@ class Floresta:
                 caverna.explorar()
                 self.personagem.recuperar_magia_stamina()
                 self.personagem.status['vida'] = 100
+                tela.imprimir('saindo da caverna')
+                sleep(2)
             tela.limpar_tela()
         elif str(caminho) == 'pessoa desconhecida':
+            pessoa.volta = True
             tela.imprimir('deseja interagir com pessoa desconhecida?: ')
             if tela.obter_string().lower() in ['s', 'sim']:
                 pessoa.interagir(self.personagem)
@@ -79,6 +82,7 @@ class Floresta:
             elif self.personagem.status['vida'] > 0:
                 self.personagem.experiencia += boss.experiencia
                 boss.dar_loot_boss(self.personagem)
+            self.personagem.recuperar_magia_stamina()
         morte = self.sortear_inimigos()
         if morte:
             self.morto()

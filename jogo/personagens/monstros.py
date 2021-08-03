@@ -63,7 +63,7 @@ class Monstro:
                 item = Item(**status_dict)
             elif issubclass(Item, Roupa):
                 status = [
-                    randint(1,3), randint(1,3), randint(0,3), randint(1,3)
+                    randint(1, 3), randint(1, 3), randint(5, 20), randint(1, 3)
                 ]
                 status = map(lambda x: x * self.nivel, status)
                 status_nomes = ['armadura', 'velo_movi', 'vida', 'resistencias']
@@ -71,7 +71,7 @@ class Monstro:
                 item = Item(**status_dict)
             elif issubclass(Item, Anel):
                 status = [
-                    randint(1,3), randint(1,3), randint(1,3), randint(1,3)
+                    randint(1, 3), randint(5, 20), randint(1, 3), randint(1, 3)
                 ]
                 status = map(lambda x: x * self.nivel, status)
                 status_nomes = ['dano', 'vida', 'resistencias', 'armadura']
@@ -96,7 +96,7 @@ class Boss(Monstro):
             item = Item(**status_dict)
         elif issubclass(Item, Roupa):
             status = [
-                randint(2, 3), randint(2, 3), randint(2, 3), randint(2, 3)
+                randint(2, 3), randint(2, 3), randint(12, 20), randint(2, 3)
             ]
             status = map(lambda x: x * self.nivel, status)
             status_nomes = ['armadura', 'velo_movi', 'vida', 'resistencias']
@@ -104,7 +104,7 @@ class Boss(Monstro):
             item = Item(**status_dict)
         elif issubclass(Item, Anel):
             status = [
-                randint(2, 3), randint(2, 3), randint(2, 3), randint(2, 3)
+                randint(2, 3), randint(12, 20), randint(2, 3), randint(2, 3)
             ]
             status = map(lambda x: x * self.nivel, status)
             status_nomes = ['dano', 'vida', 'resistencias', 'armadura']

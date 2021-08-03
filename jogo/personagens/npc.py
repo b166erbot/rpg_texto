@@ -77,6 +77,7 @@ class Pessoa(Npc):
         self.missao_aceita = False
         self.missao_finalizada = False
         self.mensagem = mensagem
+        self.volta = False
 
     def missao(self, personagem):
         tela.limpar_tela()
@@ -105,8 +106,11 @@ class Pessoa(Npc):
         if not self.missao_finalizada:
             if self.missao_aceita:
                 self.entregar_quest(personagem)
-            else:
+            elif not self.volta:
                 self.missao(personagem)
+            else:
+                tela.imprimir(f"{self.nome}: não tenho mais nada a pedir.\n")
+                sleep(2)
         else:
             tela.imprimir(f"{self.nome}: não tenho mais nada a pedir.\n")
             sleep(2)

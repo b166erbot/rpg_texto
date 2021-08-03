@@ -94,6 +94,7 @@ class Caverna:
             elif self.personagem.status['vida'] > 0:
                 self.personagem.experiencia += boss.experiencia
                 boss.dar_loot_boss(self.personagem)
+            self.personagem.recuperar_magia_stamina()
             tela.limpar_tela()
             tela.limpar_tela2()
 

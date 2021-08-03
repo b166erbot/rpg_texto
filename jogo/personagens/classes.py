@@ -184,6 +184,7 @@ class Arqueiro(Humano):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         habilidades = [self.flecha, self.tres_flechas]
+        self.habilidades_nomes = ['flecha', 'três flexas']
         self.habilidades = dict(enumerate(habilidades, 1))
         self.classe = 'Arqueiro'
 
@@ -213,6 +214,7 @@ class Guerreiro(Humano):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         habilidades = [self.investida, self.esmagar]
+        self.habilidades_nomes = ['investida', 'esmagar']
         self.habilidades = dict(enumerate(habilidades, 1))
         self.classe = 'Guerreiro'
 
@@ -239,6 +241,7 @@ class Mago(Humano):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         habilidades = [self.bola_de_fogo, self.lanca_de_gelo]
+        self.habilidades_nomes = ['bola de fogo', 'lanca de gelo']
         self.habilidades = dict(enumerate(habilidades, 1))
         self.classe = 'Mago'
 
@@ -265,6 +268,7 @@ class Assassino(Humano):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         habilidades = [self.lancar_faca, self.ataque_furtivo]
+        self.habilidades_nomes = ['lancar faca', 'ataque furtivo']
         self.habilidades = dict(enumerate(habilidades, 1))
         self.classe = 'Assassino'
 
@@ -291,6 +295,7 @@ class Clerigo(Humano):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         habilidades = [self.curar, self.luz]
+        self.habilidades_nomes = ['curar', 'luz']
         self.habilidades = dict(enumerate(habilidades, 1))
         self.classe = 'Clerigo'
 
