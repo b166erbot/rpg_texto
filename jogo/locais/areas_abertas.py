@@ -64,10 +64,10 @@ class Floresta:
                 sleep(2)
             tela.limpar_tela()
         elif str(caminho) == 'pessoa desconhecida':
-            pessoa.volta = True
             tela.imprimir('deseja interagir com pessoa desconhecida?: ')
             if tela.obter_string().lower() in ['s', 'sim']:
                 pessoa.interagir(self.personagem)
+            pessoa.volta = True
             tela.limpar_tela()
         elif str(caminho) == 'arvore deku':
             status = {

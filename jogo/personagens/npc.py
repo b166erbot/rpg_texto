@@ -2,6 +2,8 @@ from jogo.tela.imprimir import Imprimir
 from jogo.itens.pocoes import curas
 from jogo.utils import Substantivo
 from time import sleep
+from jogo.itens.quest import ItemQuest
+from jogo.quests.funcoes_quests import funcao_quest
 
 
 tela = Imprimir()
@@ -114,3 +116,14 @@ class Pessoa(Npc):
         else:
             tela.imprimir(f"{self.nome}: não tenho mais nada a pedir.\n")
             sleep(2)
+
+
+mercante = Comerciante('farkas')
+
+item = ItemQuest('gatinho')
+lorena = Pessoa(
+    'lorena', Quest('pegar o gatinho', 150, 2000, item),
+    item, funcao_quest,
+    f"lorena: você não encontrou meu gatinho."
+    " Encontreo para mim e eu lhe darei dinheiro."
+)

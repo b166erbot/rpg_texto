@@ -7,7 +7,7 @@ class Roupa:
         self.vida = vida
         self.resistencias = resistencias
         self.armadura = armadura
-        self.preco = (vida + resistencias + armadura) * 8
+        self.preco = (int(vida / 2) + resistencias + armadura) * 8
 
     def __repr__(self):
         return (
@@ -56,7 +56,7 @@ class Anel:
         self.resistencias = resistencias
         self.armadura = armadura
         self.tipo = "Anel"
-        self.preco = (dano + vida + resistencias + armadura) * 8
+        self.preco = (dano + int(vida / 2) + resistencias + armadura) * 8
 
     def __repr__(self):
         return (

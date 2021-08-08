@@ -6,8 +6,6 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-colorama = "==0.4.1"
-dosbox-screen = "==1.1.5"
 readchar = "==2.0.1"
 pygame = "*"
 

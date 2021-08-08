@@ -3,14 +3,12 @@ from jogo.locais.cavernas import Caverna
 from jogo.personagens.npc import Comerciante
 from jogo.locais.areas_abertas import Floresta
 from time import sleep
-from jogo.itens.quest import ItemQuest
-from jogo.personagens.npc import Pessoa, Quest
-from jogo.quests.funcoes_quests import funcao_quest
 from jogo.utils import chunk, salvar_jogo
 import sys
 from unittest.mock import MagicMock
 from pathlib import Path
 from os import remove
+from jogo.personagens.npc import lorena, mercante
 
 
 # Silenciar o pygame para não imprimir nada na tela
@@ -61,7 +59,6 @@ class Tela_principal:
                 mixer.music.load('vilarejo.ogg')
                 mixer.music.play()
             elif caracter == 2:
-                mercante = Comerciante('farkas')
                 mercante.interagir(self.personagem)
             elif caracter == 3:
                 self.equipar_equipamentos()
@@ -145,15 +142,8 @@ class Tela_principal:
             mixer.music.play()
             numero = int(numero)
             floresta = nomes_florestas_dict[numero]
-            item = ItemQuest('gatinho')
-            pessoa = Pessoa(
-                'lorena', Quest('pegar o gatinho', 150, 2000, item),
-                item, funcao_quest,
-                f"lorena: você não encontrou meu gatinho."
-                " Encontreo para mim e eu lhe darei dinheiro."
-            )
             floresta = Floresta(floresta, self.personagem, numero)
-            floresta.explorar(pessoa)
+            floresta.explorar(lorena)
             self.personagem.recuperar_magia_stamina()
             self.personagem.status['vida'] = 100
             mixer.music.stop()
@@ -187,7 +177,7 @@ class Tela_principal:
 # TODO: restaurar a estamina/magia estando parado nos turnos.
 # TODO: colocar mais cavernas
 # TODO: colocar mais npcs com quests
-# TODO: lutar ou fugir?
+# TODO: lutar ou fugir do boss?
 # TODO: poções, venenos
 # TODO: dragões
 # TODO: combate entre personagens
