@@ -7,7 +7,6 @@ from jogo.utils import chunk, salvar_jogo
 import sys
 from unittest.mock import MagicMock
 from pathlib import Path
-from os import remove
 from jogo.personagens.npc import lorena, mercante
 
 
@@ -93,7 +92,7 @@ class Tela_principal:
             elif caracter == 11:
                 arquivo = Path('save.pk')
                 if arquivo.exists():
-                    remove('save.pk')
+                    arquivo.unlink()
                     tela.imprimir('save deletado')
                 else:
                     tela.imprimir('save não existente')

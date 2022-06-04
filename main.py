@@ -8,7 +8,7 @@ import curses
 curses.initscr()
 
 from jogo.personagens.classes import (
-    Arqueiro, Guerreiro, Mago, Assassino, Clerigo
+    Arqueiro, Guerreiro, Mago, Assassino, Clerigo, Monge
 )
 from jogo.personagens.npc import Comerciante
 from jogo.locais.cavernas import Caverna
@@ -29,8 +29,10 @@ def main():
         tela.imprimir('qual é o nome do seu personagem?: ')
         nome = tela.obter_string()
         tela.limpar_tela()
-        classes = [Arqueiro, Guerreiro, Mago, Assassino, Clerigo]
-        classes_nomes = ['Arqueiro', 'Guerreiro', 'Mago', 'Assassino', 'Clerigo']
+        classes = [Arqueiro, Guerreiro, Mago, Assassino, Clerigo, Monge]
+        classes_nomes = [
+            'Arqueiro', 'Guerreiro', 'Mago', 'Assassino', 'Clerigo', 'Monge'
+        ]
         classes_dict = dict(zip(classes_nomes, classes))
         classes_dict2 = dict(enumerate(classes_nomes))
         for numero, classe in classes_dict2.items():

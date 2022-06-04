@@ -7,7 +7,7 @@ from jogo.itens.pocoes import curas
 from jogo.itens.vestes import tudo as roupas
 from jogo.itens.armas import (
     Espada_longa, Machado, Espada_curta, Cajado, Cajado_negro, Arco_longo,
-    Arco_curto, Adaga
+    Arco_curto, Adaga, Luvas_de_ferro
 )
 
 nome_pocoes = list(map(lambda x: x.nome, curas))
@@ -319,7 +319,33 @@ class Clerigo(Humano):
                 self.equipamentos[equipamento.tipo] = equipamento
                 self.atualizar_status()
 
+class Monge(Humano):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        habilidades = [self.combo_de_chutes, self.multiplos_socos]
+        self.habilidades_nomes = ['combo_de_chutes', 'multiplos_socos']
+        self.habilidades = dict(enumerate(habilidades, 1))
+        self.classe = 'Monge'
+
+    def combo_de_chutes(self, other):
+        other.status['vida'] -= 15 + self.status['dano']
+
+    def multiplos_socos(self, other):
+        other.status['vida'] -= 10 + self.status['dano']
+
+    def consumir_magia_stamina(self):
+        if self.status['stamina'] >= 20:
+            self.status['stamina'] -= 20
+            return True
+        return False
+
+    def equipar(self, equipamento):
+        for classe in roupas + [Luvas_de_ferro]:
+            if isinstance(equipamento, classe):
+                self.equipamentos[equipamento.tipo] = equipamento
+                self.atualizar_status()
+
 
 # druida?
 # dual blade?
-# lutador?  não me parece uma boa
+# lutador? monge?

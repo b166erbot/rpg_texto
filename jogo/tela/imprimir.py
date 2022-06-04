@@ -18,14 +18,14 @@ def formatar_status(personagem):
     nome, vida = personagem.nome, personagem.status['vida']
     magia, stamina = personagem.status['magia'], personagem.status['stamina']
     texto = f"{nome} [{personagem.classe}]: "
-    porcentagem = int((magia * 100) / 100)  # manter mesmo que sem sentido
+    porcentagem = magia # caso a magia aumentar, fazer o calculo da porcentagem
     blocos_com_barras = _formatar_barras(magia, 100)
     texto += f"{blocos_com_barras} {porcentagem:3d}% "
     porcentagem = int((vida * 100) / personagem.vida_maxima)
     blocos_com_barras = _formatar_barras(vida, personagem.vida_maxima, True)
     texto += f"{blocos_com_barras} {porcentagem:3d}%  "
     blocos_com_barras = _formatar_barras(stamina, 100)
-    porcentagem = int((stamina * 100) / 100)  # manter mesmo que sem sentido
+    porcentagem = stamina # caso a stamina aumentar, fazer o calculo da porcentagem
     return texto + f"{blocos_com_barras} {porcentagem:3d}%"
 
 

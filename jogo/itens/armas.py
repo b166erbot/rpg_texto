@@ -56,7 +56,12 @@ class Adaga(Arma):
         super().__init__(*args, nome = 'Adaga', **kwargs)
 
 
+class Luvas_de_ferro(Arma):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, nome = 'Luvas de ferro', **kwargs)
+
+
 tudo = [
     Espada_longa, Machado, Espada_curta, Cajado, Cajado_negro, Arco_longo,
-    Arco_curto, Adaga
+    Arco_curto, Adaga, Luvas_de_ferro
 ]

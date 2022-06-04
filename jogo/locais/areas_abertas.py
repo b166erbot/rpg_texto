@@ -1,7 +1,6 @@
 from random import randint, choice
-from .cavernas import Local
+from .cavernas import Local, Caverna
 from jogo.tela.imprimir import Imprimir, efeito_digitando
-from jogo.locais.cavernas import Caverna
 from jogo.personagens.npc import Pessoa
 from jogo.personagens.monstros import (
     Tartaruga, Camaleao, Tamandua, Sapo, ArvoreDeku
@@ -15,10 +14,7 @@ tela = Imprimir()
 
 def local_linear(passagens):
     passagens = list(map(Local, passagens))
-    fluxo = []
-    for numero in range(randint(3, 5)):
-        passagem = choice(passagens)
-        fluxo.append(passagem)
+    fluxo = [choice(passagens) for _ in range(randint(3, 5))]
     return fluxo
 
 
@@ -122,3 +118,4 @@ class Floresta:
         tela.limpar_tela2()
         tela.imprimir('você está morto e foi ressucitado.')
         sleep(3)
+        tela.limpar_tela()

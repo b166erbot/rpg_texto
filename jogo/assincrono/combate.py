@@ -12,7 +12,7 @@ def combate(personagem1, personagem2):
     Função que faz os combates entre personagens.
     """
 
-    # daqui pra baixo é só putaria e linkin park tocando..
+    # daqui pra baixo é só putaria e linkin park tocando...
     personagens = list(permutations([personagem1, personagem2], 2))
     ciclo = get_event_loop()
     tarefas = [ciclo.create_task(x.atacar(y)) for x, y in personagens]
