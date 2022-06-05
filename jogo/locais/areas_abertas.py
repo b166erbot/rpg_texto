@@ -12,7 +12,7 @@ from time import sleep
 tela = Imprimir()
 
 
-def local_linear(passagens):
+def local_linear(passagens: list) -> list:
     passagens = list(map(Local, passagens))
     fluxo = [choice(passagens) for _ in range(randint(3, 5))]
     return fluxo
@@ -81,6 +81,7 @@ class Floresta:
             elif self.personagem.status['vida'] > 0:
                 self.personagem.experiencia += boss.experiencia
                 boss.dar_loot_boss(self.personagem)
+            tela.limpar_tela2()
             self.personagem.recuperar_magia_stamina()
         morte = self.sortear_inimigos()
         if morte:

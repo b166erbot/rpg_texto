@@ -2,6 +2,7 @@ from jogo.tela.imprimir import Imprimir
 from jogo.itens.pocoes import curas
 from jogo.utils import Substantivo
 from time import sleep
+from jogo.utils import chunk
 
 
 tela = Imprimir()
@@ -17,8 +18,10 @@ class Comerciante(Npc):
         super().__init__(nome)
         self.itens = {x: y for x, y in enumerate(curas, 1)}
         self.tabela = [
-            f"{numero} - {item.nome}" for numero, item in self.itens.items()
+            f"{numero} - {item.nome} ${item.custo}"
+            for numero, item in self.itens.items()
         ]
+        self.tabela_cortada = chunk(self.tabela, 18)
 
     def comprar(self, item, quantidade: int, personagem):
         preço = quantidade * item.custo
@@ -37,7 +40,7 @@ class Comerciante(Npc):
             tela.imprimir(texto + '\n')
         tela.imprimir('O que deseja comprar?: ')
         numero = tela.obter_string()
-        while all([bool(numero), numero.isnumeric()]):
+        while numero.isnumeric() and bool(numero) and int(numero) in self.itens:
             tela.imprimir('Quantidade: ')
             quantidade = tela.obter_string()
             if not bool(quantidade):
@@ -51,6 +54,25 @@ class Comerciante(Npc):
         tela.limpar_tela()
         tela.imprimir('volte sempre!')
         sleep(1)
+
+    def _obter_numero(self):
+        numeros_paginas = {
+            f":{n}": n for n in range(1, len(self.tabela_cortada) + 1)
+        }
+        numero = ':1'
+        while numero in numeros_paginas:
+            tela.limpar_tela()
+            tela.imprimir(
+                f"páginas: {len(self.tabela_cortada)}"
+                " - Para passar de página digite :numero exemplo-> :2\n"
+            )
+            n = numeros_paginas.get(numero, 1)
+            for texto in self.tabela_cortada[n -1]:
+                tela.imprimir(texto + '\n')
+            tela.imprimir('O que deseja comprar?: ')
+            numero = tela.obter_string()
+        tela.limpar_tela()
+        return numero
 
 
 class Quest:

@@ -190,5 +190,4 @@ class Tela_principal:
 # TODO: dragões
 # TODO: combate entre personagens bots
 # TODO: mostrar o dinheiro no comerciante
-# TODO: arrumar o "mostrar equipamentos equipados"
 # TODO: tentar remover "ida/volta" dos npcs
