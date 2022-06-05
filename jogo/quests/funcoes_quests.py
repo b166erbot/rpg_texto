@@ -4,7 +4,7 @@ from jogo.tela.imprimir import Imprimir
 tela = Imprimir()
 
 
-def funcao_quest(nome, personagem, quest):
+def quest_gato(nome, personagem, quest):
     tela.imprimir(
         f'{nome}: Faz tempo que não vejo meu gatinho, acho que o perdi.'
     )

@@ -41,13 +41,16 @@ class Floresta:
         tela.limpar_tela()
         tela.imprimir(self.nome + '\n')
         for caminho in self._caminhos:
-            self.caverna_pessoa(caminho, pessoa)
+            morto = self.caverna_pessoa(caminho, pessoa)
+            if morto == 'morto':
+                return
         tela.imprimir('voltando ao início da floresta\n')
         for caminho in self._caminhos[-2::-1]:
-            self.caverna_pessoa(caminho, pessoa)
+            morto = self.caverna_pessoa(caminho, pessoa)
+            if morto == 'morto':
+                return
 
-    def caverna_pessoa(self, caminho: Local, pessoa: Pessoa):
-        # pessoa != personagem
+    def caverna_pessoa(self, caminho: Local, npc: Pessoa):
         efeito_digitando(str(caminho))
         if str(caminho) == 'caverna':
             tela.imprimir('deseja entrar na caverna? s/n\n')
@@ -62,8 +65,8 @@ class Floresta:
         elif str(caminho) == 'pessoa desconhecida':
             tela.imprimir('deseja interagir com pessoa desconhecida?: ')
             if tela.obter_string().lower() in ['s', 'sim']:
-                pessoa.interagir(self.personagem)
-            pessoa.volta = True
+                npc.interagir(self.personagem)
+            npc.volta = True
             tela.limpar_tela()
         elif str(caminho) == 'arvore deku':
             status = {
@@ -74,7 +77,7 @@ class Floresta:
             combate(self.personagem, boss)
             if self.personagem.status['vida'] == 0:
                 self.morto()
-                return
+                return 'morto'
             elif self.personagem.status['vida'] > 0:
                 self.personagem.experiencia += boss.experiencia
                 boss.dar_loot_boss(self.personagem)
@@ -82,12 +85,12 @@ class Floresta:
         morte = self.sortear_inimigos()
         if morte:
             self.morto()
-            return
+            return 'morto'
         for quest in self.personagem.quests:
             condicoes = [
                 randint(1, 5) == 1,
                 quest.item not in self.personagem.inventario,
-                not pessoa.missao_finalizada
+                not npc.missao_finalizada
             ]
             if all(condicoes):
                 self.personagem.inventario.append(quest.item)

@@ -26,20 +26,25 @@ def main():
         tela.imprimir('jogo carregado')
         sleep(3)
     else:
-        tela.imprimir('qual é o nome do seu personagem?: ')
-        nome = tela.obter_string()
-        tela.limpar_tela()
+        nome = ''
+        while not bool(nome):
+            tela.limpar_tela()
+            tela.imprimir('qual é o nome do seu personagem?: ')
+            nome = tela.obter_string()
         classes = [Arqueiro, Guerreiro, Mago, Assassino, Clerigo, Monge]
         classes_nomes = [
             'Arqueiro', 'Guerreiro', 'Mago', 'Assassino', 'Clerigo', 'Monge'
         ]
         classes_dict = dict(zip(classes_nomes, classes))
         classes_dict2 = dict(enumerate(classes_nomes))
-        for numero, classe in classes_dict2.items():
-            tela.imprimir(f"{numero} - {classe}\n")
-        tela.imprimir('Escolha a classe do seu personagem: ')
-        numero = int(tela.obter_string())
-        classe = classes_dict[classes_dict2[numero]]
+        numero_personagem = ''
+        while numero_personagem not in classes_dict2:
+            tela.limpar_tela()
+            for numero, classe in classes_dict2.items():
+                tela.imprimir(f"{numero} - {classe}\n")
+            tela.imprimir('Escolha a classe do seu personagem: ')
+            numero_personagem = int(tela.obter_string())
+        classe = classes_dict[classes_dict2[numero_personagem]]
         personagem = classe(nome, True)
     tela = Tela_principal(personagem)
     tela.ciclo()

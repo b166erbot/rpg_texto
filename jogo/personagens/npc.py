@@ -2,16 +2,12 @@ from jogo.tela.imprimir import Imprimir
 from jogo.itens.pocoes import curas
 from jogo.utils import Substantivo
 from time import sleep
-from jogo.itens.quest import ItemQuest
-from jogo.quests.funcoes_quests import funcao_quest
 
 
 tela = Imprimir()
 
 
 class Npc:
-    # por enquanto essa classe está sem propósito. futuramente eu irei adicionar
-    # mais npcs e adicionar propósito a essa classe ou removela.
     def __init__(self, nome: str):
         self.nome = nome
 
@@ -20,12 +16,11 @@ class Comerciante(Npc):
     def __init__(self, nome: str):
         super().__init__(nome)
         self.itens = {x: y for x, y in enumerate(curas, 1)}
-        self.tabela = list(map(
-            lambda x: f"{x[0]} - {x[1].nome}",
-            self.itens.items()
-        ))
+        self.tabela = [
+            f"{numero} - {item.nome}" for numero, item in self.itens.items()
+        ]
 
-    def comprar(self, item, quantidade: int, personagem) -> dict:
+    def comprar(self, item, quantidade: int, personagem):
         preço = quantidade * item.custo
         if int(personagem.pratas) > preço:
             personagem.pratas -= preço
@@ -42,9 +37,11 @@ class Comerciante(Npc):
             tela.imprimir(texto + '\n')
         tela.imprimir('O que deseja comprar?: ')
         numero = tela.obter_string()
-        while numero:
+        while all([bool(numero), numero.isnumeric()]):
             tela.imprimir('Quantidade: ')
             quantidade = tela.obter_string()
+            if not bool(quantidade):
+                break
             self.comprar(self.itens[int(numero)], int(quantidade), personagem)
             tela.limpar_tela()
             for texto in self.tabela:
@@ -71,9 +68,8 @@ class Quest:
 
 
 class Pessoa(Npc):
-    def __init__(self, nome, quest, item, funcao_quest, mensagem):
+    def __init__(self, nome, quest, funcao_quest, mensagem):
         super().__init__(nome)
-        self.item = item
         self.quest = quest
         self.funcao_quest = funcao_quest
         self.missao_aceita = False
@@ -116,14 +112,3 @@ class Pessoa(Npc):
         else:
             tela.imprimir(f"{self.nome}: não tenho mais nada a pedir.\n")
             sleep(2)
-
-
-mercante = Comerciante('farkas')
-
-item = ItemQuest('gatinho')
-lorena = Pessoa(
-    'lorena', Quest('pegar o gatinho', 150, 2000, item),
-    item, funcao_quest,
-    f"lorena: você não encontrou meu gatinho."
-    " Encontreo para mim e eu lhe darei dinheiro."
-)

@@ -7,7 +7,9 @@ from jogo.utils import chunk, salvar_jogo
 import sys
 from unittest.mock import MagicMock
 from pathlib import Path
-from jogo.personagens.npc import lorena, mercante
+from jogo.personagens.npc import Comerciante, Pessoa, Quest
+from jogo.itens.quest import ItemQuest
+from jogo.quests.funcoes_quests import quest_gato
 
 
 # Silenciar o pygame para não imprimir nada na tela
@@ -20,22 +22,34 @@ mixer.init()
 tela = Imprimir()
 
 
+mercante = Comerciante('farkas')
+
+item = ItemQuest('gatinho')
+lorena = Pessoa(
+    'lorena', Quest('pegar o gatinho', 150, 2000, item),
+    quest_gato,
+    f"lorena: você não encontrou meu gatinho."
+    " Encontreo para mim e eu lhe darei dinheiro."
+)
+
+
 class Tela_principal:
     def __init__(self, personagem):
+        texto = ['O que deseja fazer?']
+        texto2 = [
+            'explorar uma floresta',
+            'visitar o comerciante',
+            'equipar equipamentos',
+            'desequipar equipamentos',
+            'mostrar equipamentos equipados',
+            'vender itens',
+            'mostrar o status',
+            'salvar jogo',
+            'deletar save',
+            'sair'
+        ]
         self._texto = [
-            'O que deseja fazer?',
-            '1 - explorar uma floresta',
-            '2 - visitar o comerciante',
-            '3 - equipar equipamentos',
-            '4 - desequipar equipamentos',
-            '5 - mostrar equipamentos equipados',
-            '6 - vender itens',
-            '7 - mostrar seu dinheiro',
-            '8 - mostrar sua experiência',
-            '9 - mostrar o status',
-            '10 - salvar jogo',
-            '11 - deletar save',
-            '12 - sair'
+            f"{numero} - {texto}" for numero, texto in enumerate(texto2, 1)
         ]
         self.personagem = personagem
 
@@ -72,24 +86,19 @@ class Tela_principal:
             elif caracter == 6:
                 self.vender_item()
             elif caracter == 7:
-                tela.imprimir(str(self.personagem.pratas))
-                sleep(4)
-            elif caracter == 8:
-                tela.imprimir(f"{formas[230]} {self.personagem.experiencia}")
-                sleep(4)
-            elif caracter == 9:  # depois colocar o resto dos status aqui.
                 p = self.personagem
                 tela.imprimir(
                     f"{p.nome}: vida - {p.status['vida']}, armadura - "
                     f"{p.status['armadura']}, resistencias - "
-                    f"{p.status['resis']}, dano - {p.status['dano']}"
+                    f"{p.status['resis']}, dano - {p.status['dano']}, "
+                    f"dinheiro - {str(p.pratas)}, xp - {p.experiencia}"
                 )
                 sleep(4)
-            elif caracter == 10:
+            elif caracter == 8:
                 salvar_jogo(self.personagem, 'save.pk')
                 tela.imprimir('jogo salvo')
                 sleep(3)
-            elif caracter == 11:
+            elif caracter == 9:
                 arquivo = Path('save.pk')
                 if arquivo.exists():
                     arquivo.unlink()
@@ -97,7 +106,7 @@ class Tela_principal:
                 else:
                     tela.imprimir('save não existente')
                 sleep(3)
-            elif caracter == 12:
+            elif caracter == 10:
                 quit()
 
     def equipar_equipamentos(self):
@@ -173,10 +182,13 @@ class Tela_principal:
         return numero
 
 
-# TODO: restaurar a estamina/magia estando parado nos turnos.
+# TODO: restaurar a estamina/magia estando parado nos turnos
 # TODO: colocar mais cavernas
 # TODO: colocar mais npcs com quests
 # TODO: lutar ou fugir do boss?
 # TODO: poções, venenos
 # TODO: dragões
-# TODO: combate entre personagens
+# TODO: combate entre personagens bots
+# TODO: mostrar o dinheiro no comerciante
+# TODO: arrumar o "mostrar equipamentos equipados"
+# TODO: tentar remover "ida/volta" dos npcs
