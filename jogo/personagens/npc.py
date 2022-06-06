@@ -24,6 +24,7 @@ class Comerciante(Npc):
         self.tabela_cortada = chunk(self.tabela, 18)
 
     def comprar(self, item, quantidade: int, personagem):
+        """Método que faz as compras pelo personagem."""
         preço = quantidade * item.custo
         if int(personagem.pratas) > preço:
             personagem.pratas -= preço
@@ -35,11 +36,9 @@ class Comerciante(Npc):
             sleep(3)
 
     def interagir(self, personagem):
+        """Método que mostra os itens e obtem o número da compra."""
         tela.limpar_tela()
-        for texto in self.tabela:
-            tela.imprimir(texto + '\n')
-        tela.imprimir('O que deseja comprar?: ')
-        numero = tela.obter_string()
+        numero = self._obter_numero('O que deseja comprar?: ')
         while numero.isnumeric() and bool(numero) and int(numero) in self.itens:
             tela.imprimir('Quantidade: ')
             quantidade = tela.obter_string()
@@ -49,13 +48,13 @@ class Comerciante(Npc):
             tela.limpar_tela()
             for texto in self.tabela:
                 tela.imprimir(texto + '\n')
-            tela.imprimir('Deseja mais alguma coisa?: ')
-            numero = tela.obter_string()
+            numero = self._obter_numero('Deseja mais alguma coisa?: ')
         tela.limpar_tela()
         tela.imprimir('volte sempre!')
         sleep(1)
 
-    def _obter_numero(self):
+    def _obter_numero(self, mensagem):
+        """Método que organiza as páginas para o usuário e retorna um numero."""
         numeros_paginas = {
             f":{n}": n for n in range(1, len(self.tabela_cortada) + 1)
         }
@@ -71,7 +70,6 @@ class Comerciante(Npc):
                 tela.imprimir(texto + '\n')
             tela.imprimir('O que deseja comprar?: ')
             numero = tela.obter_string()
-        tela.limpar_tela()
         return numero
 
 
@@ -83,9 +81,11 @@ class Quest:
         self.xp = xp
 
     def pagar(self, personagem):
+        """Método que paga o personagem."""
         personagem.pratas += self.valor
 
     def depositar_xp(self, personagem):
+        """Método que dá o xp para o personagem."""
         personagem.experiencia += self.xp
 
 
@@ -100,11 +100,15 @@ class Pessoa(Npc):
         self.volta = False
 
     def missao(self, personagem):
+        """Método que coloca a missão na tela para o personagem."""
         tela.limpar_tela()
         missao = self.funcao_quest(self.nome, personagem, self.quest)
         self.missao_aceita = missao
 
     def entregar_quest(self, personagem):
+        """
+            Método que recebe a quest devolta, paga e da o xp para o personagem.
+        """
         if self.quest.item in personagem.inventario:
             self.quest.pagar(personagem)
             self.quest.depositar_xp(personagem)
@@ -123,6 +127,7 @@ class Pessoa(Npc):
             sleep(3)
 
     def interagir(self, personagem):
+        """Método que dá a quest para o personagem."""
         if not self.missao_finalizada:
             if self.missao_aceita:
                 self.entregar_quest(personagem)

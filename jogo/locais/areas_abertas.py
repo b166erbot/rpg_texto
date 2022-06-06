@@ -12,13 +12,15 @@ from time import sleep
 tela = Imprimir()
 
 
-def local_linear(passagens: list) -> list:
+def local_linear(passagens: list[str]) -> list[Local]:
+    """Função que retorna uma lista com passagens."""
     passagens = list(map(Local, passagens))
     fluxo = [choice(passagens) for _ in range(randint(3, 5))]
     return fluxo
 
 
 def gerar_fluxo():
+    """Função que retorna uma lista com fluxos."""
     passagens = [
         'matagal', 'area florestada', 'rio', 'trilha', 'gruta', 'corrego'
     ]
@@ -38,6 +40,7 @@ class Floresta:
         self.nivel = nivel
 
     def explorar(self, pessoa: Pessoa):
+        """Método que explora uma floresta com o personagem."""
         tela.limpar_tela()
         tela.imprimir(self.nome + '\n')
         for caminho in self._caminhos:
@@ -51,6 +54,7 @@ class Floresta:
                 return
 
     def caverna_pessoa(self, caminho: Local, npc: Pessoa):
+        """Se eu não sei nem dar o nome pro método, imagina a doc então."""
         efeito_digitando(str(caminho))
         if str(caminho) == 'caverna':
             tela.imprimir('deseja entrar na caverna? s/n\n')
@@ -99,6 +103,7 @@ class Floresta:
                 sleep(1)
 
     def sortear_inimigos(self):
+        """Método que sorteia os inimigos para o personagem."""
         if randint(1, 5) == 1:
             efeito_digitando('Monstros encontrados.')
             sleep(1)
@@ -117,6 +122,7 @@ class Floresta:
             return False
 
     def morto(self):
+        """Método que ressucita o personagem e exibe na tela "morto"."""
         self.personagem.ressucitar()
         tela.limpar_tela()
         tela.limpar_tela2()

@@ -18,7 +18,7 @@ tela = Imprimir()
 
 class Humano:
     """
-    Classe geral para cada classe no jogo.
+    Classe geral para cada classe de personagem no jogo.
 
     o que os atributos aumentão?
     vitalidade - vida
@@ -64,6 +64,7 @@ class Humano:
 
     @property
     def vida_maxima(self):
+        """Método que retorna a vida máxima."""
         equipamentos = filter(lambda x: x, self.equipamentos.values())
         equipamentos = filter(
             lambda x: x.tipo in ['Elmo', 'Peitoral', 'Calca', 'Botas', 'Anel'],
@@ -74,11 +75,13 @@ class Humano:
         return vida
 
     def atacar(self, other):
+        """Método que escolhe se ataca como bot ou não."""
         if self.jogador:
             return self._atacar_como_jogador(other)
         return self._atacar_como_bot(other)
 
     async def _atacar_como_bot(self, other):
+        """Método que ataca como bot."""
         while all([other.status['vida'] > 0, self.status['vida'] > 0]):
             self._consumir_pocoes_bot()
             dano = self.status['dano']
@@ -90,6 +93,7 @@ class Humano:
         await sleep(1)
 
     async def _atacar_como_jogador(self, other):
+        """Método que ataca como jogador."""
         while all([other.status['vida'] > 0, self.status['vida'] > 0]):
             self._consumir_pocoes_bot()
             dano = self.status['dano']
@@ -108,15 +112,18 @@ class Humano:
         await sleep(0.5)
 
     def arrumar_vida(self):
+        """Método que arruma a vida para não sair do limite permitido."""
         if self.status['vida'] < 0:
             self.status['vida'] = 0
         if self.status['vida'] > self.vida_maxima:
             self.status['vida'] = self.vida_maxima
 
     def ressucitar(self):
+        """Método que ressucita o personagem."""
         self.status['vida'] = self.vida_maxima
 
     def _consumir_pocoes_bot(self):
+        """Método que consome a poção caso você tenha."""
         if self.status['vida'] <= 30:
             pocao = self._dropar_pocoes()
             if pocao:
@@ -125,6 +132,7 @@ class Humano:
                     self.status['vida'] = self.vida_maxima
 
     def _dropar_pocoes(self) -> list:
+        """Método que retorna uma poção caso você tenha."""
         poções = [x for x in self.inventario if x.nome in nome_pocoes]
         if poções:
             index = self.inventario.index(poções[0])
@@ -133,10 +141,12 @@ class Humano:
         return False
 
     def recuperar_magia_stamina(self):
+        """Método que recupera a magia e stamina para máximo."""
         self.status['magia'] = 100
         self.status['stamina'] = 100
 
     def vender(self, equipamento):
+        """Método que vende um item no inventário."""
         index = self.inventario.index(equipamento)
         if self.equipamentos[equipamento.tipo] is equipamento:
             self.equipamentos[equipamento.tipo] = False
@@ -145,12 +155,14 @@ class Humano:
         self.inventario.pop(index)
 
     def desequipar(self, equipamento):
+        """Método que desequipa um item no inventário."""
         equipamento2 = self.equipamentos.get(equipamento.tipo)
         if equipamento2 and equipamento2 is equipamento:
             self.equipamentos[equipamento.tipo] = False
             self.atualizar_status()
 
     def receber_dano(self, dano, tipo):
+        """Método que dicerne se o tipo de dano e dá dano ao personagem."""
         if tipo == 'fisico':
             dano_ = dano - self.status['armadura']
         elif tipo == 'magico':
@@ -160,7 +172,12 @@ class Humano:
         self.status['vida'] -= dano_
 
     def atualizar_status(self):
-        equipamentos = list(filter(lambda x: x, self.equipamentos.values()))
+        """Método que atualiza o status."""
+        equipamentos = [
+            equipamento
+            for equipamento in self.equipamentos.values()
+            if bool(equipamento)
+        ]
         vestes = list(filter(
             lambda x: x.tipo in ['Elmo', 'Peitoral', 'Calca', 'Botas', 'Anel'],
             equipamentos
@@ -189,21 +206,22 @@ class Arqueiro(Humano):
         self.classe = 'Arqueiro'
 
     def flecha(self, other):
+        """Método que ataca o oponente."""
         other.status['vida'] -= 10 + self.status['dano']
 
     def tres_flechas(self, other):
+        """Método que ataca o oponente."""
         other.status['vida'] -= 15 + self.status['dano']
 
     def consumir_magia_stamina(self):
+        """Método que consome a magia ou stamina."""
         if self.status['stamina'] >= 20:
             self.status['stamina'] -= 20
             return True
         return False
 
-    def repr(self):
-        return self.classe
-
     def equipar(self, equipamento):
+        """Método que equipa um equipamento."""
         for classe in roupas + [Arco_longo, Arco_curto]:
             if isinstance(equipamento, classe):
                 self.equipamentos[equipamento.tipo] = equipamento
@@ -219,18 +237,22 @@ class Guerreiro(Humano):
         self.classe = 'Guerreiro'
 
     def investida(self, other):
+        """Método que ataca o oponente."""
         other.status['vida'] -= 10 + self.status['dano']
 
     def esmagar(self, other):
+        """Método que ataca o oponente."""
         other.status['vida'] -= 15 + self.status['dano']
 
     def consumir_magia_stamina(self):
+        """Método que consome a magia ou stamina."""
         if self.status['stamina'] >= 20:
             self.status['stamina'] -= 20
             return True
         return False
 
     def equipar(self, equipamento):
+        """Método que equipa um equipamento."""
         for classe in roupas + [Espada_longa, Espada_curta, Machado]:
             if isinstance(equipamento, classe):
                 self.equipamentos[equipamento.tipo] = equipamento
@@ -246,18 +268,22 @@ class Mago(Humano):
         self.classe = 'Mago'
 
     def bola_de_fogo(self, other):
+        """Método que ataca o oponente."""
         other.status['vida'] -= 15 + self.status['dano']
 
     def lanca_de_gelo(self, other):
+        """Método que ataca o oponente."""
         other.status['vida'] -= 10 + self.status['dano']
 
     def consumir_magia_stamina(self):
+        """Método que consome a magia ou stamina."""
         if self.status['magia'] >= 20:
             self.status['magia'] -= 20
             return True
         return False
 
     def equipar(self, equipamento):
+        """Método que equipa um equipamento."""
         for classe in roupas + [Cajado, Cajado_negro]:
             if isinstance(equipamento, classe):
                 self.equipamentos[equipamento.tipo] = equipamento
@@ -273,18 +299,22 @@ class Assassino(Humano):
         self.classe = 'Assassino'
 
     def lancar_faca(self, other):
+        """Método que ataca o oponente."""
         other.status['vida'] -= 10 + self.status['dano']
 
     def ataque_furtivo(self, other):
+        """Método que ataca o oponente."""
         other.status['vida'] -= 15 + self.status['dano']
 
     def consumir_magia_stamina(self):
+        """Método que consome a magia ou stamina."""
         if self.status['stamina'] >= 20:
             self.status['stamina'] -= 20
             return True
         return False
 
     def equipar(self, equipamento):
+        """Método que equipa um equipamento."""
         for classe in roupas + [Adaga]:
             if isinstance(equipamento, classe):
                 self.equipamentos[equipamento.tipo] = equipamento
@@ -300,20 +330,24 @@ class Clerigo(Humano):
         self.classe = 'Clerigo'
 
     def curar(self, other):
+        """Método que cura o personagem."""
         self.status['vida'] += 25 + self.status['dano']
         if self.status['vida'] >= self.vida_maxima:
             self.status['vida'] = self.vida_maxima
 
     def luz(self, other):
+        """Método que ataca o oponente."""
         other.status['vida'] -= 10 + self.status['dano']
 
     def consumir_magia_stamina(self):
+        """Método que consome a magia ou stamina."""
         if self.status['magia'] >= 20:
             self.status['magia'] -= 20
             return True
         return False
 
     def equipar(self, equipamento):
+        """Método que equipa um equipamento."""
         for classe in roupas + [Cajado]:
             if isinstance(equipamento, classe):
                 self.equipamentos[equipamento.tipo] = equipamento
@@ -328,18 +362,22 @@ class Monge(Humano):
         self.classe = 'Monge'
 
     def combo_de_chutes(self, other):
+        """Método que ataca o oponente."""
         other.status['vida'] -= 15 + self.status['dano']
 
     def multiplos_socos(self, other):
+        """Método que ataca o oponente."""
         other.status['vida'] -= 10 + self.status['dano']
 
     def consumir_magia_stamina(self):
+        """Método que consome a magia ou stamina."""
         if self.status['stamina'] >= 20:
             self.status['stamina'] -= 20
             return True
         return False
 
     def equipar(self, equipamento):
+        """Método que equipa um equipamento."""
         for classe in roupas + [Luvas_de_ferro]:
             if isinstance(equipamento, classe):
                 self.equipamentos[equipamento.tipo] = equipamento

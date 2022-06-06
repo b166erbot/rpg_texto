@@ -5,6 +5,7 @@ tela = Imprimir()
 
 
 def quest_gato(nome, personagem, quest):
+    """Função que dá a quest para o gato."""
     tela.imprimir(
         f'{nome}: Faz tempo que não vejo meu gatinho, acho que o perdi.'
     )

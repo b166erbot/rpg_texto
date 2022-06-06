@@ -10,6 +10,7 @@ class PocaoDeCura:
                 f"Cura: {self.pontos_cura}")
 
     def consumir(self):
+        """Método que consome a poção."""
         if not self.consumida:
             self.consumida = True
             return self.pontos_cura

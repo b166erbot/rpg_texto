@@ -54,6 +54,7 @@ class Tela_principal:
         self.personagem = personagem
 
     def ciclo(self):
+        """Método onde é exibido o menu principal para o usuário."""
         mixer.music.load('vilarejo.ogg')
         mixer.music.play()
         forma = f"{formas[227]} {{}} {formas[228]}"
@@ -110,6 +111,7 @@ class Tela_principal:
                 quit()
 
     def equipar_equipamentos(self):
+        """Método que equipa equipamentos do inventário do personagem."""
         numero = self._obter_numero('deseja equipar qual equipamento: ')
         if bool(numero):
             inventario = dict(enumerate(self.personagem.inventario))
@@ -118,6 +120,7 @@ class Tela_principal:
                 self.personagem.equipar(equipamento)
 
     def vender_item(self):
+        """Método que vende um item do inventário do personagem."""
         numero = self._obter_numero('deseja vender qual equipamento: ')
         if bool(numero):
             inventario = dict(enumerate(self.personagem.inventario))
@@ -126,6 +129,7 @@ class Tela_principal:
                 self.personagem.vender(equipamento)
 
     def desequipar(self):
+        """Método que desequipa um equipamento do personagem."""
         numero = self._obter_numero('deseja desequipar qual equipamento: ')
         if bool(numero):
             inventario = dict(enumerate(self.personagem.inventario))
@@ -134,6 +138,7 @@ class Tela_principal:
                 self.personagem.desequipar(equipamento)
 
     def floresta(self):
+        """Método que conduz o personagem à floresta."""
         tela.limpar_tela()
         nomes_florestas = [
             'amazonia', 'floresta rio preto', 'floresta do caçador',
@@ -157,6 +162,7 @@ class Tela_principal:
             mixer.music.stop()
 
     def _obter_numero(self, mensagem):
+        """Função que organiza as páginas para o usuário e retorna um número."""
         itens = list(enumerate(self.personagem.inventario))
         if len(itens) == 0:
             tela.imprimir('você não tem itens no inventario.')
@@ -191,3 +197,4 @@ class Tela_principal:
 # TODO: combate entre personagens bots
 # TODO: mostrar o dinheiro no comerciante
 # TODO: tentar remover "ida/volta" dos npcs
+# TODO: colocar o nome dos ataques tanto dos inimigos tanto do personagem na tela

@@ -14,26 +14,28 @@ tela = Imprimir()
 
 
 class Local:
-    def __init__(self, local):
+    def __init__(self, local: str):
         self.local = local
 
     def __str__(self):
         return f"entrando em {self.local}"
 
+    def __repr__(self):
+        return f"local: {self.local}"
 
-def local_linear(passagens, locais):
+
+def local_linear(passagens: list[str], locais: list[str]):
+    """Função que retorna uma lista com passagens."""
     passagens = list(map(Local, passagens))
     locais = list(map(Local, locais))
-    fluxo = []
-    for n in range(randint(2, 5)):
-        passagem = choice(passagens)
-        fluxo.append(passagem)
+    fluxo = [choice(passagens) for _ in range(randint(2, 5))]
     passagem = choice(locais)
     fluxo.append(passagem)
     return fluxo
 
 
 def gerar_fluxo():
+    """Função que retorna uma lista com fluxos."""
     passagens = [
         'bifurcação', 'área aberta', 'passagem estreita',
         'área com pedregulhos', 'lago subterraneo'
@@ -63,6 +65,7 @@ class Caverna:
         self.nivel = nivel
 
     def explorar(self):
+        """Método que explora uma caverna com o personagem."""
         tela.limpar_tela()
         tela.imprimir(
             'Esta caverna é difícil, necessita de algumas poções de vida'
@@ -99,6 +102,7 @@ class Caverna:
             tela.limpar_tela2()
 
     def sortear_inimigos(self):
+        """Método que sorteia os inimigos para o personagem."""
         if randint(0, 1):
             efeito_digitando('Monstros encontrados.')
             sleep(1)
@@ -117,6 +121,7 @@ class Caverna:
             return False
 
     def morto(self):
+        """Método que ressucita o personagem e exibe na tela "morto"."""
         self.personagem.ressucitar()
         tela.limpar_tela()
         tela.limpar_tela2()

@@ -24,6 +24,7 @@ class Monstro:
         self.nivel = nivel
 
     async def atacar(self, other):
+        """Método que ataca como bot o personagem."""
         while all([other.status['vida'] > 0, self.status['vida'] > 0]):
             dano = self.status['dano']
             other.receber_dano(dano, self.tipo_dano)
@@ -39,19 +40,23 @@ class Monstro:
         await sleep(0.5)
 
     def ressucitar(self):
+        """Método que ressucita."""
         self.status['vida'] = self.vida_
 
     @property
     def vida_maxima(self):
+        """Método que retorna a vida máxima."""
         return self.vida_
 
     def arrumar_vida(self):
+        """Método que arruma a vida."""
         if self.status['vida'] < 0:
             self.status['vida'] = 0
         if self.status['vida'] > self.vida_maxima:
             self.status['vida'] = self.vida_maxima
 
     def sortear_drops(self, personagem):
+        """Método que dá item e pratas ao personagem."""
         if randint(0, 2) == 1:
             efeito_digitando('Loot encontrado.')
             Item = choice(vestes + armas)
@@ -86,6 +91,7 @@ class Boss(Monstro):
         super().__init__(*args, **kwargs)
 
     def dar_loot_boss(self, personagem):
+        """Método que dá item e pratas ao personagem."""
         efeito_digitando('Loot encontrado.')
         Item = choice(vestes + armas)
         if issubclass(Item, Arma):
@@ -124,9 +130,11 @@ class Tartaruga(Monstro):
         self.tipo_dano = 'fisico'
 
     def investida(self, other):
+        """Método que ataca o personagem."""
         other.receber_dano(4 * self.nivel, self.tipo_dano)
 
     def garras_afiadas(self, other):
+        """Método que ataca o personagem."""
         other.receber_dano(6 * self.nivel, self.tipo_dano)
 
 
@@ -140,9 +148,11 @@ class Camaleao(Monstro):
         self.tipo_dano = 'fisico'
 
     def trapasseiro(self, other):
+        """Método que ataca o personagem."""
         other.receber_dano(4 * self.nivel, self.tipo_dano)
 
     def roubo(self, other):
+        """Método que ataca o personagem."""
         other.receber_dano(5 * self.nivel, self.tipo_dano)
 
 
@@ -156,9 +166,11 @@ class Tamandua(Monstro):
         self.tipo_dano = 'fisico'
 
     def abraco(self, other):
+        """Método que ataca o personagem."""
         other.receber_dano(5 * self.nivel, self.tipo_dano)
 
     def linguada(self, other):
+        """Método que ataca o personagem."""
         other.receber_dano(3 * self.nivel, self.tipo_dano)
 
 
@@ -172,9 +184,11 @@ class Sapo(Monstro):
         self.tipo_dano = 'magico'
 
     def salto(self, other):
+        """Método que ataca o personagem."""
         other.receber_dano(5 * self.nivel, self.tipo_dano)
 
     def linguada(self, other):
+        """Método que ataca o personagem."""
         other.receber_dano(3 * self.nivel, self.tipo_dano)
 
 
@@ -188,9 +202,11 @@ class Topera(Boss):
         self.tipo_dano = 'fisico'
 
     def pulo_fatal(self, other):
+        """Método que ataca o personagem."""
         other.receber_dano(7 * self.nivel, self.tipo_dano)
 
     def terremoto(self, other):
+        """Método que ataca o personagem."""
         other.receber_dano(10 * self.nivel, self.tipo_dano)
 
 
@@ -204,9 +220,11 @@ class Mico(Boss):
         self.tipo_dano = 'magico'
 
     def tacar_banana(self, other):
+        """Método que ataca o personagem."""
         other.receber_dano(10 * self.nivel, self.tipo_dano)
 
     def esmagar(self, other):
+        """Método que ataca o personagem."""
         other.receber_dano(15 * self.nivel, self.tipo_dano)
 
 
@@ -220,9 +238,11 @@ class Sucuri(Boss):
         self.tipo_dano = 'magico'
 
     def lancamento_de_calda(self, other):
+        """Método que ataca o personagem."""
         other.receber_dano(10 * self.nivel, self.tipo_dano)
 
     def bote(self, other):
+        """Método que ataca o personagem."""
         other.receber_dano(15 * self.nivel, self.tipo_dano)
 
 
@@ -236,7 +256,9 @@ class ArvoreDeku(Boss):
         self.tipo_dano = 'fisico'
 
     def braçada(self, other):
+        """Método que ataca o personagem."""
         other.receber_dano(10 * self.nivel, self.tipo_dano)
 
     def outono(self, other):
+        """Método que ataca o personagem."""
         other.receber_dano(15 * self.nivel, self.tipo_dano)
