@@ -1,5 +1,4 @@
 from asyncio import get_event_loop, wait
-from typing import Tuple
 from itertools import permutations
 from jogo.tela.imprimir import Imprimir
 

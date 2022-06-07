@@ -1,19 +1,16 @@
-class Arma:
-    def __init__(
-        self, nome = '', dano = 1, velo_ataque = 1, critico = 0,
-    ):
-        self.nome = nome
-        self.dano = dano
-        self.velo_ataque = velo_ataque
-        self.critico = critico
-        self.preco = (dano + velo_ataque + critico) * 8
-        self.tipo = 'Arma'
+from dataclasses import dataclass, field
 
-    def __repr__(self):
-        return (
-            f"{self.nome} - dano: {self.dano} velo_ataque: {self.velo_ataque}"
-            f" critico: {self.critico}"
-        )
+
+@dataclass
+class Arma:
+    nome: str = field(repr = False, default = '')
+    dano: int = 1
+    velo_ataque: int = 1
+    critico: int = 0
+    tipo: str = field(repr=False, default='Arma', init=False)
+
+    def __post_init__(self):
+        self.preco = (self.dano + self.velo_ataque + self.critico) * 8
 
 
 class Espada_longa(Arma):

@@ -47,7 +47,7 @@ class Floresta:
             morto = self.caverna_pessoa(caminho, pessoa)
             if morto == 'morto':
                 return
-        tela.imprimir('voltando ao início da floresta\n')
+        tela.imprimir('voltando para o início da floresta\n')
         for caminho in self._caminhos[-2::-1]:
             morto = self.caverna_pessoa(caminho, pessoa)
             if morto == 'morto':
@@ -62,7 +62,7 @@ class Floresta:
                 caverna = Caverna('poço azul', self.personagem, self.nivel)
                 caverna.explorar()
                 self.personagem.recuperar_magia_stamina()
-                self.personagem.status['vida'] = 100
+                self.personagem.ressucitar()
                 tela.imprimir('saindo da caverna')
                 sleep(2)
             tela.limpar_tela()

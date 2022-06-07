@@ -200,16 +200,16 @@ class Humano:
 class Arqueiro(Humano):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        habilidades = [self.flecha, self.tres_flechas]
-        self.habilidades_nomes = ['flecha', 'três flexas']
+        habilidades = [self.tres_flechas, self.flecha_de_fogo]
+        self.habilidades_nomes = ['três flexas', 'flecha de fogo']
         self.habilidades = dict(enumerate(habilidades, 1))
         self.classe = 'Arqueiro'
 
-    def flecha(self, other):
+    def tres_flechas(self, other):
         """Método que ataca o oponente."""
         other.status['vida'] -= 10 + self.status['dano']
 
-    def tres_flechas(self, other):
+    def flecha_de_fogo(self, other):
         """Método que ataca o oponente."""
         other.status['vida'] -= 15 + self.status['dano']
 

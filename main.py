@@ -12,7 +12,7 @@ from jogo.personagens.classes import (
 )
 from jogo.personagens.npc import Comerciante
 from jogo.locais.cavernas import Caverna
-from jogo.tela.tela_principal import Tela_principal
+from jogo.tela.menu import Menu
 from jogo.tela.imprimir import Imprimir
 from jogo.utils import carregar_jogo
 from pathlib import Path
@@ -44,9 +44,9 @@ def main():
                 tela.imprimir(f"{numero} - {classe}\n")
             tela.imprimir('Escolha a classe do seu personagem: ')
             numero_personagem = int(tela.obter_string())
-        classe = classes_dict[classes_dict2[numero_personagem]]
-        personagem = classe(nome, True)
-    tela = Tela_principal(personagem)
+        Classe = classes_dict[classes_dict2[numero_personagem]]
+        personagem = Classe(nome, True)
+    tela = Menu(personagem)
     tela.ciclo()
 
 

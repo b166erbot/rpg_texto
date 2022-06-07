@@ -1,18 +1,18 @@
-class Roupa:
-    def __init__(
-        self, nome = '', vida = 0, resistencias = 0,
-        armadura = 0, velo_movi = 0
-    ):
-        self.nome = nome
-        self.vida = vida
-        self.resistencias = resistencias
-        self.armadura = armadura
-        self.preco = (int(vida / 2) + resistencias + armadura) * 8
+from dataclasses import dataclass, field
 
-    def __repr__(self):
-        return (
-            f"{self.nome} - vida: {self.vida},"
-            f" resistencias: {self.resistencias}, armadura: {self.armadura}"
+
+@dataclass
+class Roupa:
+    nome: str = field(repr = False, default = '')
+    vida: int = 0
+    resistencias: int = 0
+    armadura: int = 0
+    velo_movi: int = 0
+    tipo: str = field(repr = False, default = 'Roupa', init = False)
+
+    def __post_init__(self):
+        self.preco = (
+            (int(self.vida / 2) + self.resistencias + self.armadura) * 8
         )
 
 
@@ -46,22 +46,20 @@ class Luvas(Roupa):
         self.tipo = 'Luvas'
 
 
+@dataclass
 class Anel:
-    def __init__(
-        self, nome = '', dano = 0, vida = 0, resistencias = 0, armadura = 0
-    ):
-        self.nome = nome
-        self.dano = dano
-        self.vida = vida
-        self.resistencias = resistencias
-        self.armadura = armadura
-        self.tipo = "Anel"
-        self.preco = (dano + int(vida / 2) + resistencias + armadura) * 8
+    nome: str = field(repr = False, default = '')
+    dano: int = 0
+    vida: int = 0
+    resistencias: int = 0
+    armadura: int = 0
+    tipo: str = field(repr = False, default = 'Anel', init = False)
 
-    def __repr__(self):
-        return (
-            f"{self.nome} - vida: {self.vida}, dano: {self.dano}"
-            f" resistencias: {self.resistencias}, armadura: {self.armadura}"
+    def __post_init__(self):
+        self.preco = (
+            (self.dano + int(self.vida / 2) +
+            self.resistencias + self.armadura) * 8
         )
+
 
 tudo = [Peitoral, Elmo, Calca, Botas, Luvas, Anel]

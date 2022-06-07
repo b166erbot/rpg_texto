@@ -22,7 +22,7 @@ mixer.init()
 tela = Imprimir()
 
 
-mercante = Comerciante('farkas')
+comerciante = Comerciante('farkas')
 
 item = ItemQuest('gatinho')
 lorena = Pessoa(
@@ -33,7 +33,7 @@ lorena = Pessoa(
 )
 
 
-class Tela_principal:
+class Menu:
     def __init__(self, personagem):
         texto = ['O que deseja fazer?']
         texto2 = [
@@ -48,7 +48,7 @@ class Tela_principal:
             'deletar save',
             'sair'
         ]
-        self._texto = [
+        self._texto = texto + [
             f"{numero} - {texto}" for numero, texto in enumerate(texto2, 1)
         ]
         self.personagem = personagem
@@ -64,7 +64,7 @@ class Tela_principal:
                 tela.imprimir(forma.format(texto) + '\n')
             tela.imprimir(': ')
             caracter = tela.obter_string()
-            if not caracter or not caracter.isnumeric():
+            if not caracter.isnumeric():
                 continue
             caracter = int(caracter)
             if caracter == 1:
@@ -73,7 +73,7 @@ class Tela_principal:
                 mixer.music.load('vilarejo.ogg')
                 mixer.music.play()
             elif caracter == 2:
-                mercante.interagir(self.personagem)
+                comerciante.interagir(self.personagem)
             elif caracter == 3:
                 self.equipar_equipamentos()
             elif caracter == 4:
@@ -87,14 +87,16 @@ class Tela_principal:
             elif caracter == 6:
                 self.vender_item()
             elif caracter == 7:
+                tela.limpar_tela()
                 p = self.personagem
                 tela.imprimir(
-                    f"{p.nome}: vida - {p.status['vida']}, armadura - "
+                    f"{p.nome} [{p.classe}]: vida - {p.status['vida']}, armadura - "
                     f"{p.status['armadura']}, resistencias - "
                     f"{p.status['resis']}, dano - {p.status['dano']}, "
-                    f"dinheiro - {str(p.pratas)}, xp - {p.experiencia}"
+                    f"dinheiro - {str(p.pratas)}, xp - {p.experiencia}\n"
                 )
-                sleep(4)
+                tela.imprimir('aperte enter para retornar ao menu principal: ')
+                tela.obter_string()
             elif caracter == 8:
                 salvar_jogo(self.personagem, 'save.pk')
                 tela.imprimir('jogo salvo')
@@ -150,19 +152,19 @@ class Tela_principal:
             tela.imprimir(f"{numero} - {floresta}\n")
         tela.imprimir(': ')
         numero = tela.obter_string()
-        if numero.isnumeric():
+        if numero.isnumeric() and int(numero) in nomes_florestas_dict:
             mixer.music.load('som_da_floresta.ogg')
             mixer.music.play()
             numero = int(numero)
-            floresta = nomes_florestas_dict[numero]
+            floresta = nomes_florestas_dict[int(numero)]
             floresta = Floresta(floresta, self.personagem, numero)
             floresta.explorar(lorena)
             self.personagem.recuperar_magia_stamina()
-            self.personagem.status['vida'] = 100
+            self.personagem.ressucitar()
             mixer.music.stop()
 
     def _obter_numero(self, mensagem):
-        """Função que organiza as páginas para o usuário e retorna um número."""
+        """Método que organiza as páginas para o usuário e retorna um número."""
         itens = list(enumerate(self.personagem.inventario))
         if len(itens) == 0:
             tela.imprimir('você não tem itens no inventario.')
