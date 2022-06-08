@@ -4,6 +4,22 @@ from jogo.tela.imprimir import Imprimir
 tela = Imprimir()
 
 
+class Quest:
+    def __init__(self, descricao, valor, xp, item):
+        self.descricao = descricao
+        self.valor = valor
+        self.item = item
+        self.xp = xp
+
+    def pagar(self, personagem):
+        """Método que paga o personagem."""
+        personagem.pratas += self.valor
+
+    def depositar_xp(self, personagem):
+        """Método que dá o xp para o personagem."""
+        personagem.experiencia += self.xp
+
+
 def quest_gato(nome, personagem, quest):
     """Função que dá a quest para o gato."""
     tela.imprimir(

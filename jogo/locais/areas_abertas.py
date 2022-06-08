@@ -7,7 +7,10 @@ from jogo.personagens.monstros import (
 )
 from jogo.assincrono.combate import combate
 from time import sleep
+from typing import Union
 
+
+local_str = Union[Local, str]
 
 tela = Imprimir()
 
@@ -19,13 +22,13 @@ def local_linear(passagens: list[str]) -> list[Local]:
     return fluxo
 
 
-def gerar_fluxo():
+def gerar_fluxo() -> list[local_str]:
     """Função que retorna uma lista com fluxos."""
     passagens = [
         'matagal', 'area florestada', 'rio', 'trilha', 'gruta', 'corrego'
     ]
     fluxo = (
-        local_linear(passagens) + ['pessoa desconhecida']
+        local_linear(passagens)
         + local_linear(passagens) + ['caverna']
         + local_linear(passagens) + ['caverna', 'arvore deku']
     )
@@ -65,12 +68,6 @@ class Floresta:
                 self.personagem.ressucitar()
                 tela.imprimir('saindo da caverna')
                 sleep(2)
-            tela.limpar_tela()
-        elif str(caminho) == 'pessoa desconhecida':
-            tela.imprimir('deseja interagir com pessoa desconhecida?: ')
-            if tela.obter_string().lower() in ['s', 'sim']:
-                npc.interagir(self.personagem)
-            npc.volta = True
             tela.limpar_tela()
         elif str(caminho) == 'arvore deku':
             status = {

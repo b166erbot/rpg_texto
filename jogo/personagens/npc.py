@@ -9,19 +9,23 @@ tela = Imprimir()
 
 
 class Npc:
-    def __init__(self, nome: str):
+    def __init__(self, nome: str, tipo: str):
         self.nome = nome
+        self.tipo = tipo
+
+    def __str__(self):
+        return f"{self.nome}[{self.tipo}]"
 
 
 class Comerciante(Npc):
     def __init__(self, nome: str):
-        super().__init__(nome)
+        super().__init__(nome, 'Comerciante')
         self.itens = {x: y for x, y in enumerate(curas, 1)}
         self.tabela = [
             f"{numero} - {item.nome} ${item.custo}"
             for numero, item in self.itens.items()
         ]
-        self.tabela_cortada = chunk(self.tabela, 18)
+        self.tabela_cortada = chunk(self.tabela, 16)
 
     def comprar(self, item, quantidade: int, personagem):
         """Método que faz as compras pelo personagem."""
@@ -38,7 +42,7 @@ class Comerciante(Npc):
     def interagir(self, personagem):
         """Método que mostra os itens e obtem o número da compra."""
         tela.limpar_tela()
-        numero = self._obter_numero('O que deseja comprar?: ')
+        numero = self._obter_numero('O que deseja comprar?: ', personagem)
         while numero.isnumeric() and bool(numero) and int(numero) in self.itens:
             tela.imprimir('Quantidade: ')
             quantidade = tela.obter_string()
@@ -46,14 +50,14 @@ class Comerciante(Npc):
                 break
             self.comprar(self.itens[int(numero)], int(quantidade), personagem)
             tela.limpar_tela()
-            for texto in self.tabela:
-                tela.imprimir(texto + '\n')
-            numero = self._obter_numero('Deseja mais alguma coisa?: ')
+            numero = self._obter_numero(
+                'Deseja mais alguma coisa?: ', personagem
+            )
         tela.limpar_tela()
         tela.imprimir('volte sempre!')
         sleep(1)
 
-    def _obter_numero(self, mensagem):
+    def _obter_numero(self, mensagem: str, personagem):
         """Método que organiza as páginas para o usuário e retorna um numero."""
         numeros_paginas = {
             f":{n}": n for n in range(1, len(self.tabela_cortada) + 1)
@@ -65,39 +69,23 @@ class Comerciante(Npc):
                 f"páginas: {len(self.tabela_cortada)}"
                 " - Para passar de página digite :numero exemplo-> :2\n"
             )
+            tela.imprimir(f"seu dinheiro: {personagem.pratas}\n")
             n = numeros_paginas.get(numero, 1)
             for texto in self.tabela_cortada[n -1]:
                 tela.imprimir(texto + '\n')
-            tela.imprimir('O que deseja comprar?: ')
+            tela.imprimir(mensagem)
             numero = tela.obter_string()
         return numero
 
 
-class Quest:
-    def __init__(self, descricao, valor, xp, item):
-        self.descricao = descricao
-        self.valor = valor
-        self.item = item
-        self.xp = xp
-
-    def pagar(self, personagem):
-        """Método que paga o personagem."""
-        personagem.pratas += self.valor
-
-    def depositar_xp(self, personagem):
-        """Método que dá o xp para o personagem."""
-        personagem.experiencia += self.xp
-
-
 class Pessoa(Npc):
     def __init__(self, nome, quest, funcao_quest, mensagem):
-        super().__init__(nome)
+        super().__init__(nome, 'Pessoa do vilarejo')
         self.quest = quest
         self.funcao_quest = funcao_quest
         self.missao_aceita = False
         self.missao_finalizada = False
         self.mensagem = mensagem
-        self.volta = False
 
     def missao(self, personagem):
         """Método que coloca a missão na tela para o personagem."""
@@ -131,7 +119,7 @@ class Pessoa(Npc):
         if not self.missao_finalizada:
             if self.missao_aceita:
                 self.entregar_quest(personagem)
-            elif not self.volta:
+            elif not self.missao_aceita:
                 self.missao(personagem)
             else:
                 tela.imprimir(f"{self.nome}: não tenho mais nada a pedir.\n")

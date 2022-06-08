@@ -24,7 +24,7 @@ def main():
     if Path('save.pk').exists():
         personagem = carregar_jogo('save.pk')
         tela.imprimir('jogo carregado')
-        sleep(3)
+        sleep(2)
     else:
         nome = ''
         while not bool(nome):
@@ -36,18 +36,22 @@ def main():
             'Arqueiro', 'Guerreiro', 'Mago', 'Assassino', 'Clerigo', 'Monge'
         ]
         classes_dict = dict(zip(classes_nomes, classes))
-        classes_dict2 = dict(enumerate(classes_nomes))
+        # transformar os números do enumerate em string
+        classes_dict2 = map(
+            lambda x: (str(x[0]), x[1]), enumerate(classes_nomes)
+        )
+        classes_dict2 = dict(classes_dict2)
         numero_personagem = ''
         while numero_personagem not in classes_dict2:
             tela.limpar_tela()
             for numero, classe in classes_dict2.items():
                 tela.imprimir(f"{numero} - {classe}\n")
             tela.imprimir('Escolha a classe do seu personagem: ')
-            numero_personagem = int(tela.obter_string())
+            numero_personagem = tela.obter_string()
         Classe = classes_dict[classes_dict2[numero_personagem]]
         personagem = Classe(nome, True)
-    tela = Menu(personagem)
-    tela.ciclo()
+    menu = Menu(personagem)
+    menu.ciclo()
 
 
 if __name__ == '__main__':

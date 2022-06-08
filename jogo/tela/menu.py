@@ -7,9 +7,10 @@ from jogo.utils import chunk, salvar_jogo
 import sys
 from unittest.mock import MagicMock
 from pathlib import Path
-from jogo.personagens.npc import Comerciante, Pessoa, Quest
+from jogo.personagens.npc import Comerciante, Pessoa
 from jogo.itens.quest import ItemQuest
-from jogo.quests.funcoes_quests import quest_gato
+from jogo.quests.funcoes_quests import quest_gato, Quest
+from jogo.locais.habitaveis import Vilarejo
 
 
 # Silenciar o pygame para não imprimir nada na tela
@@ -38,7 +39,7 @@ class Menu:
         texto = ['O que deseja fazer?']
         texto2 = [
             'explorar uma floresta',
-            'visitar o comerciante',
+            'visitar o vilarejo',
             'equipar equipamentos',
             'desequipar equipamentos',
             'mostrar equipamentos equipados',
@@ -46,12 +47,15 @@ class Menu:
             'mostrar o status',
             'salvar jogo',
             'deletar save',
-            'sair'
+            'sair',
         ]
         self._texto = texto + [
             f"{numero} - {texto}" for numero, texto in enumerate(texto2, 1)
         ]
         self.personagem = personagem
+        self.vilarejo = Vilarejo(
+            'Vila dos hobbits', personagem, [lorena, comerciante]
+        )
 
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""
@@ -73,17 +77,22 @@ class Menu:
                 mixer.music.load('vilarejo.ogg')
                 mixer.music.play()
             elif caracter == 2:
-                comerciante.interagir(self.personagem)
+                self.vilarejo.explorar()
             elif caracter == 3:
                 self.equipar_equipamentos()
             elif caracter == 4:
                 self.desequipar()
             elif caracter == 5:
                 tela.limpar_tela()
-                equipamentos = self.personagem.equipamentos.values()
-                for item in equipamentos:
-                    tela.imprimir(f"{item}\n")
-                sleep(4)
+                equipamentos = self.personagem.equipamentos.items()
+                for nome, item in equipamentos:
+                    frase_negativa = f"Não há item equipado em {nome}\n"
+                    frase_positiva = f"{nome}: {item}\n"
+                    tela.imprimir(
+                        frase_positiva if bool(item) else frase_negativa
+                    )
+                tela.imprimir('aperte enter para retornar ao menu principal: ')
+                tela.obter_string()
             elif caracter == 6:
                 self.vender_item()
             elif caracter == 7:
@@ -191,12 +200,12 @@ class Menu:
 
 
 # TODO: restaurar a estamina/magia estando parado nos turnos
-# TODO: colocar mais cavernas
 # TODO: colocar mais npcs com quests
 # TODO: lutar ou fugir do boss?
 # TODO: poções, venenos
 # TODO: dragões
 # TODO: combate entre personagens bots
 # TODO: mostrar o dinheiro no comerciante
-# TODO: tentar remover "ida/volta" dos npcs
 # TODO: colocar o nome dos ataques tanto dos inimigos tanto do personagem na tela
+# TODO: colocar level nos personagens pois eles só tem xp
+# TODO: e com o level, colocar subclasses aos personagens
