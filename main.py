@@ -37,10 +37,7 @@ def main():
         ]
         classes_dict = dict(zip(classes_nomes, classes))
         # transformar os números do enumerate em string
-        classes_dict2 = map(
-            lambda x: (str(x[0]), x[1]), enumerate(classes_nomes)
-        )
-        classes_dict2 = dict(classes_dict2)
+        classes_dict2 = {str(x): y for x, y in enumerate(classes_nomes)}
         numero_personagem = ''
         while numero_personagem not in classes_dict2:
             tela.limpar_tela()

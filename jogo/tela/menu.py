@@ -205,7 +205,9 @@ class Menu:
 # TODO: poções, venenos
 # TODO: dragões
 # TODO: combate entre personagens bots
-# TODO: mostrar o dinheiro no comerciante
 # TODO: colocar o nome dos ataques tanto dos inimigos tanto do personagem na tela
 # TODO: colocar level nos personagens pois eles só tem xp
 # TODO: e com o level, colocar subclasses aos personagens
+# TODO: fazer uma função que imprime a história do jogo.
+# TODO: fazer um menu para ver qual npc o usuário quer interagir
+# TODO: colocar tempo para ir até o vilarejo ou floresta
