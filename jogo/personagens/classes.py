@@ -1,14 +1,14 @@
-from collections import Counter
 from asyncio import sleep
-from random import randint, choice
-from jogo.tela.imprimir import formatar_status, Imprimir
+from collections import Counter
+from random import choice, randint
+
+from jogo.itens.armas import (Adaga, Arco_curto, Arco_longo, Cajado,
+                              Cajado_negro, Espada_curta, Espada_longa,
+                              Luvas_de_ferro, Machado)
 from jogo.itens.moedas import Pratas
 from jogo.itens.pocoes import curas
 from jogo.itens.vestes import tudo as roupas
-from jogo.itens.armas import (
-    Espada_longa, Machado, Espada_curta, Cajado, Cajado_negro, Arco_longo,
-    Arco_curto, Adaga, Luvas_de_ferro
-)
+from jogo.tela.imprimir import Imprimir, formatar_status
 
 nome_pocoes = list(map(lambda x: x.nome, curas))
 
@@ -145,13 +145,11 @@ class Humano:
         self.status['magia'] = 100
         self.status['stamina'] = 100
 
+    # é melhor deixar que a instância desequipe.
     def vender(self, equipamento):
         """Método que vende um item no inventário."""
-        index = self.inventario.index(equipamento)
-        if self.equipamentos[equipamento.tipo] is equipamento:
-            self.equipamentos[equipamento.tipo] = False
-            self.atualizar_status()
         self.pratas += equipamento.preco
+        index = self.inventario.index(equipamento)
         self.inventario.pop(index)
 
     def desequipar(self, equipamento):

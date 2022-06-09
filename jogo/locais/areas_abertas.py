@@ -1,14 +1,14 @@
-from random import randint, choice
-from .cavernas import Local, Caverna
-from jogo.tela.imprimir import Imprimir, efeito_digitando
-from jogo.personagens.npc import Pessoa
-from jogo.personagens.monstros import (
-    Tartaruga, Camaleao, Tamandua, Sapo, ArvoreDeku
-)
-from jogo.assincrono.combate import combate
+from random import choice, randint
 from time import sleep
 from typing import Union
 
+from jogo.assincrono.combate import combate
+from jogo.personagens.monstros import (ArvoreDeku, Camaleao, Sapo, Tamandua,
+                                       Tartaruga)
+from jogo.personagens.npc import Pessoa
+from jogo.tela.imprimir import Imprimir, efeito_digitando
+
+from .cavernas import Caverna, Local
 
 local_str = Union[Local, str]
 
@@ -55,6 +55,7 @@ class Floresta:
             morto = self.caverna_pessoa(caminho, pessoa)
             if morto == 'morto':
                 return
+        sleep(1)
 
     def caverna_pessoa(self, caminho: Local, npc: Pessoa):
         """Se eu não sei nem dar o nome pro método, imagina a doc então."""

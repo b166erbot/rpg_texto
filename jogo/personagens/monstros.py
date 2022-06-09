@@ -1,10 +1,12 @@
 from asyncio import sleep
 from collections import Counter
-from random import randint, choice
-from jogo.tela.imprimir import Imprimir, formatar_status, efeito_digitando
-from jogo.itens.armas import tudo as armas, Arma
-from jogo.itens.vestes import tudo as vestes, Roupa, Anel
+from random import choice, randint
 
+from jogo.itens.armas import Arma
+from jogo.itens.armas import tudo as armas
+from jogo.itens.vestes import Anel, Roupa
+from jogo.itens.vestes import tudo as vestes
+from jogo.tela.imprimir import Imprimir, efeito_digitando, formatar_status
 
 tela = Imprimir()
 

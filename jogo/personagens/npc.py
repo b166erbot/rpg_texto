@@ -1,9 +1,8 @@
-from jogo.tela.imprimir import Imprimir
-from jogo.itens.pocoes import curas
-from jogo.utils import Substantivo
 from time import sleep
-from jogo.utils import chunk
 
+from jogo.itens.pocoes import curas
+from jogo.tela.imprimir import Imprimir
+from jogo.utils import Substantivo, chunk
 
 tela = Imprimir()
 
@@ -36,7 +35,7 @@ class Comerciante(Npc):
                 personagem.inventario.append(item())
         else:
             texto = 'compra não realizada: dinheiro insuficiente'
-            tela.imprimir(texto)
+            tela.imprimir(texto, 'cyan')
             sleep(3)
 
     def interagir(self, personagem):
@@ -44,7 +43,7 @@ class Comerciante(Npc):
         tela.limpar_tela()
         numero = self._obter_numero('O que deseja comprar?: ', personagem)
         while numero.isnumeric() and bool(numero) and int(numero) in self.itens:
-            tela.imprimir('Quantidade: ')
+            tela.imprimir('Quantidade: ', 'cyan')
             quantidade = tela.obter_string()
             if not bool(quantidade):
                 break
@@ -54,7 +53,7 @@ class Comerciante(Npc):
                 'Deseja mais alguma coisa?: ', personagem
             )
         tela.limpar_tela()
-        tela.imprimir('volte sempre!')
+        tela.imprimir('volte sempre!', 'cyan')
         sleep(1)
 
     def _obter_numero(self, mensagem: str, personagem):
@@ -67,13 +66,14 @@ class Comerciante(Npc):
             tela.limpar_tela()
             tela.imprimir(
                 f"páginas: {len(self.tabela_cortada)}"
-                " - Para passar de página digite :numero exemplo-> :2\n"
+                " - Para passar de página digite :numero exemplo-> :2\n",
+                'cyan'
             )
-            tela.imprimir(f"seu dinheiro: {personagem.pratas}\n")
+            tela.imprimir(f"seu dinheiro: {personagem.pratas}\n", 'cyan')
             n = numeros_paginas.get(numero, 1)
             for texto in self.tabela_cortada[n -1]:
-                tela.imprimir(texto + '\n')
-            tela.imprimir(mensagem)
+                tela.imprimir(texto + '\n', 'cyan')
+            tela.imprimir(mensagem, 'cyan')
             numero = tela.obter_string()
         return numero
 
@@ -107,11 +107,11 @@ class Pessoa(Npc):
             self.missao_finalizada = True
             tela.imprimir(
                 f'{self.nome}: Muito obrigad{Substantivo(self.nome)}.'
-                ' aqui está seu dinheiro'
+                ' aqui está seu dinheiro', 'cyan'
             )
             sleep(3)
         else:
-            tela.imprimir(self.mensagem)
+            tela.imprimir(self.mensagem, 'cyan')
             sleep(3)
 
     def interagir(self, personagem):
@@ -122,8 +122,12 @@ class Pessoa(Npc):
             elif not self.missao_aceita:
                 self.missao(personagem)
             else:
-                tela.imprimir(f"{self.nome}: não tenho mais nada a pedir.\n")
+                tela.imprimir(
+                    f"{self.nome}: não tenho mais nada a pedir.\n", 'cyan'
+                )
                 sleep(2)
         else:
-            tela.imprimir(f"{self.nome}: não tenho mais nada a pedir.\n")
+            tela.imprimir(
+                f"{self.nome}: não tenho mais nada a pedir.\n", 'cyan'
+            )
             sleep(2)

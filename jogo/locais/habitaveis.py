@@ -1,7 +1,6 @@
 from jogo.tela.imprimir import Imprimir
 from jogo.utils import chunk
 
-
 tela = Imprimir()
 
 
@@ -32,12 +31,13 @@ class Vilarejo:
         while numero in numeros_paginas:
             tela.limpar_tela()
             tela.imprimir(
-                f"páginas: {len(self.tabela_cortada)}"
-                " - Para passar de página digite :numero exemplo-> :2\n"
+                f"páginas: {len(self.tabela_cortada)} "
+                "- Para passar de página digite :numero exemplo-> :2\n",
+                'cyan'
             )
             n = numeros_paginas.get(numero, 1)
             for texto in self.tabela_cortada[n -1]:
-                tela.imprimir(texto + '\n')
-            tela.imprimir(mensagem)
+                tela.imprimir(texto + '\n', 'cyan')
+            tela.imprimir(mensagem, 'cyan')
             numero = tela.obter_string()
         return numero

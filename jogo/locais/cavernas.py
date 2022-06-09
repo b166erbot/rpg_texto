@@ -1,14 +1,14 @@
-from random import randint, choice
+from random import choice, randint
 from time import sleep
-from jogo.personagens.monstros import (
-    Tartaruga, Camaleao, Topera, Mico, Sucuri
-)
-from jogo.assincrono.combate import combate
-from jogo.tela.imprimir import efeito_digitando, Imprimir
-from jogo.itens.pocoes import curas
-from jogo.itens.vestes import tudo as vestes, Roupa, Anel
-from jogo.itens.armas import tudo as armas, Arma
 
+from jogo.assincrono.combate import combate
+from jogo.itens.armas import Arma
+from jogo.itens.armas import tudo as armas
+from jogo.itens.pocoes import curas
+from jogo.itens.vestes import Anel, Roupa
+from jogo.itens.vestes import tudo as vestes
+from jogo.personagens.monstros import Camaleao, Mico, Sucuri, Tartaruga, Topera
+from jogo.tela.imprimir import Imprimir, efeito_digitando
 
 tela = Imprimir()
 

@@ -1,6 +1,5 @@
 from jogo.tela.imprimir import Imprimir
 
-
 tela = Imprimir()
 
 
@@ -23,11 +22,11 @@ class Quest:
 def quest_gato(nome, personagem, quest):
     """Função que dá a quest para o gato."""
     tela.imprimir(
-        f'{nome}: Faz tempo que não vejo meu gatinho, acho que o perdi.'
+        f'{nome}: Faz tempo que não vejo meu gatinho, acho que o perdi. '
+        'Ele sempre vai brincar na floresta. Traga ele para mim'
+        ' que eu te dou dinheiro.\n', 'cyan'
     )
-    tela.imprimir('Ele sempre vai brincar na floresta. Traga ele para mim')
-    tela.imprimir(' que eu te dou dinheiro.\n')
-    tela.imprimir('deseja aceitar a quest? s/n: ')
+    tela.imprimir('deseja aceitar a quest? s/n: ', 'cyan')
     resposta = tela.obter_string().lower()
     if resposta in ['s', 'sim']:
         personagem.quests.append(quest)

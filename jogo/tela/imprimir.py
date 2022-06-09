@@ -1,7 +1,7 @@
-from re import sub
-from itertools import cycle
-from time import sleep
 import curses
+from itertools import cycle
+from re import sub
+from time import sleep
 
 
 formas = (
@@ -39,6 +39,25 @@ def _formatar_barras(atributo, vida_maxima, vida=False):
     return f"{formas[191]}{blocos}{formas[192]}"
 
 
+curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
+curses.init_pair(2, curses.COLOR_CYAN, curses.COLOR_BLACK)
+curses.init_pair(3, curses.COLOR_RED, curses.COLOR_BLACK)
+curses.init_pair(4, curses.COLOR_MAGENTA, curses.COLOR_BLACK)
+curses.init_pair(5, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+
+
+cores = {
+    x: y
+    for y, x in
+    enumerate(['verde', 'cyan', 'vermelho', 'magenta', 'amarelo'], 1)
+}
+
+
+def colorir(cor: str) -> int:
+    """Função que retorna um número da cor correspondente."""
+    return cores[cor]
+
+
 class Imprimir:
     _tela = curses.newwin(20, 80, 4, 0)
     _tela2 = curses.newwin(4, 80)
@@ -46,9 +65,12 @@ class Imprimir:
     _tela2.box()
     _tela2.refresh()
 
-    def imprimir(self, texto: str):
+    def imprimir(self, texto: str, cor: str = False):
         """Método que digita o texto na tela debaixo."""
-        self._tela.addstr(texto)
+        if bool(cor):
+            self._tela.addstr(texto, curses.color_pair(colorir(cor)))
+        else:
+            self._tela.addstr(texto)
         self._tela.refresh()
 
     def imprimir_combate(self, texto, local):

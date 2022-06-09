@@ -1,7 +1,7 @@
 from asyncio import get_event_loop, wait
 from itertools import permutations
-from jogo.tela.imprimir import Imprimir
 
+from jogo.tela.imprimir import Imprimir
 
 tela = Imprimir()
 

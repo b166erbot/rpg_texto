@@ -3,11 +3,11 @@ from dataclasses import dataclass, field
 
 @dataclass
 class Arma:
-    nome: str = field(repr = False, default = '')
-    dano: int = 1
-    velo_ataque: int = 1
-    critico: int = 0
-    tipo: str = field(repr=False, default='Arma', init=False)
+    nome: str = field(repr = False)
+    dano: int
+    velo_ataque: int
+    critico: int
+    tipo: str = field(repr = False, default = 'Arma', init = False)
 
     def __post_init__(self):
         self.preco = (self.dano + self.velo_ataque + self.critico) * 8
