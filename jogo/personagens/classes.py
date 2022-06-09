@@ -9,6 +9,7 @@ from jogo.itens.moedas import Pratas
 from jogo.itens.pocoes import curas
 from jogo.itens.vestes import tudo as roupas
 from jogo.tela.imprimir import Imprimir, formatar_status
+from jogo.utils import requisitar_level
 
 nome_pocoes = list(map(lambda x: x.nome, curas))
 
@@ -31,13 +32,17 @@ class Humano:
     """
 
     def __init__(
-        self, nome, jogador=False, level=1, status={}, atributos={},
+        self, nome, jogador = False, level = 0, status = {}, atributos = {},
         experiencia=0, pratas = 0, peitoral = False, elmo = False,
         calca = False, botas = False, luvas = False, arma = False,
         Anel = False
     ):
         self.nome = nome
         self.level = level
+        leveis = enumerate(
+            [5000, 15000, 30000, 50000, 75000, 105000, 140000, 180000]
+        )
+        self._leveis = {y: x for x, y in leveis}
         self.experiencia = experiencia
         self.status = Counter(
             status or {
@@ -99,6 +104,7 @@ class Humano:
             dano = self.status['dano']
             other.status['vida'] -= dano
             caracter = tela.obter_caracter()
+            # if caracter in [ord(x) for x in '12']: não funciona???
             if caracter != -1:
                 caracter = int(chr(caracter))
                 if caracter in [1, 2]:
@@ -193,6 +199,8 @@ class Humano:
         self.status['resis'] = resistencia
         self.status['armadura'] = armadura
         self.status['dano'] = dano
+        experiencia = requisitar_level(self._leveis.keys(), self.experiencia)
+        self.level = self._leveis[experiencia]
 
 
 class Arqueiro(Humano):

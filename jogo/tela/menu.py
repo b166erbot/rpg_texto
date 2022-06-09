@@ -59,8 +59,8 @@ class Menu:
 
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""
-        # mixer.music.load('vilarejo.ogg')
-        # mixer.music.play()
+        mixer.music.load('vilarejo.ogg')
+        mixer.music.play()
         forma = f"{formas[227]} {{}} {formas[228]}"
         while True:
             tela.limpar_tela()
@@ -106,7 +106,8 @@ class Menu:
                         f"{p.status['vida']}, armadura - "
                         f"{p.status['armadura']}, resistencias - "
                         f"{p.status['resis']}, dano - {p.status['dano']}, "
-                        f"dinheiro - {str(p.pratas)}, xp - {p.experiencia}\n",
+                        f"dinheiro - {str(p.pratas)}, xp - {p.experiencia},"
+                        f"level - {p.level}\n",
                         'cyan'
                     )
                     tela.imprimir(
@@ -144,8 +145,9 @@ class Menu:
             inventario = dict(enumerate(self.personagem.inventario))
             equipamento = inventario.get(int(numero))
             if equipamento is not None:
-                self.personagem.desequipar(equipamento)
-                self.personagem.vender(equipamento)
+                if not isinstance(equipamento, ItemQuest):
+                    self.personagem.desequipar(equipamento)
+                    self.personagem.vender(equipamento)
 
     def desequipar(self):
         """Método que desequipa um equipamento do personagem."""
@@ -209,16 +211,17 @@ class Menu:
         return numero
 
 
-# TODO: restaurar a estamina/magia estando parado nos turnos
-# TODO: colocar mais npcs com quests
+# TODO: restaurar a estamina/magia estando parado nos turnos.
+# TODO: colocar mais npcs com quests.
 # TODO: lutar ou fugir do boss?
-# TODO: poções, venenos
-# TODO: dragões
-# TODO: combate entre personagens bots
-# TODO: colocar o nome dos ataques tanto dos inimigos tanto do personagem na tela
-# TODO: colocar level nos personagens pois eles só tem xp
-# TODO: e com o level, colocar subclasses aos personagens
+# TODO: poções, venenos.
+# TODO: dragões.
+# TODO: combate entre personagens bots.
+# TODO: colocar o nome dos ataques tanto dos inimigos tanto do personagem na tela.
+# TODO: colocar level nos personagens pois eles só tem xp.
+# TODO: e com o level, colocar subclasses aos personagens.
 # TODO: fazer uma função que imprime a história do jogo.
-# TODO: colocar tempo para ir até o vilarejo ou floresta
-# TODO: mostrar a classe do item para que a pessoa possa equipar de acordo com a classe
-# TODO: luvas de ferro estão como luvas e já tem luvas no personagem
+# TODO: colocar tempo para ir até o vilarejo ou floresta.
+# TODO: mostrar a classe do item para que a pessoa possa
+# equipar de acordo com a classe (não dá, muito texto).
+# TODO: luvas de ferro estão como luvas e já tem luvas no personagem.

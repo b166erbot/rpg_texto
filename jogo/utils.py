@@ -21,3 +21,13 @@ class Substantivo:
 
     def __str__(self):
         return 'a' if self.nome.endswith('a') else 'o'
+
+
+def requisitar_level(lista: list, valor: int):
+    minimo = float('inf')
+    for valor2 in lista:
+        if valor2 < valor:
+            minimo = valor2
+        else:
+            break
+    return minimo

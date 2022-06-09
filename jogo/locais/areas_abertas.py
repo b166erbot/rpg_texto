@@ -3,8 +3,7 @@ from time import sleep
 from typing import Union
 
 from jogo.assincrono.combate import combate
-from jogo.personagens.monstros import (ArvoreDeku, Camaleao, Sapo, Tamandua,
-                                       Tartaruga)
+from jogo.personagens.monstros import monstros_comuns, bosses
 from jogo.personagens.npc import Pessoa
 from jogo.tela.imprimir import Imprimir, efeito_digitando
 
@@ -30,7 +29,7 @@ def gerar_fluxo() -> list[local_str]:
     fluxo = (
         local_linear(passagens)
         + local_linear(passagens) + ['caverna']
-        + local_linear(passagens) + ['caverna', 'arvore deku']
+        + local_linear(passagens) + ['caverna', 'boss']
     )
     return fluxo
 
@@ -70,12 +69,13 @@ class Floresta:
                 tela.imprimir('saindo da caverna')
                 sleep(2)
             tela.limpar_tela()
-        elif str(caminho) == 'arvore deku':
+        elif str(caminho) == 'boss':
             status = {
                 'vida': 300, 'dano': 5, 'resis': 15, 'velo-ataque': 1,
                 'critico':15, 'armadura': 15, 'magia': 100, 'stamina': 100,
                 'velo-movi': 1}
-            boss = ArvoreDeku(self.nivel, status)
+            Boss = choice(bosses)
+            boss = Boss(self.nivel, status)
             combate(self.personagem, boss)
             if self.personagem.status['vida'] == 0:
                 self.morto()
@@ -107,7 +107,7 @@ class Floresta:
             sleep(1)
             tela.limpar_tela()
             for y in range(randint(1, 3)):
-                Inimigo = choice([Tartaruga, Camaleao, Tamandua, Sapo])
+                Inimigo = choice(monstros_comuns)
                 inimigo = Inimigo()
                 combate(self.personagem, inimigo)
                 if self.personagem.status['vida'] == 0:

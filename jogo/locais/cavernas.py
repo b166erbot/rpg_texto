@@ -7,7 +7,7 @@ from jogo.itens.armas import tudo as armas
 from jogo.itens.pocoes import curas
 from jogo.itens.vestes import Anel, Roupa
 from jogo.itens.vestes import tudo as vestes
-from jogo.personagens.monstros import Camaleao, Mico, Sucuri, Tartaruga, Topera
+from jogo.personagens.monstros import monstros_comuns, bosses
 from jogo.tela.imprimir import Imprimir, efeito_digitando
 
 tela = Imprimir()
@@ -57,7 +57,7 @@ class Caverna:
         self.nome = nome_caverna
         self.personagem = personagem
         self._caminhos = gerar_fluxo()
-        self._mostros = [Tartaruga, Camaleao]
+        self._mostros = monstros_comuns
         self._locais_com_monstros = [
             'local estreito e sem saída', 'mineiração', 'local sem saída',
             'cachoeira interna'
@@ -83,7 +83,6 @@ class Caverna:
                         self.morto()
                         return
                     tela.limpar_tela()
-            bosses = [Topera, Mico, Sucuri]
             Boss = choice(bosses)
             status = {
                 'vida': 300, 'dano': 5, 'resis': 15, 'velo-ataque': 1,

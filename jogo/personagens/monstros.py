@@ -13,7 +13,7 @@ tela = Imprimir()
 
 class Monstro:
     def __init__(self, nivel = 1, status = {}):
-        self.experiencia = 5 * 100 // nivel
+        self.experiencia = 500 * nivel
         self.status = Counter(status or
             {'vida': 100, 'dano': 3, 'resis': 5, 'velo-ataque': 1, 'critico':5,
             'armadura': 5, 'magia': 100, 'stamina': 100, 'velo-movi': 1})
@@ -91,6 +91,7 @@ class Monstro:
 class Boss(Monstro):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.experiencia *= 2
 
     def dar_loot_boss(self, personagem):
         """Método que dá item e pratas ao personagem."""
@@ -264,3 +265,7 @@ class ArvoreDeku(Boss):
     def outono(self, other):
         """Método que ataca o personagem."""
         other.receber_dano(15 * self.nivel, self.tipo_dano)
+
+
+monstros_comuns = [Tartaruga, Camaleao, Tamandua, Sapo]
+bosses = [Topera, Mico, Sucuri, ArvoreDeku]
