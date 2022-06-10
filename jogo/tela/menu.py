@@ -54,9 +54,6 @@ class Menu:
         self.vilarejo = Vilarejo(
             'Vila dos hobbits', personagem, [lorena, comerciante]
         )
-        self.personagem.inventario.append(ItemQuest('gatinho'))
-        for _ in range(5):
-            self.personagem.inventario.append(ItemQuest('galho'))
 
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""
