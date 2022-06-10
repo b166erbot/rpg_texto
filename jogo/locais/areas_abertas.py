@@ -91,9 +91,12 @@ class Floresta:
             return 'morto'
         for quest in self.personagem.quests:
             condicoes = [
-                randint(1, 5) == 1,
-                quest.item not in self.personagem.inventario,
-                not npc.missao_finalizada
+                randint(1, 10) == 1,
+                (
+                    self.personagem.inventario.count(quest.item) <
+                    quest.numero_de_itens_requeridos
+                ),
+                not npc.quest_atual.finalizada
             ]
             if all(condicoes):
                 self.personagem.inventario.append(quest.item)

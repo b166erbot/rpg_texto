@@ -67,38 +67,30 @@ class Caverna:
     def explorar(self):
         """Método que explora uma caverna com o personagem."""
         tela.limpar_tela()
-        tela.imprimir(
-            'Esta caverna é difícil, necessita de algumas poções de vida'
-            '. Recomendo comprar 10 poções de vida média.'
-        )
-        tela.imprimir(
-            f'deseja explorar a caverna: {self.nome} s/n?\n'
-        )
-        if tela.obter_string().lower() in ['s', 'sim']:
-            for caminho in self._caminhos:
-                efeito_digitando(str(caminho))
-                if caminho.local in self._locais_com_monstros:
-                    morto = self.sortear_inimigos()
-                    if morto:
-                        self.morto()
-                        return
-                    tela.limpar_tela()
-            Boss = choice(bosses)
-            status = {
-                'vida': 300, 'dano': 5, 'resis': 15, 'velo-ataque': 1,
-                'critico':15, 'armadura': 15, 'magia': 100, 'stamina': 100,
-                'velo-movi': 1}
-            boss = Boss(self.nivel, status)
-            combate(self.personagem, boss)
-            if self.personagem.status['vida'] == 0:
-                self.morto()
-                return
-            elif self.personagem.status['vida'] > 0:
-                self.personagem.experiencia += boss.experiencia
-                boss.dar_loot_boss(self.personagem)
-            self.personagem.recuperar_magia_stamina()
-            tela.limpar_tela()
-            tela.limpar_tela2()
+        for caminho in self._caminhos:
+            efeito_digitando(str(caminho))
+            if caminho.local in self._locais_com_monstros:
+                morto = self.sortear_inimigos()
+                if morto:
+                    self.morto()
+                    return
+                tela.limpar_tela()
+        Boss = choice(bosses)
+        status = {
+            'vida': 300, 'dano': 5, 'resis': 15, 'velo-ataque': 1,
+            'critico':15, 'armadura': 15, 'magia': 100, 'stamina': 100,
+            'velo-movi': 1}
+        boss = Boss(self.nivel, status)
+        combate(self.personagem, boss)
+        if self.personagem.status['vida'] == 0:
+            self.morto()
+            return
+        elif self.personagem.status['vida'] > 0:
+            self.personagem.experiencia += boss.experiencia
+            boss.dar_loot_boss(self.personagem)
+        self.personagem.recuperar_magia_stamina()
+        tela.limpar_tela()
+        tela.limpar_tela2()
 
     def sortear_inimigos(self):
         """Método que sorteia os inimigos para o personagem."""

@@ -3,12 +3,11 @@ from pathlib import Path
 from time import sleep
 from unittest.mock import MagicMock
 
-from jogo.itens.quest import ItemQuest
 from jogo.locais.areas_abertas import Floresta
 from jogo.locais.cavernas import Caverna
 from jogo.locais.habitaveis import Vilarejo
 from jogo.personagens.npc import Comerciante, Pessoa
-from jogo.quests.funcoes_quests import Quest, quest_gato
+from jogo.quests.quests import QuestStatus, quests_da_lorena, ItemQuest
 from jogo.tela.imprimir import Imprimir, formas
 from jogo.utils import chunk, salvar_jogo
 
@@ -25,13 +24,11 @@ tela = Imprimir()
 
 comerciante = Comerciante('farkas')
 
-item = ItemQuest('gatinho')
-lorena = Pessoa(
-    'lorena', Quest('pegar o gatinho', 150, 2000, item),
-    quest_gato,
-    f"lorena: você não encontrou meu gatinho."
-    " Encontreo para mim e eu lhe darei dinheiro."
-)
+lorena = Pessoa('lorena')
+quests_status = [
+    QuestStatus(quest(lorena.nome)) for quest in quests_da_lorena
+]
+lorena.receber_quest_status(quests_status)
 
 
 class Menu:
@@ -45,6 +42,7 @@ class Menu:
             'mostrar equipamentos equipados',
             'vender itens',
             'mostrar o status',
+            'mostrar quests',
             'salvar jogo',
             'deletar save',
             'sair',
@@ -56,6 +54,9 @@ class Menu:
         self.vilarejo = Vilarejo(
             'Vila dos hobbits', personagem, [lorena, comerciante]
         )
+        self.personagem.inventario.append(ItemQuest('gatinho'))
+        for _ in range(5):
+            self.personagem.inventario.append(ItemQuest('galho'))
 
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""
@@ -106,7 +107,7 @@ class Menu:
                         f"{p.status['vida']}, armadura - "
                         f"{p.status['armadura']}, resistencias - "
                         f"{p.status['resis']}, dano - {p.status['dano']}, "
-                        f"dinheiro - {str(p.pratas)}, xp - {p.experiencia},"
+                        f"dinheiro - {str(p.pratas)}, xp - {p.experiencia}, "
                         f"level - {p.level}\n",
                         'cyan'
                     )
@@ -115,10 +116,12 @@ class Menu:
                     )
                     tela.obter_string()
                 case 8:
+                    self._obter_numero_quests()
+                case 9:
                     salvar_jogo(self.personagem, 'save.pk')
                     tela.imprimir('jogo salvo', 'cyan')
                     sleep(3)
-                case 9:
+                case 10:
                     arquivo = Path('save.pk')
                     if arquivo.exists():
                         arquivo.unlink()
@@ -126,12 +129,14 @@ class Menu:
                     else:
                         tela.imprimir('save não existente', 'cyan')
                     sleep(3)
-                case 10:
+                case 11:
                     quit()
 
     def equipar_equipamentos(self):
         """Método que equipa equipamentos do inventário do personagem."""
-        numero = self._obter_numero('deseja equipar qual equipamento: ')
+        numero = self._obter_numero_equipamentos(
+            'deseja equipar qual equipamento: '
+        )
         if bool(numero):
             inventario = dict(enumerate(self.personagem.inventario))
             equipamento = inventario.get(int(numero))
@@ -140,7 +145,9 @@ class Menu:
 
     def vender_item(self):
         """Método que vende um item do inventário do personagem."""
-        numero = self._obter_numero('deseja vender qual equipamento: ')
+        numero = self._obter_numero_equipamentos(
+            'deseja vender qual equipamento: '
+        )
         if bool(numero):
             inventario = dict(enumerate(self.personagem.inventario))
             equipamento = inventario.get(int(numero))
@@ -151,7 +158,9 @@ class Menu:
 
     def desequipar(self):
         """Método que desequipa um equipamento do personagem."""
-        numero = self._obter_numero('deseja desequipar qual equipamento: ')
+        numero = self._obter_numero_equipamentos(
+            'deseja desequipar qual equipamento: '
+        )
         if bool(numero):
             inventario = dict(enumerate(self.personagem.inventario))
             equipamento = inventario.get(int(numero))
@@ -184,7 +193,7 @@ class Menu:
             self.personagem.ressucitar()
             mixer.music.stop()
 
-    def _obter_numero(self, mensagem):
+    def _obter_numero_equipamentos(self, mensagem):
         """Método que organiza as páginas para o usuário e retorna um número."""
         itens = list(enumerate(self.personagem.inventario))
         if len(itens) == 0:
@@ -210,6 +219,26 @@ class Menu:
             numero = tela.obter_string()
         return numero
 
+    def _obter_numero_quests(self):
+        quests = list(enumerate(self.personagem.quests))
+        if len(quests) == 0:
+            tela.imprimir('você não tem quests.', 'cyan')
+            sleep(2)
+            return
+        quests = chunk(quests, 17)
+        numeros_paginas = {f":{n}": n for n in range(1, len(quests) + 1)}
+        numero = ':1'
+        while bool(numero) and not numero.isnumeric():
+            tela.limpar_tela()
+            tela.imprimir(
+                f"páginas: {len(quests)}"
+                " - Para passar de página digite :numero exemplo-> :2\n", 'cyan'
+            )
+            n = numeros_paginas.get(numero, 1)
+            for numero, item in quests[n -1]:
+                tela.imprimir(f"{numero} - {item}\n")
+            tela.imprimir('aperte enter para retornar ao menu: ', 'cyan')
+            numero = tela.obter_string()
 
 # TODO: restaurar a estamina/magia estando parado nos turnos.
 # TODO: colocar mais npcs com quests.
@@ -218,10 +247,13 @@ class Menu:
 # TODO: dragões.
 # TODO: combate entre personagens bots.
 # TODO: colocar o nome dos ataques tanto dos inimigos tanto do personagem na tela.
-# TODO: colocar level nos personagens pois eles só tem xp.
 # TODO: e com o level, colocar subclasses aos personagens.
 # TODO: fazer uma função que imprime a história do jogo.
 # TODO: colocar tempo para ir até o vilarejo ou floresta.
 # TODO: mostrar a classe do item para que a pessoa possa
 # equipar de acordo com a classe (não dá, muito texto).
 # TODO: luvas de ferro estão como luvas e já tem luvas no personagem.
+# TODO: obsessão por primitivos na classe Humano
+# TODO: resolver "não há item no peitoral"
+# TODO: fazer as quests terem itens ao invéz de item
+# TODO: fazer as quests aparecerem dependendo do lvl

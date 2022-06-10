@@ -15,6 +15,9 @@ class Npc:
     def __str__(self):
         return f"{self.nome}[{self.tipo}]"
 
+    def __repr__(self):
+        return f"{self.nome}[{self.tipo}]"
+
 
 class Comerciante(Npc):
     def __init__(self, nome: str):
@@ -79,55 +82,97 @@ class Comerciante(Npc):
 
 
 class Pessoa(Npc):
-    def __init__(self, nome, quest, funcao_quest, mensagem):
+    def __init__(self, nome):
         super().__init__(nome, 'Pessoa do vilarejo')
-        self.quest = quest
-        self.funcao_quest = funcao_quest
-        self.missao_aceita = False
-        self.missao_finalizada = False
-        self.mensagem = mensagem
+        self.quest_atual = False
 
     def missao(self, personagem):
         """Método que coloca a missão na tela para o personagem."""
-        tela.limpar_tela()
-        missao = self.funcao_quest(self.nome, personagem, self.quest)
-        self.missao_aceita = missao
+        quests = [
+            quest_status for quest_status
+            in self.quests
+            if all([
+                not quest_status.finalizada, not quest_status.iniciada,
+                quest_status.quest.level <= personagem.level
+            ])
+        ]
+        if len(quests) > 0:
+            quest_status = quests[0]
+            quest_status.quest.historia()
+            aceito = quest_status.quest.aceitar()
+            if aceito:
+                personagem.quests.append(quest_status.quest)
+                quest_status.iniciada = True
 
     def entregar_quest(self, personagem):
         """
             Método que recebe a quest devolta, paga e da o xp para o personagem.
         """
-        if self.quest.item in personagem.inventario:
-            self.quest.pagar(personagem)
-            self.quest.depositar_xp(personagem)
-            index = personagem.quests.index(self.quest)
+        if not self.quest_atual:
+            self.proxima_quest(personagem.level)
+        itens = [
+            x for x in
+            personagem.inventario
+            if self.quest_atual.quest.item.nome == x.nome
+        ]
+        quest = self.quest_atual.quest
+        if len(itens) == quest.numero_de_itens_requeridos:
+            quest.pagar(personagem)
+            quest.depositar_xp(personagem)
+            index = personagem.quests.index(quest)
             personagem.quests.pop(index)
-            index = personagem.inventario.index(self.quest.item)
-            personagem.inventario.pop(index)
-            self.missao_finalizada = True
+            for item in itens:
+                index = personagem.inventario.index(item)
+                personagem.inventario.pop(index)
+            self.quest_atual.finalizada = True
             tela.imprimir(
                 f'{self.nome}: Muito obrigad{Substantivo(self.nome)}.'
                 ' aqui está seu dinheiro', 'cyan'
             )
             sleep(3)
         else:
-            tela.imprimir(self.mensagem, 'cyan')
-            sleep(3)
+            tela.imprimir('finalize a missão e depois volte aqui', 'cyan')
+            sleep(2)
 
     def interagir(self, personagem):
         """Método que dá a quest para o personagem."""
-        if not self.missao_finalizada:
-            if self.missao_aceita:
-                self.entregar_quest(personagem)
-            elif not self.missao_aceita:
-                self.missao(personagem)
-            else:
-                tela.imprimir(
-                    f"{self.nome}: não tenho mais nada a pedir.\n", 'cyan'
-                )
-                sleep(2)
-        else:
+        if not self.quest_atual or self.quest_atual.finalizada:
+            self.proxima_quest(personagem.level)
+        if not self.quest_atual:
             tela.imprimir(
                 f"{self.nome}: não tenho mais nada a pedir.\n", 'cyan'
             )
             sleep(2)
+            return
+        if self.quest_atual.iniciada and not self.quest_atual.finalizada:
+            self.entregar_quest(personagem)
+        else:
+            self.missao(personagem)
+
+    def receber_quest_status(self, quests: list):
+        quests = sorted(quests, key=lambda x: x.quest.level)
+        self.quests = quests
+        self.proxima_quest(1)
+
+    def proxima_quest(self, level):
+        if not self.quest_atual:
+            self._definir_proxima_quest(level)
+        else:
+            if self.quest_atual.finalizada:
+                self._definir_proxima_quest(level)
+
+    def _definir_proxima_quest(self, level):
+        quests = self._obter_quests_nao_iniciadas(level)
+        if len(quests):
+            self.quest_atual = quests[0]
+        else:
+            self.quest_atual = False
+
+    def _obter_quests_nao_iniciadas(self, level):
+        return [
+            quest_status
+            for quest_status
+            in self.quests
+            if not quest_status.iniciada
+            and quest_status.quest.level <= level
+        ]

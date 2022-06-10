@@ -32,7 +32,7 @@ class Humano:
     """
 
     def __init__(
-        self, nome, jogador = False, level = 0, status = {}, atributos = {},
+        self, nome, jogador = False, level = 1, status = {}, atributos = {},
         experiencia=0, pratas = 0, peitoral = False, elmo = False,
         calca = False, botas = False, luvas = False, arma = False,
         Anel = False
@@ -40,7 +40,7 @@ class Humano:
         self.nome = nome
         self.level = level
         leveis = enumerate(
-            [5000, 15000, 30000, 50000, 75000, 105000, 140000, 180000]
+            [5000, 15000, 30000, 50000, 75000, 105000, 140000, 180000], 1
         )
         self._leveis = {y: x for x, y in leveis}
         self.experiencia = experiencia
