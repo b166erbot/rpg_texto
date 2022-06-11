@@ -3,11 +3,10 @@ class PocaoDeCura:
         self.pontos_cura = pontos_cura
         self.consumida = False
         self.preco = self.custo
-        self.tipo = 'Poções'
+        self.tipo = "Poções"
 
     def __repr__(self):
-        return (f"{self.nome.capitalize()} - "
-                f"Cura: {self.pontos_cura}")
+        return f"{self.nome.capitalize()} - " f"Cura: {self.pontos_cura}"
 
     def consumir(self):
         """Método que consome a poção."""
@@ -18,7 +17,7 @@ class PocaoDeCura:
 
 
 class PocaoDeVidaFraca(PocaoDeCura):
-    nome = 'poção de vida fraca'
+    nome = "poção de vida fraca"
     custo = 15
 
     def __init__(self):
@@ -26,7 +25,7 @@ class PocaoDeVidaFraca(PocaoDeCura):
 
 
 class PocaoDeVidaMedia(PocaoDeCura):
-    nome = 'poção de vida média'
+    nome = "poção de vida média"
     custo = 30
 
     def __init__(self):
@@ -34,7 +33,7 @@ class PocaoDeVidaMedia(PocaoDeCura):
 
 
 class PocaoDeVidaGrande(PocaoDeCura):
-    nome = 'poção de vida grande'
+    nome = "poção de vida grande"
     custo = 45
 
     def __init__(self):
@@ -42,7 +41,7 @@ class PocaoDeVidaGrande(PocaoDeCura):
 
 
 class PocaoDeVidaExtraGrande(PocaoDeCura):
-    nome = 'poção de vida extra grande'
+    nome = "poção de vida extra grande"
     custo = 60
 
     def __init__(self):
@@ -51,7 +50,7 @@ class PocaoDeVidaExtraGrande(PocaoDeCura):
 
 # elixir deve regenerar porcentagem de vida. implementar isso futuramente.
 class ElixirDeVidaFraca(PocaoDeCura):
-    nome = 'elixir de vida fraca'
+    nome = "elixir de vida fraca"
     custo = 100
 
     def __init__(self):
@@ -59,7 +58,7 @@ class ElixirDeVidaFraca(PocaoDeCura):
 
 
 class ElixirDeVidaMedia(PocaoDeCura):
-    nome = 'elixir de vida média'
+    nome = "elixir de vida média"
     custo = 200
 
     def __init__(self):
@@ -67,7 +66,7 @@ class ElixirDeVidaMedia(PocaoDeCura):
 
 
 class ElixirDeVidaGrande(PocaoDeCura):
-    nome = 'elixir de vida grande'
+    nome = "elixir de vida grande"
     custo = 300
 
     def __init__(self):
@@ -75,7 +74,7 @@ class ElixirDeVidaGrande(PocaoDeCura):
 
 
 class ElixirDeVidaExtraGrande(PocaoDeCura):
-    nome = 'elixir de vida extra grande'
+    nome = "elixir de vida extra grande"
     custo = 400
 
     def __init__(self):
@@ -83,7 +82,12 @@ class ElixirDeVidaExtraGrande(PocaoDeCura):
 
 
 curas = [
-    PocaoDeVidaFraca, PocaoDeVidaMedia, PocaoDeVidaGrande,
-    PocaoDeVidaExtraGrande, ElixirDeVidaFraca, ElixirDeVidaMedia,
-    ElixirDeVidaGrande, ElixirDeVidaExtraGrande
+    PocaoDeVidaFraca,
+    PocaoDeVidaMedia,
+    PocaoDeVidaGrande,
+    PocaoDeVidaExtraGrande,
+    ElixirDeVidaFraca,
+    ElixirDeVidaMedia,
+    ElixirDeVidaGrande,
+    ElixirDeVidaExtraGrande,
 ]

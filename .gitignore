@@ -104,7 +104,7 @@ venv.bak/
 .mypy_cache/
 
 # minhas configurações
-*.pk
-*.pk.backup
+*.pkl
+*.pkl.backup
 flake8.txt
 teste.py

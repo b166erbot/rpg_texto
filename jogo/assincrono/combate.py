@@ -14,9 +14,9 @@ def combate(personagem1, personagem2):
     ciclo = get_event_loop()
     tarefas = [ciclo.create_task(x.atacar(y)) for x, y in personagens]
     tela.limpar_tela()
-    tela.imprimir(f'digite 1 para usar -> {personagem1.habilidades_nomes[0]}\n')
+    tela.imprimir(f"digite 1 para usar -> {personagem1.habilidades_nomes[0]}\n")
     tela.imprimir(
-        f'e digite 2 para usar -> {personagem1.habilidades_nomes[1]}\n'
+        f"e digite 2 para usar -> {personagem1.habilidades_nomes[1]}\n"
     )
     ciclo.run_until_complete(wait(tarefas))
     tela.limpar_tela()

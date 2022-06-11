@@ -3,30 +3,29 @@ from itertools import cycle
 from re import sub
 from time import sleep
 
-
 formas = (
-    '▲▼◀▶◢◣◥◤△▽◿◺◹◸▴▾◂▸▵▿◃▹◁▷◅▻◬⟁⧋⧊⊿∆∇◭◮⧩⧨⌔⟐◇◆◈⬖⬗⬘⬙⬠⬡⎔⋄◊⧫⬢⬣▰▪◼▮◾▗▖■∎▃▄▅▆▇'
-    '█▌▐▍▎▉▊▋❘❙❚▀▘▝▙▚▛▜▟▞░▒▓▂▁▬▔▫▯▭▱◽□◻▢⊞⊡⊟⊠▣▤▥▦⬚▧▨▩⬓◧⬒◨◩◪⬔⬕❏❐❑❒⧈◰◱◳◲◫⧇⧅⧄⍁⍂⟡⧉'
-    '⚬○⚪◌◍◎◯❍◉⦾⊙⦿⊜⊖⊘⊚⊛⊝●⚫⦁◐◑◒◓◔◕⦶⦸◵◴◶◷⊕⊗⦇⦈⦉⦊❨❩⸨⸩◖◗❪❫❮❯❬❭❰❱⊏⊐⊑⊒◘◙◚◛◜◝◞◟◠◡⋒⋓⋐⋑'
-    '⥰╰╮╭╯⌒⥿⥾⥽⥼⥊⥋⥌⥍⥎⥐⥑⥏╳✕⤫⤬╱╲⧸⧹⌓◦❖✖✚✜⧓⧗⧑⧒⧖_⚊╴╼╾‐⁃‑‒-–⎯—―╶╺╸─━┄┅┈┉╌╍═≣≡'
-    '☰☱☲☳☴☵☶☷╵╷╹╻│▕▏┃┆┇┊╎┋╿╽⌞⌟⌜⌝⌊⌋⌈⌉⌋┌┍┎┏┐┑┒┓└┕┖┗┘┙┚┛├┝┞┟┠┡┢┣┤┥┦┧┨┩┪┫┬┭┮┳'
-    '┴┵┶┷┸┹┺┻┼┽┾┿╀╁╂╃╄╅╆╇╈╉╊╋╏║╔╒╓╕╖╗╚╘╙╛╜╝╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬'
+    "▲▼◀▶◢◣◥◤△▽◿◺◹◸▴▾◂▸▵▿◃▹◁▷◅▻◬⟁⧋⧊⊿∆∇◭◮⧩⧨⌔⟐◇◆◈⬖⬗⬘⬙⬠⬡⎔⋄◊⧫⬢⬣▰▪◼▮◾▗▖■∎▃▄▅▆▇"
+    "█▌▐▍▎▉▊▋❘❙❚▀▘▝▙▚▛▜▟▞░▒▓▂▁▬▔▫▯▭▱◽□◻▢⊞⊡⊟⊠▣▤▥▦⬚▧▨▩⬓◧⬒◨◩◪⬔⬕❏❐❑❒⧈◰◱◳◲◫⧇⧅⧄⍁⍂⟡⧉"
+    "⚬○⚪◌◍◎◯❍◉⦾⊙⦿⊜⊖⊘⊚⊛⊝●⚫⦁◐◑◒◓◔◕⦶⦸◵◴◶◷⊕⊗⦇⦈⦉⦊❨❩⸨⸩◖◗❪❫❮❯❬❭❰❱⊏⊐⊑⊒◘◙◚◛◜◝◞◟◠◡⋒⋓⋐⋑"
+    "⥰╰╮╭╯⌒⥿⥾⥽⥼⥊⥋⥌⥍⥎⥐⥑⥏╳✕⤫⤬╱╲⧸⧹⌓◦❖✖✚✜⧓⧗⧑⧒⧖_⚊╴╼╾‐⁃‑‒-–⎯—―╶╺╸─━┄┅┈┉╌╍═≣≡"
+    "☰☱☲☳☴☵☶☷╵╷╹╻│▕▏┃┆┇┊╎┋╿╽⌞⌟⌜⌝⌊⌋⌈⌉⌋┌┍┎┏┐┑┒┓└┕┖┗┘┙┚┛├┝┞┟┠┡┢┣┤┥┦┧┨┩┪┫┬┭┮┳"
+    "┴┵┶┷┸┹┺┻┼┽┾┿╀╁╂╃╄╅╆╇╈╉╊╋╏║╔╒╓╕╖╗╚╘╙╛╜╝╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬"
 )
 
 
 def formatar_status(personagem):
     """Função que arruma os caracters para a magia, vida e stamina."""
-    nome, vida = personagem.nome, personagem.status['vida']
-    magia, stamina = personagem.status['magia'], personagem.status['stamina']
+    nome, vida = personagem.nome, personagem.status["vida"]
+    magia, stamina = personagem.status["magia"], personagem.status["stamina"]
     texto = f"{nome} [{personagem.classe}]: "
-    porcentagem = magia # caso a magia aumentar, fazer o calculo da porcentagem
+    porcentagem = magia  # caso a magia aumentar, fazer o calculo da porcentagem
     blocos_com_barras = _formatar_barras(magia, 100)
     texto += f"{blocos_com_barras} {porcentagem:3d}% "
     porcentagem = int((vida * 100) / personagem.vida_maxima)
     blocos_com_barras = _formatar_barras(vida, personagem.vida_maxima, True)
     texto += f"{blocos_com_barras} {porcentagem:3d}%  "
     blocos_com_barras = _formatar_barras(stamina, 100)
-    porcentagem = stamina # caso a stamina aumentar, fazer o calculo da porcentagem
+    porcentagem = stamina  # caso a stamina aumentar, fazer o calculo da porcentagem
     return texto + f"{blocos_com_barras} {porcentagem:3d}%"
 
 
@@ -47,9 +46,9 @@ curses.init_pair(5, curses.COLOR_YELLOW, curses.COLOR_BLACK)
 
 
 cores = {
-    x: y
-    for y, x in
-    enumerate(['verde', 'cyan', 'vermelho', 'magenta', 'amarelo'], 1)
+    x: y for y, x in enumerate(
+        ["verde", "cyan", "vermelho", "magenta", "amarelo"], 1
+    )
 }
 
 
@@ -115,4 +114,4 @@ def efeito_digitando(texto: str, dormir: float = 0.04):
     for a in texto:
         tela.imprimir(a)
         sleep(dormir)
-    tela.imprimir('\n')
+    tela.imprimir("\n")
