@@ -126,7 +126,7 @@ class Humano:
     async def _atacar_como_bot(self, other):
         """Método que ataca como bot."""
         while all([other.status["vida"] > 0, self.status["vida"] > 0]):
-            self._consumir_pocoes_bot()
+            self.consumir_pocoes()
             dano = self.status["dano"]
             other.status["vida"] -= dano
             other.arrumar_vida()
@@ -138,7 +138,7 @@ class Humano:
     async def _atacar_como_jogador(self, other):
         """Método que ataca como jogador."""
         while all([other.status["vida"] > 0, self.status["vida"] > 0]):
-            self._consumir_pocoes_bot()
+            self.consumir_pocoes()
             dano = self.status["dano"]
             other.status["vida"] -= dano
             caracter = tela.obter_caracter()
@@ -166,20 +166,19 @@ class Humano:
         """Método que ressucita o personagem."""
         self.status["vida"] = self.vida_maxima
 
-    def _consumir_pocoes_bot(self):
+    def consumir_pocoes(self):
         """Método que consome a poção caso você tenha."""
         if self.status["vida"] <= 30:
             pocao = self._dropar_pocoes()
-            if pocao:
-                self.status["vida"] += pocao.consumir()
-                if self.status["vida"] > self.vida_maxima:
-                    self.status["vida"] = self.vida_maxima
+            if bool(pocao):
+                self.status["vida"] += pocao.consumir(self.vida_maxima)
+                self.arrumar_vida()
 
     def _dropar_pocoes(self) -> list:
         """Método que retorna uma poção caso você tenha."""
         nome_pocoes = list(map(lambda x: x.nome, curas))
         poções = [x for x in self.inventario if x.nome in nome_pocoes]
-        if poções:
+        if bool(poções):
             index = self.inventario.index(poções[0])
             poção = self.inventario.pop(index)
             return poção
@@ -201,8 +200,9 @@ class Humano:
         """Método que desequipa um item no inventário."""
         equipamento2 = self.equipamentos.get(equipamento.tipo)
         if equipamento2 and equipamento2 is equipamento:
-            self.equipamentos[equipamento.tipo] = (
-                SemItemEquipado(equipamento.tipo)
+            self.inventario.append(equipamento)
+            self.equipamentos[equipamento.tipo] = SemItemEquipado(
+                equipamento.tipo
             )
             self.atualizar_status()
 
@@ -228,9 +228,8 @@ class Humano:
         ]
         vestes = list(
             filter(
-                lambda x: x.tipo in [
-                    "Elmo", "Peitoral", "Calça", "Botas", "Anel"
-                ],
+                lambda x: x.tipo
+                in ["Elmo", "Peitoral", "Calça", "Botas", "Anel"],
                 equipamentos,
             )
         )
@@ -278,8 +277,12 @@ class Arqueiro(Humano):
         """Método que equipa um equipamento."""
         for classe in roupas + [Arco_longo, Arco_curto]:
             if isinstance(equipamento, classe):
+                index = self.inventario.index(equipamento)
+                self.inventario.pop(index)
+                if bool(self.equipamentos[equipamento.tipo]):
+                    self.inventario.append(self.equipamentos[equipamento.tipo])
                 self.equipamentos[equipamento.tipo] = equipamento
-                self.atualizar_status()
+        self.atualizar_status()
 
 
 class Guerreiro(Humano):
@@ -309,8 +312,12 @@ class Guerreiro(Humano):
         """Método que equipa um equipamento."""
         for classe in roupas + [Espada_longa, Espada_curta, Machado]:
             if isinstance(equipamento, classe):
+                index = self.inventario.index(equipamento)
+                self.inventario.pop(index)
+                if bool(self.equipamentos[equipamento.tipo]):
+                    self.inventario.append(self.equipamentos[equipamento.tipo])
                 self.equipamentos[equipamento.tipo] = equipamento
-                self.atualizar_status()
+        self.atualizar_status()
 
 
 class Mago(Humano):
@@ -340,8 +347,12 @@ class Mago(Humano):
         """Método que equipa um equipamento."""
         for classe in roupas + [Cajado, Cajado_negro]:
             if isinstance(equipamento, classe):
+                index = self.inventario.index(equipamento)
+                self.inventario.pop(index)
+                if bool(self.equipamentos[equipamento.tipo]):
+                    self.inventario.append(self.equipamentos[equipamento.tipo])
                 self.equipamentos[equipamento.tipo] = equipamento
-                self.atualizar_status()
+        self.atualizar_status()
 
 
 class Assassino(Humano):
@@ -371,8 +382,12 @@ class Assassino(Humano):
         """Método que equipa um equipamento."""
         for classe in roupas + [Adaga]:
             if isinstance(equipamento, classe):
+                index = self.inventario.index(equipamento)
+                self.inventario.pop(index)
+                if bool(self.equipamentos[equipamento.tipo]):
+                    self.inventario.append(self.equipamentos[equipamento.tipo])
                 self.equipamentos[equipamento.tipo] = equipamento
-                self.atualizar_status()
+        self.atualizar_status()
 
 
 class Clerigo(Humano):
@@ -404,8 +419,12 @@ class Clerigo(Humano):
         """Método que equipa um equipamento."""
         for classe in roupas + [Cajado]:
             if isinstance(equipamento, classe):
+                index = self.inventario.index(equipamento)
+                self.inventario.pop(index)
+                if bool(self.equipamentos[equipamento.tipo]):
+                    self.inventario.append(self.equipamentos[equipamento.tipo])
                 self.equipamentos[equipamento.tipo] = equipamento
-                self.atualizar_status()
+        self.atualizar_status()
 
 
 class Monge(Humano):
@@ -435,12 +454,26 @@ class Monge(Humano):
         """Método que equipa um equipamento."""
         for classe in roupas + [Luvas_de_ferro]:
             if isinstance(equipamento, classe):
+                index = self.inventario.index(equipamento)
+                self.inventario.pop(index)
+                if bool(self.equipamentos[equipamento.tipo]):
+                    self.inventario.append(self.equipamentos[equipamento.tipo])
                 self.equipamentos[equipamento.tipo] = equipamento
-                self.atualizar_status()
-            if isinstance(equipamento, Luvas_de_ferro):
-                self.equipamentos["Luvas"] = SemItemEquipado("Luvas")
-            if isinstance(equipamento, Luvas):
-                self.equipamentos["Arma"] = SemItemEquipado("Arma")
+        condicoes_1 = [
+            isinstance(equipamento, Luvas_de_ferro),
+            bool(self.equipamentos["Luvas"]),
+        ]
+        condicoes_2 = [
+            isinstance(equipamento, Luvas),
+            bool(self.equipamentos["Arma"]),
+        ]
+        if all(condicoes_1):
+            self.inventario.append(self.equipamentos["Luvas"])
+            self.equipamentos["Luvas"] = SemItemEquipado("Luvas")
+        elif all(condicoes_2):
+            self.inventario.append(self.equipamentos["Arma"])
+            self.equipamentos["Arma"] = SemItemEquipado("Arma")
+        self.atualizar_status()
 
 
 # druida?

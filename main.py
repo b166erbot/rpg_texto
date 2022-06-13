@@ -11,6 +11,8 @@ curses.start_color()
 from pathlib import Path
 from time import sleep
 
+from jogo.itens.pocoes import curas
+from jogo.itens.vestes import Peitoral
 from jogo.locais.cavernas import Caverna
 from jogo.personagens.classes import (
     Arqueiro,
@@ -20,26 +22,28 @@ from jogo.personagens.classes import (
     Mago,
     Monge,
 )
+from jogo.personagens.npc import Banqueiro, Comerciante, Pessoa
+from jogo.quests.quests import QuestStatus, quests_da_lorena
 from jogo.tela.imprimir import Imprimir
 from jogo.tela.menu import Menu
 from jogo.utils import carregar_jogo
-from jogo.personagens.npc import Comerciante, Pessoa
-from jogo.quests.quests import QuestStatus, quests_da_lorena
 
 
 def main():
     tela = Imprimir()
     if Path("save.pkl").exists():
         personagem = carregar_jogo("personagem", "save.pkl")
-        lorena = carregar_jogo("lorena", "save.pkl")
+        lorena = carregar_jogo("Lorena", "save.pkl")
+        banqueiro = carregar_jogo("Tiago", "save.pkl")
         tela.imprimir("jogo carregado", "cyan")
         sleep(2)
     else:
-        lorena = Pessoa("lorena")
+        lorena = Pessoa("Lorena")
         quests_status = [
             QuestStatus(quest(lorena.nome)) for quest in quests_da_lorena
         ]
         lorena.receber_quest_status(quests_status)
+        banqueiro = Banqueiro("Tiago")
         nome = ""
         while not bool(nome):
             tela.limpar_tela()
@@ -66,9 +70,9 @@ def main():
             numero_personagem = tela.obter_string()
         Classe = classes_dict[classes_dict2[numero_personagem]]
         personagem = Classe(nome, True)
-    comerciante = Comerciante("farkas")
+    comerciante = Comerciante("farkas", curas)
     menu = Menu(personagem)
-    menu.obter_npcs([lorena, comerciante])
+    menu.obter_npcs([lorena, comerciante, banqueiro])
     menu.ciclo()
 
 

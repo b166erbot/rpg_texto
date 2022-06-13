@@ -2,14 +2,14 @@ class PocaoDeCura:
     def __init__(self, pontos_cura: int):
         self.pontos_cura = pontos_cura
         self.consumida = False
-        self.preco = self.custo
         self.tipo = "Poções"
 
     def __repr__(self):
         return f"{self.nome.capitalize()} - " f"Cura: {self.pontos_cura}"
 
-    def consumir(self):
+    def consumir(self, vida_maxima):
         """Método que consome a poção."""
+        # a variável vida_maxima neste método não tem função, favor manter.
         if not self.consumida:
             self.consumida = True
             return self.pontos_cura
@@ -18,7 +18,7 @@ class PocaoDeCura:
 
 class PocaoDeVidaFraca(PocaoDeCura):
     nome = "poção de vida fraca"
-    custo = 15
+    preco = 15
 
     def __init__(self):
         super().__init__(30)
@@ -26,7 +26,7 @@ class PocaoDeVidaFraca(PocaoDeCura):
 
 class PocaoDeVidaMedia(PocaoDeCura):
     nome = "poção de vida média"
-    custo = 30
+    preco = 30
 
     def __init__(self):
         super().__init__(60)
@@ -34,7 +34,7 @@ class PocaoDeVidaMedia(PocaoDeCura):
 
 class PocaoDeVidaGrande(PocaoDeCura):
     nome = "poção de vida grande"
-    custo = 45
+    preco = 45
 
     def __init__(self):
         super().__init__(90)
@@ -42,43 +42,59 @@ class PocaoDeVidaGrande(PocaoDeCura):
 
 class PocaoDeVidaExtraGrande(PocaoDeCura):
     nome = "poção de vida extra grande"
-    custo = 60
+    preco = 60
 
     def __init__(self):
         super().__init__(120)
 
 
-# elixir deve regenerar porcentagem de vida. implementar isso futuramente.
-class ElixirDeVidaFraca(PocaoDeCura):
+class Elixir:
+    def __init__(self, porcentagem: int):
+        self.porcentagem = porcentagem
+        self.consumida = False
+        self.tipo = "Poções"
+
+    def __repr__(self):
+        return f"{self.nome.capitalize()} - " f"Cura: {self.porcentagem}%"
+
+    def consumir(self, vida_maxima):
+        """Método que consome a poção."""
+        if not self.consumida:
+            self.consumida = True
+            return (self.porcentagem * vida_maxima) // 100
+        return 0
+
+
+class ElixirDeVidaFraca(Elixir):
     nome = "elixir de vida fraca"
-    custo = 100
+    preco = 100
 
     def __init__(self):
-        super().__init__(150)
+        super().__init__(20)
 
 
-class ElixirDeVidaMedia(PocaoDeCura):
+class ElixirDeVidaMedia(Elixir):
     nome = "elixir de vida média"
-    custo = 200
+    preco = 200
 
     def __init__(self):
-        super().__init__(180)
+        super().__init__(40)
 
 
-class ElixirDeVidaGrande(PocaoDeCura):
+class ElixirDeVidaGrande(Elixir):
     nome = "elixir de vida grande"
-    custo = 300
+    preco = 300
 
     def __init__(self):
-        super().__init__(210)
+        super().__init__(60)
 
 
-class ElixirDeVidaExtraGrande(PocaoDeCura):
+class ElixirDeVidaExtraGrande(Elixir):
     nome = "elixir de vida extra grande"
-    custo = 400
+    preco = 400
 
     def __init__(self):
-        super().__init__(240)
+        super().__init__(80)
 
 
 curas = [

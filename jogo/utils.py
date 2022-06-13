@@ -15,12 +15,19 @@ def chunk(lista, numero):
     return [lista[x : x + numero] for x in range(0, len(lista), numero)]
 
 
-class Substantivo:
+class Artigo:
     def __init__(self, nome):
         self.nome = nome
 
     def __str__(self):
-        return "a" if self.nome.endswith("a") else "o"
+        # o artigo não cobre todos os casos mas cobre o suficiente para o jogo.
+        if self.nome[-1] in "ao":
+            return self.nome[-1]
+        elif self.nome.endswith("s"):
+            if self.nome[-2] in "ao":
+                return self.nome[-2:]
+        else:
+            return "o"
 
 
 def requisitar_level(lista: list, valor: int):

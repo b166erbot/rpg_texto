@@ -1,8 +1,7 @@
 from time import sleep
 
-from jogo.itens.pocoes import curas
 from jogo.tela.imprimir import Imprimir
-from jogo.utils import Substantivo, chunk
+from jogo.utils import Artigo, chunk
 
 tela = Imprimir()
 
@@ -20,11 +19,11 @@ class Npc:
 
 
 class Comerciante(Npc):
-    def __init__(self, nome: str):
+    def __init__(self, nome: str, itens: list):
         super().__init__(nome, "Comerciante")
-        self.itens = {x: y for x, y in enumerate(curas, 1)}
+        self.itens = {numero: item for numero, item in enumerate(itens, 1)}
         self.tabela = [
-            f"{numero} - {item.nome} ${item.custo}"
+            f"{numero} - {item.nome} ${item.preco}"
             for numero, item in self.itens.items()
         ]
         self.tabela_cortada = chunk(self.tabela, 16)
@@ -32,8 +31,8 @@ class Comerciante(Npc):
 
     def comprar(self, item, quantidade: int, personagem):
         """Método que faz as compras pelo personagem."""
-        preço = quantidade * item.custo
-        if int(personagem.pratas) > preço:
+        preço = quantidade * item.preco
+        if int(personagem.pratas) >= preço:
             personagem.pratas -= preço
             for n in range(quantidade):
                 personagem.inventario.append(item())
@@ -129,7 +128,7 @@ class Pessoa(Npc):
                 personagem.inventario.pop(index)
             self.quest_atual.finalizada = True
             tela.imprimir(
-                f"{self.nome}: Muito obrigad{Substantivo(self.nome)}."
+                f"{self.nome}: Muito obrigad{Artigo(self.nome)}."
                 " aqui está seu dinheiro",
                 "cyan",
             )
@@ -140,6 +139,7 @@ class Pessoa(Npc):
 
     def interagir(self, personagem):
         """Método que dá a quest para o personagem."""
+        tela.limpar_tela()
         if not self.quest_atual or self.quest_atual.finalizada:
             self.proxima_quest(personagem.level)
         if not self.quest_atual:
@@ -178,3 +178,105 @@ class Pessoa(Npc):
             for quest_status in self.quests
             if not quest_status.iniciada and quest_status.quest.level <= level
         ]
+
+
+class Banqueiro(Npc):
+    def __init__(self, nome: str):
+        super().__init__(nome, "Banqueiro")
+        self.nome = nome
+        self.salvar = True
+        self.tamanho_do_inventario = 30
+        self.inventario = []
+
+    def guardar_item(self, item, personagem):
+        if len(self.inventario) < self.tamanho_do_inventario:
+            self.inventario.append(item)
+            index = personagem.inventario.index(item)
+            personagem.inventario.pop(index)
+        else:
+            tela.imprimir("inventario do banqueiro cheio.")
+            sleep(2)
+
+    def retirar(self, item, personagem):
+        index = self.inventario.index(item)
+        self.inventario.pop(index)
+        personagem.inventario.append(item)
+
+    def interagir(self, personagem):
+        tela.limpar_tela()
+        tela.imprimir("1 -> guardar, 2 -> adquirir\n")
+        tela.imprimir("deseja guardar ou adquirir um item?: ")
+        numero = tela.obter_string()
+        while numero.isnumeric():
+            if numero == "1":
+                item = self._obter_equipamentos_personagem(
+                    "deseja guardar qual item?: ", personagem
+                )
+                if bool(item):
+                    self.guardar_item(item, personagem)
+            elif numero == "2":
+                item = self._obter_equipamentos_banqueiro(
+                    "deseja obter qual item?: ", personagem
+                )
+                if bool(item):
+                    self.retirar(item, personagem)
+            tela.limpar_tela()
+            tela.imprimir("1 -> guardar, 2 -> adquirir\n")
+            tela.imprimir("deseja guardar ou adquirir um item?: ")
+            numero = tela.obter_string()
+
+    def _obter_equipamentos_personagem(self, mensagem: str, personagem):
+        """Método que organiza as páginas para o usuário e retorna um item."""
+        itens = list(enumerate(personagem.inventario))
+        itens_dict = {str(numero): item for numero, item in itens}
+        if len(itens) == 0:
+            tela.imprimir("você não tem itens no inventario.", "cyan")
+            sleep(2)
+            return ""
+        itens = chunk(itens, 18)
+        numeros_paginas = {f":{n}": n for n in range(1, len(itens) + 1)}
+        numero = ":1"
+        while bool(numero) and not numero.isnumeric():
+            tela.limpar_tela()
+            tela.imprimir(
+                f"páginas: {len(itens)}"
+                " - Para passar de página digite :numero exemplo-> :2\n",
+                "cyan",
+            )
+            n = numeros_paginas.get(numero, 1)
+            for numero, item in itens[n - 1]:
+                mensagem2 = f"{numero} - {item}"
+                tela.imprimir(mensagem2 + "\n")
+            tela.imprimir(mensagem, "cyan")
+            numero = tela.obter_string()
+        item = itens_dict.get(numero)
+        return item
+
+    def _obter_equipamentos_banqueiro(self, mensagem: str, personagem):
+        """Método que organiza as páginas para o usuário e retorna um item."""
+        itens = list(enumerate(self.inventario))
+        itens_dict = {str(numero): item for numero, item in itens}
+        if len(itens) == 0:
+            tela.imprimir(
+                "você não tem itens no inventario do banqueiro.", "cyan"
+            )
+            sleep(2)
+            return ""
+        itens = chunk(itens, 18)
+        numeros_paginas = {f":{n}": n for n in range(1, len(itens) + 1)}
+        numero = ":1"
+        while bool(numero) and not numero.isnumeric():
+            tela.limpar_tela()
+            tela.imprimir(
+                f"páginas: {len(itens)}"
+                " - Para passar de página digite :numero exemplo-> :2\n",
+                "cyan",
+            )
+            n = numeros_paginas.get(numero, 1)
+            for numero, item in itens[n - 1]:
+                mensagem2 = f"{numero} - {item}"
+                tela.imprimir(mensagem2 + "\n")
+            tela.imprimir(mensagem, "cyan")
+            numero = tela.obter_string()
+        item = itens_dict.get(numero)
+        return item

@@ -23,7 +23,12 @@ def local_linear(passagens: list[str]) -> list[Local]:
 def gerar_fluxo() -> list[local_str]:
     """Função que retorna uma lista com fluxos."""
     passagens = [
-        "matagal", "area florestada", "rio", "trilha", "gruta", "corrego"
+        "matagal",
+        "area florestada",
+        "rio",
+        "trilha",
+        "gruta",
+        "corrego",
     ]
     fluxo = (
         local_linear(passagens)

@@ -9,6 +9,7 @@ class Roupa:
     armadura: int = 0
     velo_movi: int = 0
     tipo: str = field(repr=False, default="Roupa", init=False)
+    classe: str = field(repr=False, default="Todos", init=False)
 
     def __post_init__(self):
         self.preco = (
@@ -54,6 +55,7 @@ class Anel:
     resistencias: int = 0
     armadura: int = 0
     tipo: str = field(repr=False, default="Anel", init=False)
+    classe: str = field(repr=False, default="Todos", init=False)
 
     def __post_init__(self):
         self.preco = (

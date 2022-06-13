@@ -25,7 +25,9 @@ def formatar_status(personagem):
     blocos_com_barras = _formatar_barras(vida, personagem.vida_maxima, True)
     texto += f"{blocos_com_barras} {porcentagem:3d}%  "
     blocos_com_barras = _formatar_barras(stamina, 100)
-    porcentagem = stamina  # caso a stamina aumentar, fazer o calculo da porcentagem
+    porcentagem = (
+        stamina  # caso a stamina aumentar, fazer o calculo da porcentagem
+    )
     return texto + f"{blocos_com_barras} {porcentagem:3d}%"
 
 
@@ -46,7 +48,8 @@ curses.init_pair(5, curses.COLOR_YELLOW, curses.COLOR_BLACK)
 
 
 cores = {
-    x: y for y, x in enumerate(
+    x: y
+    for y, x in enumerate(
         ["verde", "cyan", "vermelho", "magenta", "amarelo"], 1
     )
 }

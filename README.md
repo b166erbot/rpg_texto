@@ -1,5 +1,5 @@
 # rpg_texto
-um jogo/módulo de rpg onde você pode desfrutar de uma história pronta ou criar sua própria história.
+um jogo de rpg onde você pode desfrutar de uma história.
 
 #### como instalar
     - ter o poetry instalado na máquina. (pip install poetry)

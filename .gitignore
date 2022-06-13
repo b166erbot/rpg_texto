@@ -107,4 +107,5 @@ venv.bak/
 *.pkl
 *.pkl.backup
 flake8.txt
-teste.py
+ts.py
+tests

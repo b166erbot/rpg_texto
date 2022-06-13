@@ -8,6 +8,7 @@ class Arma:
     velo_ataque: int
     critico: int
     tipo: str = field(repr=False, default="Arma", init=False)
+    classe: str = field(repr=False)
 
     def __post_init__(self):
         self.preco = (self.dano + self.velo_ataque + self.critico) * 8
@@ -15,47 +16,51 @@ class Arma:
 
 class Espada_longa(Arma):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Espada longa", **kwargs)
+        super().__init__(
+            *args, nome="Espada longa", classe="Guerreiro", **kwargs
+        )
 
 
 class Machado(Arma):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Machado", **kwargs)
+        super().__init__(*args, nome="Machado", classe="Guerreiro", **kwargs)
 
 
 class Espada_curta(Arma):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Espada curta", **kwargs)
+        super().__init__(
+            *args, nome="Espada curta", classe="Guerreiro", **kwargs
+        )
 
 
 class Cajado(Arma):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Cajado", **kwargs)
+        super().__init__(*args, nome="Cajado", classe="Mago" ** kwargs)
 
 
 class Cajado_negro(Arma):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Cajado negro", **kwargs)
+        super().__init__(*args, nome="Cajado negro", classe="Mago", **kwargs)
 
 
 class Arco_longo(Arma):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Arco longo", **kwargs)
+        super().__init__(*args, nome="Arco longo", classe="Arqueiro", **kwargs)
 
 
 class Arco_curto(Arma):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Arco curto", **kwargs)
+        super().__init__(*args, nome="Arco curto", classe="Arqueiro", **kwargs)
 
 
 class Adaga(Arma):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Adaga", **kwargs)
+        super().__init__(*args, nome="Adaga", classe="Assassino", **kwargs)
 
 
 class Luvas_de_ferro(Arma):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Luvas de ferro", **kwargs)
+        super().__init__(*args, nome="Luvas de ferro", classe="Monge", **kwargs)
 
 
 tudo = [

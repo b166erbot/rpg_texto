@@ -3,6 +3,7 @@ from pathlib import Path
 from time import sleep
 from unittest.mock import MagicMock
 
+from jogo.itens.armas import Luvas_de_ferro
 from jogo.locais.areas_abertas import Floresta
 from jogo.locais.cavernas import Caverna
 from jogo.locais.habitaveis import Vilarejo
@@ -41,11 +42,14 @@ class Menu:
             f"{numero} - {texto}" for numero, texto in enumerate(texto2, 1)
         ]
         self.personagem = personagem
+        self.personagem.inventario.append(
+            Luvas_de_ferro(dano=3, velo_ataque=2, critico=1)
+        )
 
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""
-        mixer.music.load("vilarejo.ogg")
-        mixer.music.play()
+        # mixer.music.load("vilarejo.ogg")
+        # mixer.music.play()
         forma = f"{formas[227]} {{}} {formas[228]}"
         while True:
             tela.limpar_tela()
@@ -132,7 +136,7 @@ class Menu:
     def equipar_equipamentos(self):
         """Método que equipa equipamentos do inventário do personagem."""
         numero = self._obter_numero_equipamentos(
-            "deseja equipar qual equipamento: "
+            "deseja equipar qual equipamento?: ", self.personagem.inventario
         )
         if bool(numero):
             inventario = dict(enumerate(self.personagem.inventario))
@@ -143,7 +147,7 @@ class Menu:
     def vender_item(self):
         """Método que vende um item do inventário do personagem."""
         numero = self._obter_numero_equipamentos(
-            "deseja vender qual equipamento: "
+            "deseja vender qual equipamento?: ", self.personagem.inventario
         )
         if bool(numero):
             inventario = dict(enumerate(self.personagem.inventario))
@@ -156,10 +160,11 @@ class Menu:
     def desequipar(self):
         """Método que desequipa um equipamento do personagem."""
         numero = self._obter_numero_equipamentos(
-            "deseja desequipar qual equipamento: "
+            "deseja desequipar qual equipamento?: ",
+            list(self.personagem.equipamentos.values()),
         )
         if bool(numero):
-            inventario = dict(enumerate(self.personagem.inventario))
+            inventario = dict(enumerate(self.personagem.equipamentos.values()))
             equipamento = inventario.get(int(numero))
             if equipamento is not None:
                 self.personagem.desequipar(equipamento)
@@ -168,19 +173,19 @@ class Menu:
         """Método que conduz o personagem à floresta."""
         tela.limpar_tela()
         nomes_florestas = [
-            "amazonia",
             "floresta rio preto",
             "floresta do caçador",
             "floresta mata grande",
             "floresta passo fundo",
             "floresta nublada",
             "floresta negra",
+            "amazonia",
         ]
         nomes_florestas_dict = dict(enumerate(nomes_florestas, 1))
         for numero, floresta in enumerate(nomes_florestas, 1):
             tela.imprimir(
                 f"{numero} - {floresta} [nível da floresta: {numero}]\n",
-                "amarelo"
+                "amarelo",
             )
         tela.imprimir(": ")
         numero = tela.obter_string()
@@ -195,9 +200,9 @@ class Menu:
             self.personagem.ressucitar()
             mixer.music.stop()
 
-    def _obter_numero_equipamentos(self, mensagem):
+    def _obter_numero_equipamentos(self, mensagem: str, itens: list):
         """Método que organiza as páginas para o usuário e retorna um número."""
-        itens = list(enumerate(self.personagem.inventario))
+        itens = list(enumerate(itens))
         if len(itens) == 0:
             tela.imprimir("você não tem itens no inventario.", "cyan")
             sleep(2)
@@ -214,9 +219,20 @@ class Menu:
             )
             n = numeros_paginas.get(numero, 1)
             for numero, item in itens[n - 1]:
-                mensagem2 = f"{numero} - {item}"
-                if self.personagem.equipamentos.get(item.tipo) is item:
-                    mensagem2 += " *equipado*"
+                mensagem2 = (
+                    f"{numero} - {item} [classe: {item.classe}]"
+                    if item.tipo
+                    in [
+                        "Arma",
+                        "Peitoral",
+                        "Elmo",
+                        "Calça",
+                        "Botas",
+                        "Luvas",
+                        "Anel",
+                    ]
+                    else f"{numero} - {item}"
+                )
                 tela.imprimir(mensagem2 + "\n")
             tela.imprimir(mensagem, "cyan")
             numero = tela.obter_string()
@@ -257,12 +273,11 @@ class Menu:
 # TODO: colocar o nome dos ataques tanto dos inimigos tanto do personagem na tela.
 # TODO: com o level, colocar subclasses aos personagens.
 # TODO: fazer uma função que imprime a história do jogo.
-# TODO: colocar tempo para ir até o vilarejo ou floresta.
 # TODO: mostrar a classe do item para que a pessoa possa
 # equipar de acordo com a classe (não dá, muito texto).
 # TODO: obsessão por primitivos na classe Humano (não tem como)
-# TODO: luvas de ferro estão como luvas e já tem luvas no personagem.
 # TODO: adicionar quests que fazer os mobs/bosses dropar o item.
-# TODO: arrumar o comerciante.
-# TODO: elixir deve recuperar porcentagem de vida e ter um preço diferente
-# para cada level.
+# TODO: elixir deve ter um preço diferente para cada level.
+# TODO: level nos equipamentos, itens.
+# TODO: fazer sets de equipamentos com bonus de atributos.
+# TODO: implementar as botas de ferro para o monge.
