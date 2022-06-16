@@ -1,4 +1,5 @@
 from asyncio import sleep
+from time import sleep as sleep2
 from collections import Counter
 from random import choice, randint
 
@@ -15,9 +16,9 @@ from jogo.itens.armas import (
     Machado,
 )
 from jogo.itens.itens import SemItemEquipado
-from jogo.itens.moedas import Pratas
+from jogo.itens.moedas import Draconica, Pratas
 from jogo.itens.pocoes import curas
-from jogo.itens.vestes import Luvas
+from jogo.itens.quest import ItemQuest
 from jogo.itens.vestes import tudo as roupas
 from jogo.tela.imprimir import Imprimir, formatar_status
 from jogo.utils import requisitar_level
@@ -49,7 +50,7 @@ class Humano:
         status={},
         atributos={},
         experiencia=0,
-        pratas=0,
+        moedas = {'Pratas': 1500, 'Draconica': 0},
         peitoral=SemItemEquipado("Peitoral"),
         elmo=SemItemEquipado("Elmo"),
         calca=SemItemEquipado("Calça"),
@@ -93,7 +94,9 @@ class Humano:
         )
         self.habilidades = {}
         self.inventario = []
-        self.pratas = Pratas(pratas or 1500)
+        self.moedas = moedas
+        self.moedas['Pratas'] = Pratas(self.moedas['Pratas'])
+        self.moedas['Draconica'] = Draconica(self.moedas['Draconica'])
         self.jogador = jogador
         self.equipamentos = {
             "Peitoral": peitoral,
@@ -115,7 +118,7 @@ class Humano:
             equipamentos,
         )
         vida = map(lambda x: x.vida, equipamentos)
-        vida = 100 + sum(vida)
+        vida = 100 + (15 * (self.level - 1)) + sum(vida)
         return vida
 
     def atacar(self, other):
@@ -193,7 +196,10 @@ class Humano:
     # é melhor deixar que a instância desequipe.
     def vender(self, equipamento):
         """Método que vende um item no inventário."""
-        self.pratas += equipamento.preco
+        if isinstance(equipamento.preco, Pratas):
+            self.moedas['Pratas'] += equipamento.preco
+        elif isinstance(equipamento.preco, Draconica):
+            self.moedas['Draconica'] += equipamento.preco
         index = self.inventario.index(equipamento)
         self.inventario.pop(index)
 
@@ -201,11 +207,12 @@ class Humano:
         """Método que desequipa um item no inventário."""
         equipamento2 = self.equipamentos.get(equipamento.tipo)
         if equipamento2 and equipamento2 is equipamento:
-            self.inventario.append(equipamento)
-            self.equipamentos[equipamento.tipo] = SemItemEquipado(
-                equipamento.tipo
-            )
-            self.atualizar_status()
+            guardado = self.guardar_item(equipamento)
+            if guardado:
+                self.equipamentos[equipamento.tipo] = SemItemEquipado(
+                    equipamento.tipo
+                )
+                self.atualizar_status()
 
     def equipar(self, equipamento):
         raise NotImplementedError("Método não implementado.")
@@ -222,6 +229,8 @@ class Humano:
 
     def atualizar_status(self):
         """Método que atualiza o status."""
+        experiencia = requisitar_level(self._leveis.keys(), self.experiencia)
+        self.level = self._leveis[experiencia]
         equipamentos = [
             equipamento
             for equipamento in self.equipamentos.values()
@@ -239,16 +248,30 @@ class Humano:
         )
         dano = map(lambda x: x.dano, equipamentos_dano)
         dano = 5 + sum(dano)
-        vida = map(lambda x: x.vida, vestes)
-        vida = 100 + sum(vida)
+        # vida = map(lambda x: x.vida, vestes)
+        vida = self.vida_maxima
         resistencia = sum(map(lambda x: x.resistencias, vestes))
         armadura = sum(map(lambda x: x.armadura, vestes))
         self.status["vida"] = vida
         self.status["resis"] = resistencia
         self.status["armadura"] = armadura
         self.status["dano"] = dano
-        experiencia = requisitar_level(self._leveis.keys(), self.experiencia)
-        self.level = self._leveis[experiencia]
+    
+    def guardar_item(self, item):
+        """Método que guarda um item no inventario se possível."""
+        itens = list(
+            filter(lambda x: not isinstance(x, ItemQuest), self.inventario)
+        )
+        if isinstance(item, ItemQuest):
+            self.inventario.append(item)
+            return True
+        elif len(itens) < 30:
+            self.inventario.append(item)
+            return True
+        else:
+            tela.imprimir('não foi possível adicionar item ao inventario')
+            sleep2(3)
+            return False
 
 
 class Arqueiro(Humano):

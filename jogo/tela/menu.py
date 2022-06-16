@@ -40,16 +40,11 @@ class Menu:
             f"{numero} - {texto}" for numero, texto in enumerate(texto2, 1)
         ]
         self.personagem = personagem
-        # personagem.inventario.append(ItemQuest('gatinho'))
-        # for _ in range(5):
-        #     personagem.inventario.append(ItemQuest('galho'))
-        # self.personagem.experiencia = 500
-        # self.personagem.atualizar_status()
 
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""
-        # mixer.music.load("vilarejo.ogg")
-        # mixer.music.play()
+        mixer.music.load("vilarejo.ogg")
+        mixer.music.play()
         forma = f"{formas[227]} {{}} {formas[228]}"
         while True:
             tela.limpar_tela()
@@ -105,8 +100,9 @@ class Menu:
                         f"{p.status['vida']}, armadura - "
                         f"{p.status['armadura']}, resistencias - "
                         f"{p.status['resis']}, dano - {p.status['dano']}, "
-                        f"dinheiro - {str(p.pratas)}, xp - {p.experiencia}, "
-                        f"level - {p.level}\n",
+                        f"{str(p.moedas['Pratas'])}, "
+                        f"{str(p.moedas['Draconica'])}, "
+                        f"xp - {p.experiencia}, level - {p.level}\n",
                         "cyan",
                     )
                     tela.imprimir(
@@ -295,3 +291,4 @@ class Menu:
 # TODO: interagir com cenários e destruílos?
 # TODO: fazer quests onde o personagem precise interagir com 2 ou mais npcs.
 # TODO: botar um simbolo diferente para a moeda draconica.
+# TODO: colocar porcentagem na armadura, resistencias

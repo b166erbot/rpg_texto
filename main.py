@@ -12,8 +12,6 @@ from pathlib import Path
 from time import sleep
 
 from jogo.itens.pocoes import curas
-from jogo.itens.vestes import Peitoral
-from jogo.locais.cavernas import Caverna
 from jogo.personagens.classes import (
     Arqueiro,
     Assassino,
@@ -22,11 +20,14 @@ from jogo.personagens.classes import (
     Mago,
     Monge,
 )
-from jogo.personagens.npc import Banqueiro, Comerciante, Pessoa
+from jogo.personagens.npc import (
+    Banqueiro, Comerciante, Pessoa, ComercianteItemQuest
+)
 from jogo.quests.quests import quests_da_lorena, quests_do_eivor
 from jogo.tela.imprimir import Imprimir
 from jogo.tela.menu import Menu
 from jogo.utils import carregar_jogo
+from jogo.itens.moedas import Draconica
 
 
 def main():
@@ -35,7 +36,8 @@ def main():
         personagem = carregar_jogo("personagem", "save.pkl")
         lorena = carregar_jogo("Lorena", "save.pkl")
         eivor = carregar_jogo("Eivor", "save.pkl")
-        banqueiro = carregar_jogo("Tiago", "save.pkl")
+        tiago = carregar_jogo("Tiago", "save.pkl")
+        bram = carregar_jogo('Bram', 'save.pkl')
         tela.imprimir("jogo carregado", "cyan")
         sleep(2)
     else:
@@ -45,7 +47,8 @@ def main():
         eivor = Pessoa("Eivor")
         quests = [quest(eivor.nome) for quest in quests_do_eivor]
         eivor.receber_quest(quests)
-        banqueiro = Banqueiro("Tiago")
+        tiago = Banqueiro("Tiago")
+        bram = ComercianteItemQuest('Bram', [Draconica])
         nome = ""
         while not bool(nome):
             tela.limpar_tela()
@@ -74,7 +77,7 @@ def main():
         personagem = Classe(nome, True)
     comerciante = Comerciante("farkas", curas)
     menu = Menu(personagem)
-    menu.obter_npcs([lorena, comerciante, banqueiro, eivor])
+    menu.obter_npcs([lorena, comerciante, tiago, eivor, bram])
     menu.ciclo()
 
 

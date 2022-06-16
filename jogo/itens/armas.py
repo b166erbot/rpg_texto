@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from jogo.itens.moedas import Pratas
 
 
 @dataclass
@@ -11,7 +12,7 @@ class Arma:
     classe: str = field(repr=False)
 
     def __post_init__(self):
-        self.preco = (self.dano + self.velo_ataque + self.critico) * 8
+        self.preco = Pratas((self.dano + self.velo_ataque + self.critico) * 8)
 
 
 class Espada_longa(Arma):

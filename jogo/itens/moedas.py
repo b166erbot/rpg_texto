@@ -2,15 +2,14 @@ from jogo.tela.imprimir import formas
 
 
 class Moedas:
-    def __init__(self, nome: str, quantidade: int):
-        self._nome = nome
+    def __init__(self, quantidade: int):
         self._moedas = quantidade
 
     def __repr__(self):
-        return f"{self._nome}: ${self._moedas}"
+        return f"{self.nome}: ${self._moedas}"
 
     def __str__(self):
-        return f"{self._nome}: ${self._moedas}"
+        return f"{self.nome}: ${self._moedas}"
 
     def __int__(self):
         return self._moedas
@@ -49,16 +48,18 @@ class Moedas:
 
 
 class Pratas(Moedas):
+    nome = 'Pratas'
     def __init__(self, quantidade: int):
-        super().__init__('Pratas', quantidade)
+        super().__init__(quantidade)
 
 
 class Draconica(Moedas):
+    nome = 'Draconica'
     def __init__(self, quantidade: int):
-        super().__init__('Draconica', quantidade)
+        super().__init__(quantidade)
     
     def __repr__(self):
-        return f"{self._nome}: {formas[148]} {self._moedas}"
+        return f"{self.nome}: {formas[148]} {self._moedas}"
 
     def __str__(self):
-        return f"{self._nome}: {formas[148]} {self._moedas}"
+        return f"{self.nome}: {formas[148]} {self._moedas}"

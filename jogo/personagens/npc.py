@@ -1,5 +1,6 @@
 from time import sleep
-
+from jogo.itens.moedas import Draconica, Pratas
+from jogo.itens.quest import ItemQuest
 from jogo.tela.imprimir import Imprimir
 from jogo.utils import Artigo, chunk
 
@@ -23,18 +24,25 @@ class Comerciante(Npc):
         super().__init__(nome, "Comerciante")
         self.itens = {numero: item for numero, item in enumerate(itens, 1)}
         self.tabela = [
-            f"{numero} - {item.nome} ${item.preco}"
+            f"{numero} - {item.nome} {item.preco}"
             for numero, item in self.itens.items()
         ]
         self.tabela_cortada = chunk(self.tabela, 16)
         self.salvar = False
 
-    def comprar(self, item, quantidade: int, personagem):
+    def distinguir_moeda(self, item, quantidade: int, personagem):
         """Método que faz as compras pelo personagem."""
+        if isinstance(item.preco, Pratas):
+            self.comprar(item, quantidade, personagem, 'Pratas')
+        elif isinstance(item.preco, Draconica):
+            self.comprar(item, quantidade, personagem, 'Draconica')
+
+    def comprar(self, item, quantidade: int, personagem, tipo_de_moeda: str):
         preço = quantidade * item.preco
-        if int(personagem.pratas) >= preço:
-            personagem.pratas -= preço
+        if int(personagem.moedas[tipo_de_moeda]) >= preço:
+            personagem.moedas[tipo_de_moeda] -= preço
             for n in range(quantidade):
+                # ao comprar, guarda o item de qualquer forma.
                 personagem.inventario.append(item())
         else:
             texto = "compra não realizada: dinheiro insuficiente"
@@ -45,12 +53,14 @@ class Comerciante(Npc):
         """Método que mostra os itens e obtem o número da compra."""
         tela.limpar_tela()
         numero = self._obter_numero("O que deseja comprar?: ", personagem)
-        while numero.isnumeric() and bool(numero) and int(numero) in self.itens:
+        while numero.isnumeric() and int(numero) in self.itens:
             tela.imprimir("Quantidade: ", "cyan")
             quantidade = tela.obter_string()
             if not bool(quantidade):
                 break
-            self.comprar(self.itens[int(numero)], int(quantidade), personagem)
+            self.distinguir_moeda(
+                self.itens[int(numero)], int(quantidade), personagem
+            )
             tela.limpar_tela()
             numero = self._obter_numero(
                 "Deseja mais alguma coisa?: ", personagem
@@ -72,7 +82,11 @@ class Comerciante(Npc):
                 " - Para passar de página digite :numero exemplo-> :2\n",
                 "cyan",
             )
-            tela.imprimir(f"seu dinheiro: {personagem.pratas}\n", "cyan")
+            tela.imprimir(
+                f"seu dinheiro: {personagem.moedas['Pratas']}"
+                f" {personagem.moedas['Draconica']}\n",
+                "cyan"
+            )
             n = numeros_paginas.get(numero, 1)
             for texto in self.tabela_cortada[n - 1]:
                 tela.imprimir(texto + "\n", "cyan")
@@ -197,6 +211,79 @@ class Pessoa(Npc):
         ]
 
 
+class ComercianteItemQuest(Npc):
+    def __init__(self, nome: str, itens: list):
+        super().__init__(nome, "Comerciante Item Quest")
+        self.itens = {numero: item for numero, item in enumerate(itens, 1)}
+        self.tabela = [
+            f"{numero} - {item.nome}"
+            for numero, item in self.itens.items()
+        ]
+        self.tabela_cortada = chunk(self.tabela, 16)
+        self.salvar = False
+
+    def distinguir_moeda(self, item, personagem):
+        """Método que faz as compras pelo personagem."""
+        if issubclass(item, Draconica):
+            self.comprar_draconica(item, personagem)
+    
+    def comprar_draconica(self, item, personagem):
+        tela.limpar_tela()
+        item = ItemQuest('Coração de Dragão')
+        condicoes = [personagem.inventario.count(item) > 0]
+        if all(condicoes):
+            coracoes = list(filter(lambda x: x == item, personagem.inventario))
+            for coracao in coracoes:
+                index = personagem.inventario.index(coracao)
+                personagem.inventario.pop(index)
+                personagem.moedas['Draconica'] += 15
+            tela.imprimir(f"{len(coracoes)} coração(ões) vendido(s)")
+        else:
+            tela.imprimir('você não tem corações de dragão.')
+        sleep(3)
+
+    def interagir(self, personagem):
+        """Método que mostra os itens e obtem o número da compra."""
+        tela.limpar_tela()
+        numero = self._obter_numero("O que deseja trocar?: ", personagem)
+        while numero.isnumeric() and int(numero) in self.itens:
+            self.distinguir_moeda(
+                self.itens[int(numero)], personagem
+            )
+            tela.limpar_tela()
+            numero = self._obter_numero(
+                "Deseja mais alguma coisa?: ", personagem
+            )
+        tela.limpar_tela()
+        tela.imprimir("volte sempre!", "cyan")
+        sleep(1)
+
+    def _obter_numero(self, mensagem: str, personagem):
+        """Método que organiza as páginas para o usuário e retorna um numero."""
+        numeros_paginas = {
+            f":{n}": n for n in range(1, len(self.tabela_cortada) + 1)
+        }
+        numero = ":1"
+        while numero in numeros_paginas:
+            tela.limpar_tela()
+            tela.imprimir(
+                f"páginas: {len(self.tabela_cortada)}"
+                " - Para passar de página digite :numero exemplo-> :2\n",
+                "cyan",
+            )
+            tela.imprimir(
+                f"seu dinheiro: {personagem.moedas['Pratas']}"
+                f" {personagem.moedas['Draconica']}\n",
+                "cyan"
+            )
+            n = numeros_paginas.get(numero, 1)
+            for texto in self.tabela_cortada[n - 1]:
+                tela.imprimir(texto + "\n", "cyan")
+            tela.imprimir(mensagem, "cyan")
+            numero = tela.obter_string()
+        return numero
+
+
 class Banqueiro(Npc):
     def __init__(self, nome: str):
         super().__init__(nome, "Banqueiro")
@@ -218,8 +305,9 @@ class Banqueiro(Npc):
     def retirar(self, item, personagem):
         """Método que retira um item do inventario do banqueiro."""
         index = self.inventario.index(item)
-        self.inventario.pop(index)
-        personagem.inventario.append(item)
+        guardado = personagem.inventario.append(item)
+        if guardado:
+            self.inventario.pop(index)
 
     def interagir(self, personagem):
         """Método que interage com o personagem."""

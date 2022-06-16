@@ -7,6 +7,8 @@ from jogo.itens.armas import tudo as armas
 from jogo.itens.vestes import Anel, Roupa
 from jogo.itens.vestes import tudo as vestes
 from jogo.tela.imprimir import Imprimir, efeito_digitando, formatar_status
+from jogo.itens.quest import ItemQuest
+
 
 tela = Imprimir()
 
@@ -102,7 +104,7 @@ class Monstro:
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(nome="Anel", **status_dict)
             personagem.pratas += randint(30 * self.nivel, 50 * self.nivel)
-            personagem.inventario.append(item)
+            personagem.guardar_item(item)
 
     def sortear_drops_quest(self, personagem):
         """Método que dá itens de quests para o personagem."""
@@ -120,7 +122,7 @@ class Monstro:
             ]
             if all(condicoes):
                 tela.imprimir(f"Item {quest.item.nome} adiquirido\n")
-                personagem.inventario.append(quest.item)
+                personagem.guardar_item(quest.item)
     
     def __str__(self):
         status = (
@@ -171,7 +173,7 @@ class Boss(Monstro):
             status_dict = dict(zip(status_nomes, status))
             item = Item(nome="Anel", **status_dict)
         personagem.pratas += randint(30 * self.nivel, 50 * self.nivel)
-        personagem.inventario.append(item)
+        personagem.guardar_item(item)
 
 
 class Tartaruga(Monstro):
@@ -334,6 +336,10 @@ class Dragao(Boss):
     def fogo(self, other):
         """Método que ataca o personagem."""
         other.receber_dano(15 * self.nivel, self.tipo_dano)
+    
+    def sortear_drops(self, personagem):
+        super().sortear_drops(personagem)
+        personagem.inventario.append(ItemQuest('Coração de Dragão'))
 
 
 monstros_comuns = [Tartaruga, Camaleao, Tamandua, Sapo]

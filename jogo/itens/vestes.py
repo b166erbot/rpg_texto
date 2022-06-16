@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from jogo.itens.moedas import Pratas
 
 
 @dataclass
@@ -12,9 +13,9 @@ class Roupa:
     classe: str = field(repr=False, default="Todos", init=False)
 
     def __post_init__(self):
-        self.preco = (
+        self.preco = Pratas((
             int(self.vida / 2) + self.resistencias + self.armadura
-        ) * 8
+        ) * 8)
 
 
 class Peitoral(Roupa):
@@ -58,9 +59,9 @@ class Anel:
     classe: str = field(repr=False, default="Todos", init=False)
 
     def __post_init__(self):
-        self.preco = (
+        self.preco = Pratas((
             self.dano + int(self.vida / 2) + self.resistencias + self.armadura
-        ) * 8
+        ) * 8)
 
 
 tudo = [Peitoral, Elmo, Calca, Botas, Luvas, Anel]

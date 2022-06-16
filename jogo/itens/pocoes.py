@@ -1,3 +1,6 @@
+from jogo.itens.moedas import Pratas
+
+
 class PocaoDeCura:
     def __init__(self, pontos_cura: int):
         self.pontos_cura = pontos_cura
@@ -18,7 +21,7 @@ class PocaoDeCura:
 
 class PocaoDeVidaFraca(PocaoDeCura):
     nome = "poção de vida fraca"
-    preco = 15
+    preco = Pratas(15)
 
     def __init__(self):
         super().__init__(30)
@@ -26,7 +29,7 @@ class PocaoDeVidaFraca(PocaoDeCura):
 
 class PocaoDeVidaMedia(PocaoDeCura):
     nome = "poção de vida média"
-    preco = 30
+    preco = Pratas(30)
 
     def __init__(self):
         super().__init__(60)
@@ -34,7 +37,7 @@ class PocaoDeVidaMedia(PocaoDeCura):
 
 class PocaoDeVidaGrande(PocaoDeCura):
     nome = "poção de vida grande"
-    preco = 45
+    preco = Pratas(45)
 
     def __init__(self):
         super().__init__(90)
@@ -42,7 +45,7 @@ class PocaoDeVidaGrande(PocaoDeCura):
 
 class PocaoDeVidaExtraGrande(PocaoDeCura):
     nome = "poção de vida extra grande"
-    preco = 60
+    preco = Pratas(60)
 
     def __init__(self):
         super().__init__(120)
@@ -67,7 +70,7 @@ class Elixir:
 
 class ElixirDeVidaFraca(Elixir):
     nome = "elixir de vida fraca"
-    preco = 100
+    preco = Pratas(100)
 
     def __init__(self):
         super().__init__(20)
@@ -75,7 +78,7 @@ class ElixirDeVidaFraca(Elixir):
 
 class ElixirDeVidaMedia(Elixir):
     nome = "elixir de vida média"
-    preco = 200
+    preco = Pratas(200)
 
     def __init__(self):
         super().__init__(40)
@@ -83,7 +86,7 @@ class ElixirDeVidaMedia(Elixir):
 
 class ElixirDeVidaGrande(Elixir):
     nome = "elixir de vida grande"
-    preco = 300
+    preco = Pratas(300)
 
     def __init__(self):
         super().__init__(60)
@@ -91,7 +94,7 @@ class ElixirDeVidaGrande(Elixir):
 
 class ElixirDeVidaExtraGrande(Elixir):
     nome = "elixir de vida extra grande"
-    preco = 400
+    preco = Pratas(400)
 
     def __init__(self):
         super().__init__(80)

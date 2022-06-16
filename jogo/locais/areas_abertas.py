@@ -148,7 +148,7 @@ class Floresta:
                 ),
             ]
             if all(condicoes):
-                self.personagem.inventario.append(quest.item)
+                self.personagem.guardar(quest.item)
                 tela.imprimir(f"item {quest.item.nome} adiquirido.\n")
                 sleep(1)
 
