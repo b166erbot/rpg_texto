@@ -2,12 +2,10 @@ from random import choice, randint
 from time import sleep
 
 from jogo.assincrono.combate import combate
-from jogo.itens.armas import Arma
-from jogo.itens.armas import tudo as armas
 from jogo.itens.pocoes import curas
 from jogo.itens.vestes import Anel, Roupa
 from jogo.itens.vestes import tudo as vestes
-from jogo.personagens.monstros import bosses, monstros_comuns
+from jogo.personagens.monstros import bosses_comuns, monstros_comuns
 from jogo.tela.imprimir import Imprimir, efeito_digitando
 
 tela = Imprimir()
@@ -84,7 +82,7 @@ class Caverna:
                     self.morto()
                     return
                 tela.limpar_tela()
-        Boss = choice(bosses)
+        Boss = choice(bosses_comuns)
         status = {
             "vida": 300,
             "dano": 5,
@@ -103,7 +101,7 @@ class Caverna:
             return
         elif self.personagem.status["vida"] > 0:
             self.personagem.experiencia += boss.experiencia
-            boss.dar_loot_boss(self.personagem)
+            boss.sortear_drops(self.personagem)
         self.personagem.recuperar_magia_stamina()
         tela.limpar_tela()
         tela.limpar_tela2()
@@ -120,9 +118,8 @@ class Caverna:
                 combate(self.personagem, inimigo)
                 if self.personagem.status["vida"] == 0:
                     return True
-                elif self.personagem.status["vida"] > 0:
-                    self.personagem.experiencia += inimigo.experiencia
-                    inimigo.sortear_drops(self.personagem)
+                self.personagem.experiencia += inimigo.experiencia
+                inimigo.sortear_drops(self.personagem)
                 self.personagem.recuperar_magia_stamina()
             tela.limpar_tela2()
             return False

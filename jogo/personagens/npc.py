@@ -90,46 +90,51 @@ class Pessoa(Npc):
     def missao(self, personagem):
         """Método que coloca a missão na tela para o personagem."""
         quests = [
-            quest_status
-            for quest_status in self.quests
+            quest
+            for quest in self.quests
             if all(
                 [
-                    not quest_status.finalizada,
-                    not quest_status.iniciada,
-                    quest_status.quest.level <= personagem.level,
+                    not quest.finalizada,
+                    not quest.iniciada,
+                    quest.level <= personagem.level,
                 ]
             )
         ]
         if len(quests) > 0:
-            quest_status = quests[0]
-            quest_status.quest.historia()
-            aceito = quest_status.quest.aceitar()
+            quest = quests[0]
+            quest.historia()
+            aceito = quest.aceitar()
             if aceito:
-                personagem.quests.append(quest_status.quest)
-                quest_status.iniciada = True
+                personagem.quests.append(quest)
+                quest.iniciada = True
 
     def entregar_quest(self, personagem):
         """
         Método que recebe a quest devolta, paga e da o xp para o personagem.
         """
-        itens = [
-            x
-            for x in personagem.inventario
-            if self.quest_atual.quest.item.nome == x.nome
-        ]
-        quest = self.quest_atual.quest
+        itens = list(
+            filter(
+                lambda x: self.quest_atual.item.nome == x.nome,
+                personagem.inventario,
+            )
+        )
+        quest = self.quest_atual
         if len(itens) == quest.numero_de_itens_requeridos:
             quest.pagar(personagem)
             quest.depositar_xp(personagem)
-            index = personagem.quests.index(quest)
-            personagem.quests.pop(index)
+            personagem.atualizar_status()
+            quests = filter(lambda q: q == quest, personagem.quests)
+            for q in quests:
+                index = personagem.quests.index(q)
+                personagem.quests.pop(index)
             for item in itens:
                 index = personagem.inventario.index(item)
                 personagem.inventario.pop(index)
             self.quest_atual.finalizada = True
             tela.imprimir(
                 f"{self.nome}: Muito obrigad{Artigo(self.nome)}."
-                " aqui está seu dinheiro",
+                f" aqui está seu dinheiro ${self.quest_atual.valor} "
+                f"xp={self.quest_atual.xp}",
                 "cyan",
             )
             sleep(3)
@@ -144,8 +149,8 @@ class Pessoa(Npc):
             self.proxima_quest(personagem.level)
         if not self.quest_atual:
             tela.imprimir(f"{self.nome}: não tenho mais nada a pedir.", "cyan")
-            if len(self._obter_quests_nao_iniciadas(personagem.level)):
-                tela.imprimir(" volte quando tiver mais level\n")
+            if len(self._obter_quests_nao_iniciadas2(personagem.level)):
+                tela.imprimir(" volte quando tiver mais level\n", "cyan")
             sleep(2)
             return
         if self.quest_atual.iniciada and not self.quest_atual.finalizada:
@@ -153,12 +158,14 @@ class Pessoa(Npc):
         else:
             self.missao(personagem)
 
-    def receber_quest_status(self, quests: list):
-        quests = sorted(quests, key=lambda x: x.quest.level)
+    def receber_quest(self, quests: list):
+        """Método que recebe as quests."""
+        quests = sorted(quests, key=lambda quest: quest.level)
         self.quests = quests
         self.proxima_quest(1)
 
     def proxima_quest(self, level):
+        """Método que define a próxima quest."""
         if not self.quest_atual:
             self._definir_proxima_quest(level)
         else:
@@ -166,6 +173,7 @@ class Pessoa(Npc):
                 self._definir_proxima_quest(level)
 
     def _definir_proxima_quest(self, level):
+        """Método auxiliar que define a proxima quest."""
         quests = self._obter_quests_nao_iniciadas(level)
         if len(quests):
             self.quest_atual = quests[0]
@@ -173,10 +181,19 @@ class Pessoa(Npc):
             self.quest_atual = False
 
     def _obter_quests_nao_iniciadas(self, level):
+        """Método que retorna as quests não iniciadas do level pra baixo."""
         return [
-            quest_status
-            for quest_status in self.quests
-            if not quest_status.iniciada and quest_status.quest.level <= level
+            quest
+            for quest in self.quests
+            if not quest.iniciada and quest.level <= level
+        ]
+
+    def _obter_quests_nao_iniciadas2(self, level):
+        """Método que retorna as quests não iniciadas do level pra cima"""
+        return [
+            quest
+            for quest in self.quests
+            if not quest.iniciada and quest.level > level
         ]
 
 
@@ -189,6 +206,7 @@ class Banqueiro(Npc):
         self.inventario = []
 
     def guardar_item(self, item, personagem):
+        """Método que guarda um item no inventario do banqueiro."""
         if len(self.inventario) < self.tamanho_do_inventario:
             self.inventario.append(item)
             index = personagem.inventario.index(item)
@@ -198,11 +216,13 @@ class Banqueiro(Npc):
             sleep(2)
 
     def retirar(self, item, personagem):
+        """Método que retira um item do inventario do banqueiro."""
         index = self.inventario.index(item)
         self.inventario.pop(index)
         personagem.inventario.append(item)
 
     def interagir(self, personagem):
+        """Método que interage com o personagem."""
         tela.limpar_tela()
         tela.imprimir("1 -> guardar, 2 -> adquirir\n")
         tela.imprimir("deseja guardar ou adquirir um item?: ")

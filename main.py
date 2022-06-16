@@ -23,7 +23,7 @@ from jogo.personagens.classes import (
     Monge,
 )
 from jogo.personagens.npc import Banqueiro, Comerciante, Pessoa
-from jogo.quests.quests import QuestStatus, quests_da_lorena
+from jogo.quests.quests import quests_da_lorena, quests_do_eivor
 from jogo.tela.imprimir import Imprimir
 from jogo.tela.menu import Menu
 from jogo.utils import carregar_jogo
@@ -34,15 +34,17 @@ def main():
     if Path("save.pkl").exists():
         personagem = carregar_jogo("personagem", "save.pkl")
         lorena = carregar_jogo("Lorena", "save.pkl")
+        eivor = carregar_jogo("Eivor", "save.pkl")
         banqueiro = carregar_jogo("Tiago", "save.pkl")
         tela.imprimir("jogo carregado", "cyan")
         sleep(2)
     else:
         lorena = Pessoa("Lorena")
-        quests_status = [
-            QuestStatus(quest(lorena.nome)) for quest in quests_da_lorena
-        ]
-        lorena.receber_quest_status(quests_status)
+        quests = [quest(lorena.nome) for quest in quests_da_lorena]
+        lorena.receber_quest(quests)
+        eivor = Pessoa("Eivor")
+        quests = [quest(eivor.nome) for quest in quests_do_eivor]
+        eivor.receber_quest(quests)
         banqueiro = Banqueiro("Tiago")
         nome = ""
         while not bool(nome):
@@ -72,7 +74,7 @@ def main():
         personagem = Classe(nome, True)
     comerciante = Comerciante("farkas", curas)
     menu = Menu(personagem)
-    menu.obter_npcs([lorena, comerciante, banqueiro])
+    menu.obter_npcs([lorena, comerciante, banqueiro, eivor])
     menu.ciclo()
 
 

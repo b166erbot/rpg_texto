@@ -13,7 +13,7 @@ tela = Imprimir()
 
 class Monstro:
     def __init__(self, nivel=1, status={}):
-        self.experiencia = 500 * nivel
+        self.experiencia = 50 * nivel
         self.status = Counter(
             status
             or {
@@ -104,13 +104,41 @@ class Monstro:
             personagem.pratas += randint(30 * self.nivel, 50 * self.nivel)
             personagem.inventario.append(item)
 
+    def sortear_drops_quest(self, personagem):
+        """Método que dá itens de quests para o personagem."""
+        quests = filter(
+            lambda quest: quest.tipo == "monstro", personagem.quests
+        )
+        for quest in quests:
+            condicoes = [
+                quest.sorte_de_drop(),
+                (
+                    personagem.inventario.count(quest.item)
+                    < quest.numero_de_itens_requeridos
+                ),
+                quest.monstro == self.nome,
+            ]
+            if all(condicoes):
+                tela.imprimir(f"Item {quest.item.nome} adiquirido\n")
+                personagem.inventario.append(quest.item)
+    
+    def __str__(self):
+        status = (
+            f"{self.nome}(vida={self.status['vida']}, nivel={self.nivel},"
+            f"dano={self.status['dano']})"
+        )
+        return status
+    
+    def dar_experiencia(self, personagem):
+        personagem.experiencia += self.experiencia
+
 
 class Boss(Monstro):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.experiencia *= 2
 
-    def dar_loot_boss(self, personagem):
+    def sortear_drops(self, personagem):
         """Método que dá item e pratas ao personagem."""
         efeito_digitando("Loot encontrado.")
         Item = choice(vestes + armas)
@@ -290,5 +318,23 @@ class ArvoreDeku(Boss):
         other.receber_dano(15 * self.nivel, self.tipo_dano)
 
 
+class Dragao(Boss):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.habilidades = [self.patada, self.fogo]
+        self.nome = "Dragão ancião"
+        self.classe = "Monstro chefe"
+        self.tipo = "boss"
+        self.tipo_dano = "magico"
+
+    def patada(self, other):
+        """Método que ataca o personagem."""
+        other.receber_dano(10 * self.nivel, self.tipo_dano)
+
+    def fogo(self, other):
+        """Método que ataca o personagem."""
+        other.receber_dano(15 * self.nivel, self.tipo_dano)
+
+
 monstros_comuns = [Tartaruga, Camaleao, Tamandua, Sapo]
-bosses = [Topera, Mico, Sucuri, ArvoreDeku]
+bosses_comuns = [Topera, Mico, Sucuri, ArvoreDeku]

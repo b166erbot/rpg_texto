@@ -3,9 +3,7 @@ from pathlib import Path
 from time import sleep
 from unittest.mock import MagicMock
 
-from jogo.itens.armas import Luvas_de_ferro
 from jogo.locais.areas_abertas import Floresta
-from jogo.locais.cavernas import Caverna
 from jogo.locais.habitaveis import Vilarejo
 from jogo.quests.quests import ItemQuest
 from jogo.tela.imprimir import Imprimir, formas
@@ -42,9 +40,11 @@ class Menu:
             f"{numero} - {texto}" for numero, texto in enumerate(texto2, 1)
         ]
         self.personagem = personagem
-        self.personagem.inventario.append(
-            Luvas_de_ferro(dano=3, velo_ataque=2, critico=1)
-        )
+        # personagem.inventario.append(ItemQuest('gatinho'))
+        # for _ in range(5):
+        #     personagem.inventario.append(ItemQuest('galho'))
+        # self.personagem.experiencia = 500
+        # self.personagem.atualizar_status()
 
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""
@@ -135,13 +135,19 @@ class Menu:
 
     def equipar_equipamentos(self):
         """Método que equipa equipamentos do inventário do personagem."""
+        equipamentos = list(
+            filter(lambda x: x, self.personagem.equipamentos.values())
+        )
         numero = self._obter_numero_equipamentos(
-            "deseja equipar qual equipamento?: ", self.personagem.inventario
+            "deseja equipar qual equipamento?: ",
+            equipamentos + self.personagem.inventario,
         )
         if bool(numero):
-            inventario = dict(enumerate(self.personagem.inventario))
+            inventario = dict(
+                enumerate(equipamentos + self.personagem.inventario)
+            )
             equipamento = inventario.get(int(numero))
-            if equipamento is not None:
+            if bool(equipamento) and equipamento in self.personagem.inventario:
                 self.personagem.equipar(equipamento)
 
     def vender_item(self):
@@ -207,7 +213,7 @@ class Menu:
             tela.imprimir("você não tem itens no inventario.", "cyan")
             sleep(2)
             return ""
-        itens = chunk(itens, 18)
+        itens = chunk(itens, 17)
         numeros_paginas = {f":{n}": n for n in range(1, len(itens) + 1)}
         numero = ":1"
         while bool(numero) and not numero.isnumeric():
@@ -216,6 +222,9 @@ class Menu:
                 f"páginas: {len(itens)}"
                 " - Para passar de página digite :numero exemplo-> :2\n",
                 "cyan",
+            )
+            tela.imprimir(
+                "itens coloridos de amarelo estão equipados\n", "cyan"
             )
             n = numeros_paginas.get(numero, 1)
             for numero, item in itens[n - 1]:
@@ -233,7 +242,10 @@ class Menu:
                     ]
                     else f"{numero} - {item}"
                 )
-                tela.imprimir(mensagem2 + "\n")
+                if self.personagem.equipamentos.get(item.tipo) is item:
+                    tela.imprimir(mensagem2 + "\n", "amarelo")
+                else:
+                    tela.imprimir(mensagem2 + "\n")
             tela.imprimir(mensagem, "cyan")
             numero = tela.obter_string()
         return numero
@@ -273,11 +285,13 @@ class Menu:
 # TODO: colocar o nome dos ataques tanto dos inimigos tanto do personagem na tela.
 # TODO: com o level, colocar subclasses aos personagens.
 # TODO: fazer uma função que imprime a história do jogo.
-# TODO: mostrar a classe do item para que a pessoa possa
-# equipar de acordo com a classe (não dá, muito texto).
 # TODO: obsessão por primitivos na classe Humano (não tem como)
-# TODO: adicionar quests que fazer os mobs/bosses dropar o item.
+# TODO: adicionar quests que fazer os bosses dropar o item.
 # TODO: elixir deve ter um preço diferente para cada level.
 # TODO: level nos equipamentos, itens.
 # TODO: fazer sets de equipamentos com bonus de atributos.
-# TODO: implementar as botas de ferro para o monge.
+# TODO: fazer outras moedas alem das pratas e fazer monstros droparem esses itens.
+# TODO: implementar stun.
+# TODO: interagir com cenários e destruílos?
+# TODO: fazer quests onde o personagem precise interagir com 2 ou mais npcs.
+# TODO: botar um simbolo diferente para a moeda draconica.

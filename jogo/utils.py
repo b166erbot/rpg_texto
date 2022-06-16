@@ -33,7 +33,7 @@ class Artigo:
 def requisitar_level(lista: list, valor: int):
     minimo = float("inf")
     lista = list(lista)
-    if valor == 0:
+    if valor <= lista[0]:
         return lista[0]
     for valor2 in lista:
         if valor2 < valor:
