@@ -32,7 +32,7 @@ class Quest:
 
     def pagar(self, personagem):
         """Método que paga o personagem."""
-        personagem.pratas += self.valor
+        personagem.moedas["Pratas"] += self.valor
 
     def depositar_xp(self, personagem):
         """Método que dá o xp para o personagem."""

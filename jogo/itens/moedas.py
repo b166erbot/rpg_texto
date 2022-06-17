@@ -48,16 +48,18 @@ class Moedas:
 
 
 class Pratas(Moedas):
-    nome = 'Pratas'
+    nome = "Pratas"
+
     def __init__(self, quantidade: int):
         super().__init__(quantidade)
 
 
 class Draconica(Moedas):
-    nome = 'Draconica'
+    nome = "Draconica"
+
     def __init__(self, quantidade: int):
         super().__init__(quantidade)
-    
+
     def __repr__(self):
         return f"{self.nome}: {formas[148]} {self._moedas}"
 

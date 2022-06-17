@@ -58,7 +58,7 @@ def gerar_fluxo():
 class Caverna:
     """Classe que constroi uma caverna com caminhos aleatórios."""
 
-    def __init__(self, nome_caverna: str, personagem, nivel: int):
+    def __init__(self, nome_caverna: str, personagem, level: int):
         self.nome = nome_caverna
         self.personagem = personagem
         self._caminhos = gerar_fluxo()
@@ -69,7 +69,7 @@ class Caverna:
             "local sem saída",
             "cachoeira interna",
         ]
-        self.nivel = nivel
+        self.level = level
 
     def explorar(self):
         """Método que explora uma caverna com o personagem."""
@@ -86,7 +86,7 @@ class Caverna:
         status = {
             "vida": 300,
             "dano": 5,
-            "resis": 15,
+            "resistencia": 15,
             "velo-ataque": 1,
             "critico": 15,
             "armadura": 15,
@@ -94,7 +94,7 @@ class Caverna:
             "stamina": 100,
             "velo-movi": 1,
         }
-        boss = Boss(self.nivel, status)
+        boss = Boss(self.level, status)
         combate(self.personagem, boss)
         if self.personagem.status["vida"] == 0:
             self.morto()
@@ -114,7 +114,7 @@ class Caverna:
             tela.limpar_tela()
             for y in range(randint(1, 3)):
                 Inimigo = choice(self._mostros)
-                inimigo = Inimigo(nivel=self.nivel)
+                inimigo = Inimigo(level=self.level)
                 combate(self.personagem, inimigo)
                 if self.personagem.status["vida"] == 0:
                     return True

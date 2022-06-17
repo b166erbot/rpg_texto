@@ -3,7 +3,7 @@ from time import sleep
 from typing import Union
 
 from jogo.assincrono.combate import combate
-from jogo.personagens.monstros import bosses_comuns, monstros_comuns, Dragao
+from jogo.personagens.monstros import Dragao, bosses_comuns, monstros_comuns
 from jogo.tela.imprimir import Imprimir, efeito_digitando
 
 from .cavernas import Caverna, Local
@@ -41,11 +41,11 @@ def gerar_fluxo() -> list[local_str]:
 
 
 class Floresta:
-    def __init__(self, nome: str, personagem, nivel: int):
+    def __init__(self, nome: str, personagem, level: int):
         self.nome = nome
         self.personagem = personagem
         self._caminhos = gerar_fluxo()
-        self.nivel = nivel
+        self.level = level
 
     def explorar(self):
         """Método que explora uma floresta com o personagem."""
@@ -68,7 +68,7 @@ class Floresta:
         if str(caminho) == "caverna":
             tela.imprimir("deseja entrar na caverna? s/n\n")
             if tela.obter_string().lower() in ["s", "sim"]:
-                caverna = Caverna("poço azul", self.personagem, self.nivel)
+                caverna = Caverna("poço azul", self.personagem, self.level)
                 caverna.explorar()
                 self.personagem.recuperar_magia_stamina()
                 self.personagem.ressucitar()
@@ -79,7 +79,7 @@ class Floresta:
             status = {
                 "vida": 300,
                 "dano": 5,
-                "resis": 15,
+                "resistencia": 15,
                 "velo-ataque": 1,
                 "critico": 15,
                 "armadura": 15,
@@ -88,7 +88,7 @@ class Floresta:
                 "velo-movi": 1,
             }
             Boss = choice(bosses_comuns)
-            boss = Boss(self.nivel, status)
+            boss = Boss(self.level, status)
             combate(self.personagem, boss)
             if self.personagem.status["vida"] == 0:
                 self.morto()
@@ -148,7 +148,7 @@ class Floresta:
                 ),
             ]
             if all(condicoes):
-                self.personagem.guardar(quest.item)
+                self.personagem.guardar_item(quest.item)
                 tela.imprimir(f"item {quest.item.nome} adiquirido.\n")
                 sleep(1)
 
@@ -157,7 +157,7 @@ class Floresta:
             status = {
                 "vida": 300,
                 "dano": 5,
-                "resis": 15,
+                "resistencia": 15,
                 "velo-ataque": 1,
                 "critico": 15,
                 "armadura": 15,
@@ -165,18 +165,18 @@ class Floresta:
                 "stamina": 100,
                 "velo-movi": 1,
             }
-            boss = Dragao(self.nivel + 2, status)
+            boss = Dragao(self.level + 2, status)
             tela.limpar_tela()
-            tela.imprimir('Dragão encontrado!\n', 'vermelho')
-            tela.imprimir(str(boss) + '\n')
-            tela.imprimir('Deseja lutar contra dragão?: ')
+            tela.imprimir("Dragão encontrado!\n", "vermelho")
+            tela.imprimir(str(boss) + "\n")
+            tela.imprimir("Deseja lutar contra dragão?: ")
             resposta = tela.obter_string().lower()
-            if resposta in ['s', 'sim']:
+            if resposta in ["s", "sim"]:
                 combate(self.personagem, boss)
                 if not self.personagem.status["vida"] == 0:
                     boss.sortear_drops(self.personagem)
                     boss.sortear_drops_quest(self.personagem)
             else:
-                tela.imprimir('Dragão foi embora.', 'vermelho')
+                tela.imprimir("Dragão foi embora.", "vermelho")
                 sleep(2)
             tela.limpar_tela()

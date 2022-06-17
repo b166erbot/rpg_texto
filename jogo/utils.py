@@ -31,6 +31,7 @@ class Artigo:
 
 
 def requisitar_level(lista: list, valor: int):
+    """Função que retorna o lvl minimo."""
     minimo = float("inf")
     lista = list(lista)
     if valor <= lista[0]:
@@ -41,3 +42,18 @@ def requisitar_level(lista: list, valor: int):
         else:
             break
     return minimo
+
+
+def regra_3(status: int, porcentagem: int, status2: int):
+    """Função que retorna o resultado da regra de 3."""
+    return int((status2 * porcentagem) / status)
+
+
+def arrumar_porcentagem(valor: int) -> int:
+    """Função que arruma o valor da porcentagem para range(0, 80)"""
+    if valor > 80:
+        return 80
+    elif valor < 0:
+        return 0
+    else:
+        return valor

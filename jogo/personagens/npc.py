@@ -1,4 +1,5 @@
 from time import sleep
+
 from jogo.itens.moedas import Draconica, Pratas
 from jogo.itens.quest import ItemQuest
 from jogo.tela.imprimir import Imprimir
@@ -33,12 +34,12 @@ class Comerciante(Npc):
     def distinguir_moeda(self, item, quantidade: int, personagem):
         """Método que faz as compras pelo personagem."""
         if isinstance(item.preco, Pratas):
-            self.comprar(item, quantidade, personagem, 'Pratas')
+            self.comprar(item, quantidade, personagem, "Pratas")
         elif isinstance(item.preco, Draconica):
-            self.comprar(item, quantidade, personagem, 'Draconica')
+            self.comprar(item, quantidade, personagem, "Draconica")
 
     def comprar(self, item, quantidade: int, personagem, tipo_de_moeda: str):
-        preço = quantidade * item.preco
+        preço = quantidade * int(item.preco)
         if int(personagem.moedas[tipo_de_moeda]) >= preço:
             personagem.moedas[tipo_de_moeda] -= preço
             for n in range(quantidade):
@@ -83,9 +84,9 @@ class Comerciante(Npc):
                 "cyan",
             )
             tela.imprimir(
-                f"seu dinheiro: {personagem.moedas['Pratas']}"
-                f" {personagem.moedas['Draconica']}\n",
-                "cyan"
+                f"seu dinheiro: {personagem.moedas['Pratas']} "
+                f"- {personagem.moedas['Draconica']}\n",
+                "cyan",
             )
             n = numeros_paginas.get(numero, 1)
             for texto in self.tabela_cortada[n - 1]:
@@ -216,8 +217,7 @@ class ComercianteItemQuest(Npc):
         super().__init__(nome, "Comerciante Item Quest")
         self.itens = {numero: item for numero, item in enumerate(itens, 1)}
         self.tabela = [
-            f"{numero} - {item.nome}"
-            for numero, item in self.itens.items()
+            f"{numero} - {item.nome}" for numero, item in self.itens.items()
         ]
         self.tabela_cortada = chunk(self.tabela, 16)
         self.salvar = False
@@ -226,20 +226,20 @@ class ComercianteItemQuest(Npc):
         """Método que faz as compras pelo personagem."""
         if issubclass(item, Draconica):
             self.comprar_draconica(item, personagem)
-    
+
     def comprar_draconica(self, item, personagem):
         tela.limpar_tela()
-        item = ItemQuest('Coração de Dragão')
+        item = ItemQuest("Coração de Dragão")
         condicoes = [personagem.inventario.count(item) > 0]
         if all(condicoes):
             coracoes = list(filter(lambda x: x == item, personagem.inventario))
             for coracao in coracoes:
                 index = personagem.inventario.index(coracao)
                 personagem.inventario.pop(index)
-                personagem.moedas['Draconica'] += 15
+                personagem.moedas["Draconica"] += 15
             tela.imprimir(f"{len(coracoes)} coração(ões) vendido(s)")
         else:
-            tela.imprimir('você não tem corações de dragão.')
+            tela.imprimir("você não tem corações de dragão.")
         sleep(3)
 
     def interagir(self, personagem):
@@ -247,9 +247,7 @@ class ComercianteItemQuest(Npc):
         tela.limpar_tela()
         numero = self._obter_numero("O que deseja trocar?: ", personagem)
         while numero.isnumeric() and int(numero) in self.itens:
-            self.distinguir_moeda(
-                self.itens[int(numero)], personagem
-            )
+            self.distinguir_moeda(self.itens[int(numero)], personagem)
             tela.limpar_tela()
             numero = self._obter_numero(
                 "Deseja mais alguma coisa?: ", personagem
@@ -272,9 +270,9 @@ class ComercianteItemQuest(Npc):
                 "cyan",
             )
             tela.imprimir(
-                f"seu dinheiro: {personagem.moedas['Pratas']}"
-                f" {personagem.moedas['Draconica']}\n",
-                "cyan"
+                f"seu dinheiro: {personagem.moedas['Pratas']} "
+                f"- {personagem.moedas['Draconica']}\n",
+                "cyan",
             )
             n = numeros_paginas.get(numero, 1)
             for texto in self.tabela_cortada[n - 1]:

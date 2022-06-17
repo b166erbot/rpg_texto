@@ -58,7 +58,9 @@ class Menu:
             match caracter:
                 case 1:
                     mixer.music.stop()
-                    self.floresta()
+                    continuar = self._primeira_vez()
+                    if continuar:
+                        self.floresta()
                     mixer.music.load("vilarejo.ogg")
                     mixer.music.play()
                 case 2:
@@ -96,10 +98,13 @@ class Menu:
                     tela.limpar_tela()
                     p = self.personagem
                     tela.imprimir(
-                        f"{p.nome} [{p.classe}]: vida - "
-                        f"{p.status['vida']}, armadura - "
-                        f"{p.status['armadura']}, resistencias - "
-                        f"{p.status['resis']}, dano - {p.status['dano']}, "
+                        f"{p.nome} [{p.classe}]: "
+                        f"vida - {p.status['vida']}, "
+                        f"armadura - {p.status['armadura']}, "
+                        f"armadura % - {p.porcentagem_armadura}%, "
+                        f"resistencia - {p.status['resistencia']}, "
+                        f"resistencia % - {p.porcentagem_resistencia}%, "
+                        f"dano - {p.status['dano']}, "
                         f"{str(p.moedas['Pratas'])}, "
                         f"{str(p.moedas['Draconica'])}, "
                         f"xp - {p.experiencia}, level - {p.level}\n",
@@ -271,6 +276,32 @@ class Menu:
     def obter_npcs(self, npcs: list):
         self._npcs = npcs
 
+    def _primeira_vez(self):
+        tela.limpar_tela()
+        pocoes = list(
+            filter(
+                lambda x: x.nome in "poção de vida média",
+                self.personagem.inventario,
+            )
+        )
+        condicoes = [
+            self.personagem.level == 1,
+            self.personagem.experiencia == 0,
+            len(pocoes) < 10,
+        ]
+        if all(condicoes):
+            tela.imprimir(
+                "Como é a sua primeira vez, certifique-se de comprar de "
+                "10 a 15 poções de vida média.\n"
+            )
+            tela.imprimir("Deseja continuar mesmo assim?: ")
+            caracter = tela.obter_string().lower()
+            if caracter in ["s", "sim"]:
+                return True
+            else:
+                return False
+        return True
+
 
 # TODO: restaurar a estamina/magia estando parado nos turnos.
 # TODO: colocar mais npcs com quests.
@@ -286,9 +317,12 @@ class Menu:
 # TODO: elixir deve ter um preço diferente para cada level.
 # TODO: level nos equipamentos, itens.
 # TODO: fazer sets de equipamentos com bonus de atributos.
-# TODO: fazer outras moedas alem das pratas e fazer monstros droparem esses itens.
 # TODO: implementar stun.
 # TODO: interagir com cenários e destruílos?
 # TODO: fazer quests onde o personagem precise interagir com 2 ou mais npcs.
 # TODO: botar um simbolo diferente para a moeda draconica.
-# TODO: colocar porcentagem na armadura, resistencias
+# TODO: zerar o xp caso o personagem suba de level.
+# TODO: colocar uma mensagem pra quando o personagem tiver lvl 1, ele
+# seja avisado para comprar poções.
+# TODO: balancear armadura e resistencia.
+# TODO: fazer 10 poções ocuparem o mesmo espaço? (não sei se tem como)

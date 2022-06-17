@@ -4,24 +4,24 @@ from random import choice, randint
 
 from jogo.itens.armas import Arma
 from jogo.itens.armas import tudo as armas
+from jogo.itens.quest import ItemQuest
 from jogo.itens.vestes import Anel, Roupa
 from jogo.itens.vestes import tudo as vestes
 from jogo.tela.imprimir import Imprimir, efeito_digitando, formatar_status
-from jogo.itens.quest import ItemQuest
-
+from jogo.utils import arrumar_porcentagem, regra_3
 
 tela = Imprimir()
 
 
 class Monstro:
-    def __init__(self, nivel=1, status={}):
-        self.experiencia = 50 * nivel
+    def __init__(self, level=1, status={}):
+        self.experiencia = 50 * level
         self.status = Counter(
             status
             or {
                 "vida": 100,
                 "dano": 3,
-                "resis": 5,
+                "resistencia": 5,
                 "velo-ataque": 1,
                 "critico": 5,
                 "armadura": 5,
@@ -33,21 +33,28 @@ class Monstro:
         for item in self.status:
             if item in ["magia", "stamina"]:
                 continue
-            self.status[item] *= nivel
+            self.status[item] *= level
         self.habilidades = []
         self.vida_ = self.status["vida"]
-        self.nivel = nivel
+        self.level = level
+        porcentagem = enumerate([25, 50, 75, 100, 125, 150, 175, 200], 1)
+        self._porcentagem_arm_res_total = dict(porcentagem)
+        self.porcentagem_armadura = 0
+        self.porcentagem_resistencia = 0
+        self.atualizar_status()
 
     async def atacar(self, other):
         """Método que ataca como bot o personagem."""
         while all([other.status["vida"] > 0, self.status["vida"] > 0]):
-            dano = self.status["dano"]
-            other.receber_dano(dano, self.tipo_dano)
             if randint(0, 2) == 2:
                 habilidade = choice(self.habilidades)
                 if self.status["stamina"] >= 20:
                     self.status["stamina"] -= 20
                     habilidade(other)
+            else:
+                dano = self.status["dano"]
+                subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+                other.status["vida"] -= dano - subtrair_dano
             other.arrumar_vida()
             tela.imprimir_combate(formatar_status(self), 2)
             await sleep(0.5)
@@ -77,7 +84,7 @@ class Monstro:
             Item = choice(vestes + armas)
             if issubclass(Item, Arma):
                 status = [randint(1, 5), randint(1, 2), randint(1, 3)]
-                status = map(lambda x: x * self.nivel, status)
+                status = map(lambda x: x * self.level, status)
                 status_nomes = ["dano", "velo_ataque", "critico"]
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(**status_dict)
@@ -88,8 +95,8 @@ class Monstro:
                     randint(5, 20),
                     randint(1, 3),
                 ]
-                status = map(lambda x: x * self.nivel, status)
-                status_nomes = ["armadura", "velo_movi", "vida", "resistencias"]
+                status = map(lambda x: x * self.level, status)
+                status_nomes = ["armadura", "velo_movi", "vida", "resistencia"]
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(**status_dict)
             elif issubclass(Item, Anel):
@@ -99,11 +106,13 @@ class Monstro:
                     randint(1, 3),
                     randint(1, 3),
                 ]
-                status = map(lambda x: x * self.nivel, status)
-                status_nomes = ["dano", "vida", "resistencias", "armadura"]
+                status = map(lambda x: x * self.level, status)
+                status_nomes = ["dano", "vida", "resistencia", "armadura"]
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(nome="Anel", **status_dict)
-            personagem.pratas += randint(30 * self.nivel, 50 * self.nivel)
+            personagem.moedas["Pratas"] += randint(
+                30 * self.level, 50 * self.level
+            )
             personagem.guardar_item(item)
 
     def sortear_drops_quest(self, personagem):
@@ -123,16 +132,32 @@ class Monstro:
             if all(condicoes):
                 tela.imprimir(f"Item {quest.item.nome} adiquirido\n")
                 personagem.guardar_item(quest.item)
-    
+
     def __str__(self):
         status = (
-            f"{self.nome}(vida={self.status['vida']}, nivel={self.nivel},"
+            f"{self.nome}(vida={self.status['vida']}, level={self.level},"
             f"dano={self.status['dano']})"
         )
         return status
-    
+
     def dar_experiencia(self, personagem):
         personagem.experiencia += self.experiencia
+
+    def atualizar_status(self):
+        self.porcentagem_armadura = arrumar_porcentagem(
+            regra_3(
+                self._porcentagem_arm_res_total[self.level],
+                100,
+                self.status["armadura"],
+            )
+        )
+        self.porcentagem_resistencia = arrumar_porcentagem(
+            regra_3(
+                self._porcentagem_arm_res_total[self.level],
+                100,
+                self.status["resistencia"],
+            )
+        )
 
 
 class Boss(Monstro):
@@ -146,7 +171,7 @@ class Boss(Monstro):
         Item = choice(vestes + armas)
         if issubclass(Item, Arma):
             status = [randint(3, 5), randint(2, 2), randint(2, 3)]
-            status = map(lambda x: x * self.nivel, status)
+            status = map(lambda x: x * self.level, status)
             status_nomes = ["dano", "velo_ataque", "critico"]
             status_dict = dict(zip(status_nomes, status))
             item = Item(**status_dict)
@@ -157,8 +182,8 @@ class Boss(Monstro):
                 randint(12, 20),
                 randint(2, 3),
             ]
-            status = map(lambda x: x * self.nivel, status)
-            status_nomes = ["armadura", "velo_movi", "vida", "resistencias"]
+            status = map(lambda x: x * self.level, status)
+            status_nomes = ["armadura", "velo_movi", "vida", "resistencia"]
             status_dict = dict(zip(status_nomes, status))
             item = Item(**status_dict)
         elif issubclass(Item, Anel):
@@ -168,11 +193,11 @@ class Boss(Monstro):
                 randint(2, 3),
                 randint(2, 3),
             ]
-            status = map(lambda x: x * self.nivel, status)
-            status_nomes = ["dano", "vida", "resistencias", "armadura"]
+            status = map(lambda x: x * self.level, status)
+            status_nomes = ["dano", "vida", "resistencia", "armadura"]
             status_dict = dict(zip(status_nomes, status))
             item = Item(nome="Anel", **status_dict)
-        personagem.pratas += randint(30 * self.nivel, 50 * self.nivel)
+        personagem.moedas["Pratas"] += randint(30 * self.level, 50 * self.level)
         personagem.guardar_item(item)
 
 
@@ -183,15 +208,18 @@ class Tartaruga(Monstro):
         self.nome = "Tartaruga"
         self.classe = "Monstro comum"
         self.tipo = "Tatu bola"
-        self.tipo_dano = "fisico"
 
     def investida(self, other):
         """Método que ataca o personagem."""
-        other.receber_dano(4 * self.nivel, self.tipo_dano)
+        dano = 4 * self.level
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        other.status["vida"] -= dano - subtrair_dano
 
     def garras_afiadas(self, other):
         """Método que ataca o personagem."""
-        other.receber_dano(6 * self.nivel, self.tipo_dano)
+        dano = 6 * self.level
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        other.status["vida"] -= dano - subtrair_dano
 
 
 class Camaleao(Monstro):
@@ -201,15 +229,18 @@ class Camaleao(Monstro):
         self.nome = "Camaleão"
         self.classe = "Monstro comum"
         self.tipo = "trolador"
-        self.tipo_dano = "fisico"
 
     def trapasseiro(self, other):
         """Método que ataca o personagem."""
-        other.receber_dano(4 * self.nivel, self.tipo_dano)
+        dano = 4 * self.level
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        other.status["vida"] -= dano - subtrair_dano
 
     def roubo(self, other):
         """Método que ataca o personagem."""
-        other.receber_dano(5 * self.nivel, self.tipo_dano)
+        dano = 5 * self.level
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        other.status["vida"] -= dano - subtrair_dano
 
 
 class Tamandua(Monstro):
@@ -219,15 +250,18 @@ class Tamandua(Monstro):
         self.nome = "Tamandua"
         self.classe = "Monstro comum"
         self.tipo = "trolador"
-        self.tipo_dano = "fisico"
 
     def abraco(self, other):
         """Método que ataca o personagem."""
-        other.receber_dano(5 * self.nivel, self.tipo_dano)
+        dano = 5 * self.level
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        other.status["vida"] -= dano - subtrair_dano
 
     def linguada(self, other):
         """Método que ataca o personagem."""
-        other.receber_dano(3 * self.nivel, self.tipo_dano)
+        dano = 3 * self.level
+        subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
+        other.status["vida"] -= dano - subtrair_dano
 
 
 class Sapo(Monstro):
@@ -237,15 +271,18 @@ class Sapo(Monstro):
         self.nome = "Sapo"
         self.classe = "Monstro comum"
         self.tipo = "trolador"
-        self.tipo_dano = "magico"
 
     def salto(self, other):
         """Método que ataca o personagem."""
-        other.receber_dano(5 * self.nivel, self.tipo_dano)
+        dano = 5 * self.level
+        subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
+        other.status["vida"] -= dano - subtrair_dano
 
     def linguada(self, other):
         """Método que ataca o personagem."""
-        other.receber_dano(3 * self.nivel, self.tipo_dano)
+        dano = 3 * self.level
+        subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
+        other.status["vida"] -= dano - subtrair_dano
 
 
 class Topera(Boss):
@@ -255,15 +292,18 @@ class Topera(Boss):
         self.nome = "Topera"
         self.classe = "Monstro chefe"
         self.tipo = "boss"
-        self.tipo_dano = "fisico"
 
     def pulo_fatal(self, other):
         """Método que ataca o personagem."""
-        other.receber_dano(7 * self.nivel, self.tipo_dano)
+        dano = 7 * self.level
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        other.status["vida"] -= dano - subtrair_dano
 
     def terremoto(self, other):
         """Método que ataca o personagem."""
-        other.receber_dano(10 * self.nivel, self.tipo_dano)
+        dano = 10 * self.level
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        other.status["vida"] -= dano - subtrair_dano
 
 
 class Mico(Boss):
@@ -273,15 +313,18 @@ class Mico(Boss):
         self.nome = "Mico"
         self.classe = "Monstro chefe"
         self.tipo = "boss"
-        self.tipo_dano = "magico"
 
     def tacar_banana(self, other):
         """Método que ataca o personagem."""
-        other.receber_dano(10 * self.nivel, self.tipo_dano)
+        dano = 15 * self.level
+        subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
+        other.status["vida"] -= dano - subtrair_dano
 
     def esmagar(self, other):
         """Método que ataca o personagem."""
-        other.receber_dano(15 * self.nivel, self.tipo_dano)
+        dano = 15 * self.level
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        other.status["vida"] -= dano - subtrair_dano
 
 
 class Sucuri(Boss):
@@ -291,15 +334,18 @@ class Sucuri(Boss):
         self.nome = "Sucuri"
         self.classe = "Monstro chefe"
         self.tipo = "boss"
-        self.tipo_dano = "magico"
 
     def lancamento_de_calda(self, other):
         """Método que ataca o personagem."""
-        other.receber_dano(10 * self.nivel, self.tipo_dano)
+        dano = 10 * self.level
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        other.status["vida"] -= dano - subtrair_dano
 
     def bote(self, other):
         """Método que ataca o personagem."""
-        other.receber_dano(15 * self.nivel, self.tipo_dano)
+        dano = 15 * self.level
+        subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
+        other.status["vida"] -= dano - subtrair_dano
 
 
 class ArvoreDeku(Boss):
@@ -309,15 +355,18 @@ class ArvoreDeku(Boss):
         self.nome = "Arvore Deku"
         self.classe = "Monstro chefe"
         self.tipo = "boss"
-        self.tipo_dano = "fisico"
 
     def braçada(self, other):
         """Método que ataca o personagem."""
-        other.receber_dano(10 * self.nivel, self.tipo_dano)
+        dano = 10 * self.level
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        other.status["vida"] -= dano - subtrair_dano
 
     def outono(self, other):
         """Método que ataca o personagem."""
-        other.receber_dano(15 * self.nivel, self.tipo_dano)
+        dano = 15 * self.level
+        subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
+        other.status["vida"] -= dano - subtrair_dano
 
 
 class Dragao(Boss):
@@ -327,19 +376,22 @@ class Dragao(Boss):
         self.nome = "Dragão ancião"
         self.classe = "Monstro chefe"
         self.tipo = "boss"
-        self.tipo_dano = "magico"
 
     def patada(self, other):
         """Método que ataca o personagem."""
-        other.receber_dano(10 * self.nivel, self.tipo_dano)
+        dano = 10 * self.level
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        other.status["vida"] -= dano - subtrair_dano
 
     def fogo(self, other):
         """Método que ataca o personagem."""
-        other.receber_dano(15 * self.nivel, self.tipo_dano)
-    
+        dano = 15 * self.level
+        subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
+        other.status["vida"] -= dano - subtrair_dano
+
     def sortear_drops(self, personagem):
         super().sortear_drops(personagem)
-        personagem.inventario.append(ItemQuest('Coração de Dragão'))
+        personagem.inventario.append(ItemQuest("Coração de Dragão"))
 
 
 monstros_comuns = [Tartaruga, Camaleao, Tamandua, Sapo]

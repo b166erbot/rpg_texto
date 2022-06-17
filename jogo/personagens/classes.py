@@ -1,7 +1,7 @@
 from asyncio import sleep
-from time import sleep as sleep2
 from collections import Counter
 from random import choice, randint
+from time import sleep as sleep2
 
 from jogo.itens.armas import (
     Adaga,
@@ -21,7 +21,7 @@ from jogo.itens.pocoes import curas
 from jogo.itens.quest import ItemQuest
 from jogo.itens.vestes import tudo as roupas
 from jogo.tela.imprimir import Imprimir, formatar_status
-from jogo.utils import requisitar_level
+from jogo.utils import arrumar_porcentagem, regra_3, requisitar_level
 
 tela = Imprimir()
 
@@ -48,9 +48,8 @@ class Humano:
         jogador=False,
         level=1,
         status={},
-        atributos={},
         experiencia=0,
-        moedas = {'Pratas': 1500, 'Draconica': 0},
+        moedas={"Pratas": 1500, "Draconica": 0},
         peitoral=SemItemEquipado("Peitoral"),
         elmo=SemItemEquipado("Elmo"),
         calca=SemItemEquipado("Calça"),
@@ -71,7 +70,7 @@ class Humano:
             or {
                 "vida": 100,
                 "dano": 5,
-                "resis": 0,
+                "resistencia": 0,
                 "velo-ataque": 1,
                 "criti": 0,
                 "armadura": 0,
@@ -80,23 +79,11 @@ class Humano:
                 "velo-movi": 1,
             }
         )
-        self.atributos = Counter(
-            atributos
-            or {
-                "vitalidade": 0,
-                "fortividade": 0,
-                "inteligência": 0,
-                "crítico": 0,
-                "destreza": 0,
-                "resistência": 0,
-                "movimentação": 0,
-            }
-        )
         self.habilidades = {}
         self.inventario = []
         self.moedas = moedas
-        self.moedas['Pratas'] = Pratas(self.moedas['Pratas'])
-        self.moedas['Draconica'] = Draconica(self.moedas['Draconica'])
+        self.moedas["Pratas"] = Pratas(self.moedas["Pratas"])
+        self.moedas["Draconica"] = Draconica(self.moedas["Draconica"])
         self.jogador = jogador
         self.equipamentos = {
             "Peitoral": peitoral,
@@ -108,6 +95,11 @@ class Humano:
             "Anel": Anel,
         }
         self.quests = []
+        porcentagem = enumerate([25, 50, 75, 100, 125, 150, 175, 200], 1)
+        self._porcentagem_arm_res_total = dict(porcentagem)
+        self.porcentagem_armadura = 0
+        self.porcentagem_resistencia = 0
+        self.atualizar_status()
 
     @property
     def vida_maxima(self):
@@ -132,7 +124,8 @@ class Humano:
         while all([other.status["vida"] > 0, self.status["vida"] > 0]):
             self.consumir_pocoes()
             dano = self.status["dano"]
-            other.status["vida"] -= dano
+            subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+            other.status["vida"] -= dano - subtrair_dano
             other.arrumar_vida()
             tela.imprimir_combate(formatar_status(self), self)
             await sleep(0.2)
@@ -144,7 +137,8 @@ class Humano:
         while all([other.status["vida"] > 0, self.status["vida"] > 0]):
             self.consumir_pocoes()
             dano = self.status["dano"]
-            other.status["vida"] -= dano
+            subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+            other.status["vida"] -= dano - subtrair_dano
             caracter = tela.obter_caracter()
             # if caracter in [ord(x) for x in '12']: não funciona???
             if caracter != -1 and chr(caracter).isnumeric():
@@ -197,9 +191,9 @@ class Humano:
     def vender(self, equipamento):
         """Método que vende um item no inventário."""
         if isinstance(equipamento.preco, Pratas):
-            self.moedas['Pratas'] += equipamento.preco
+            self.moedas["Pratas"] += equipamento.preco
         elif isinstance(equipamento.preco, Draconica):
-            self.moedas['Draconica'] += equipamento.preco
+            self.moedas["Draconica"] += equipamento.preco
         index = self.inventario.index(equipamento)
         self.inventario.pop(index)
 
@@ -216,16 +210,6 @@ class Humano:
 
     def equipar(self, equipamento):
         raise NotImplementedError("Método não implementado.")
-
-    def receber_dano(self, dano, tipo):
-        """Método que dicerne se o tipo de dano e dá dano ao personagem."""
-        if tipo == "fisico":
-            dano_ = dano - self.status["armadura"]
-        elif tipo == "magico":
-            dano_ = dano - self.status["resis"]
-        if dano_ < 0:
-            dano_ = 0
-        self.status["vida"] -= dano_
 
     def atualizar_status(self):
         """Método que atualiza o status."""
@@ -248,15 +232,26 @@ class Humano:
         )
         dano = map(lambda x: x.dano, equipamentos_dano)
         dano = 5 + sum(dano)
-        # vida = map(lambda x: x.vida, vestes)
         vida = self.vida_maxima
-        resistencia = sum(map(lambda x: x.resistencias, vestes))
+        resistencia = sum(map(lambda x: x.resistencia, vestes))
         armadura = sum(map(lambda x: x.armadura, vestes))
         self.status["vida"] = vida
-        self.status["resis"] = resistencia
+        self.status["resistencia"] = resistencia
         self.status["armadura"] = armadura
         self.status["dano"] = dano
-    
+        self.porcentagem_armadura = arrumar_porcentagem(
+            regra_3(
+                self._porcentagem_arm_res_total[self.level], 100, self._armadura
+            )
+        )
+        self.porcentagem_resistencia = arrumar_porcentagem(
+            regra_3(
+                self._porcentagem_arm_res_total[self.level],
+                100,
+                self._resistencias,
+            )
+        )
+
     def guardar_item(self, item):
         """Método que guarda um item no inventario se possível."""
         itens = list(
@@ -269,9 +264,37 @@ class Humano:
             self.inventario.append(item)
             return True
         else:
-            tela.imprimir('não foi possível adicionar item ao inventario')
+            tela.imprimir("não foi possível adicionar item ao inventario")
             sleep2(3)
             return False
+
+    @property
+    def _armadura(self):
+        equipamentos = [
+            equipamento
+            for equipamento in self.equipamentos.values()
+            if bool(equipamento)
+        ]
+        vestes = filter(
+            lambda x: x.tipo in ["Elmo", "Peitoral", "Calça", "Botas", "Anel"],
+            equipamentos,
+        )
+        armadura = sum(map(lambda x: x.armadura, vestes))
+        return armadura
+
+    @property
+    def _resistencias(self):
+        equipamentos = [
+            equipamento
+            for equipamento in self.equipamentos.values()
+            if bool(equipamento)
+        ]
+        vestes = filter(
+            lambda x: x.tipo in ["Elmo", "Peitoral", "Calça", "Botas", "Anel"],
+            equipamentos,
+        )
+        resistencia = sum(map(lambda x: x.resistencia, vestes))
+        return resistencia
 
 
 class Arqueiro(Humano):
@@ -284,11 +307,13 @@ class Arqueiro(Humano):
 
     def tres_flechas(self, other):
         """Método que ataca o oponente."""
-        other.status["vida"] -= 10 + self.status["dano"]
+        subtrair_dano = regra_3(100, 10, other.porcentagem_armadura)
+        other.status["vida"] -= 10 - subtrair_dano
 
     def flecha_de_fogo(self, other):
         """Método que ataca o oponente."""
-        other.status["vida"] -= 15 + self.status["dano"]
+        subtrair_dano = regra_3(100, 15, other.porcentagem_resistencia)
+        other.status["vida"] -= 15 - subtrair_dano
 
     def consumir_magia_stamina(self):
         """Método que consome a magia ou stamina."""
@@ -324,11 +349,13 @@ class Guerreiro(Humano):
 
     def investida(self, other):
         """Método que ataca o oponente."""
-        other.status["vida"] -= 10 + self.status["dano"]
+        subtrair_dano = regra_3(100, 10, other.porcentagem_armadura)
+        other.status["vida"] -= 10 - subtrair_dano
 
     def esmagar(self, other):
         """Método que ataca o oponente."""
-        other.status["vida"] -= 15 + self.status["dano"]
+        subtrair_dano = regra_3(100, 15, other.porcentagem_armadura)
+        other.status["vida"] -= 15 - subtrair_dano
 
     def consumir_magia_stamina(self):
         """Método que consome a magia ou stamina."""
@@ -364,11 +391,12 @@ class Mago(Humano):
 
     def bola_de_fogo(self, other):
         """Método que ataca o oponente."""
-        other.status["vida"] -= 15 + self.status["dano"]
+        subtrair_dano = regra_3(100, 15, other.porcentagem_resistencia)
+        other.status["vida"] -= 15 - subtrair_dano
 
     def lanca_de_gelo(self, other):
         """Método que ataca o oponente."""
-        other.status["vida"] -= 10 + self.status["dano"]
+        other.status["vida"] -= 10
 
     def consumir_magia_stamina(self):
         """Método que consome a magia ou stamina."""
@@ -404,11 +432,13 @@ class Assassino(Humano):
 
     def lancar_faca(self, other):
         """Método que ataca o oponente."""
-        other.status["vida"] -= 10 + self.status["dano"]
+        subtrair_dano = regra_3(100, 10, other.porcentagem_armadura)
+        other.status["vida"] -= 10 - subtrair_dano
 
     def ataque_furtivo(self, other):
         """Método que ataca o oponente."""
-        other.status["vida"] -= 15 + self.status["dano"]
+        subtrair_dano = regra_3(100, 15, other.porcentagem_armadura)
+        other.status["vida"] -= 15 - subtrair_dano
 
     def consumir_magia_stamina(self):
         """Método que consome a magia ou stamina."""
@@ -441,13 +471,14 @@ class Clerigo(Humano):
 
     def curar(self, other):
         """Método que cura o personagem."""
-        self.status["vida"] += 25 + self.status["dano"]
+        self.status["vida"] += 25
         if self.status["vida"] >= self.vida_maxima:
             self.status["vida"] = self.vida_maxima
 
     def luz(self, other):
         """Método que ataca o oponente."""
-        other.status["vida"] -= 10 + self.status["dano"]
+        subtrair_dano = regra_3(100, 10, other.porcentagem_resistencias)
+        other.status["vida"] -= 10 - subtrair_dano
 
     def consumir_magia_stamina(self):
         """Método que consome a magia ou stamina."""
@@ -483,11 +514,13 @@ class Monge(Humano):
 
     def combo_de_chutes(self, other):
         """Método que ataca o oponente."""
-        other.status["vida"] -= 15 + self.status["dano"]
+        subtrair_dano = regra_3(100, 15, other.porcentagem_armadura)
+        other.status["vida"] -= 15 - subtrair_dano
 
     def multiplos_socos(self, other):
         """Método que ataca o oponente."""
-        other.status["vida"] -= 10 + self.status["dano"]
+        subtrair_dano = regra_3(100, 10, other.porcentagem_armadura)
+        other.status["vida"] -= 10 - subtrair_dano
 
     def consumir_magia_stamina(self):
         """Método que consome a magia ou stamina."""
