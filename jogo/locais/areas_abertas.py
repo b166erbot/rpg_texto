@@ -76,29 +76,31 @@ class Floresta:
                 sleep(2)
             tela.limpar_tela()
         elif str(caminho) == "boss":
-            status = {
-                "vida": 300,
-                "dano": 5,
-                "resistencia": 15,
-                "velo-ataque": 1,
-                "critico": 15,
-                "armadura": 15,
-                "magia": 100,
-                "stamina": 100,
-                "velo-movi": 1,
-            }
-            Boss = choice(bosses_comuns)
-            boss = Boss(self.level, status)
-            combate(self.personagem, boss)
-            if self.personagem.status["vida"] == 0:
-                self.morto()
-                return "morto"
-            else:
-                boss.dar_experiencia(self.personagem)
-                boss.sortear_drops(self.personagem)
-                boss.sortear_drops_quest(self.personagem)
-            tela.limpar_tela2()
-            self.personagem.recuperar_magia_stamina()
+            lutar = self._lutar_ou_fugir()
+            if lutar:
+                status = {
+                    "vida": 300,
+                    "dano": 5,
+                    "resistencia": 15,
+                    "velo-ataque": 1,
+                    "critico": 15,
+                    "armadura": 15,
+                    "magia": 100,
+                    "stamina": 100,
+                    "velo-movi": 1,
+                }
+                Boss = choice(bosses_comuns)
+                boss = Boss(self.level, status)
+                combate(self.personagem, boss)
+                if self.personagem.status["vida"] == 0:
+                    self.morto()
+                    return "morto"
+                else:
+                    boss.dar_experiencia(self.personagem)
+                    boss.sortear_drops(self.personagem)
+                    boss.sortear_drops_quest(self.personagem)
+                tela.limpar_tela2()
+                self.personagem.recuperar_magia_stamina()
         morte = self.sortear_inimigos()
         if morte:
             self.morto()
@@ -119,7 +121,9 @@ class Floresta:
                 if self.personagem.status["vida"] == 0:
                     return True
                 else:
-                    self.personagem.experiencia += inimigo.experiencia
+                    self.personagem.experiencia.depositar_experiencia(
+                        inimigo.experiencia
+                    )
                     inimigo.sortear_drops(self.personagem)
                     inimigo.sortear_drops_quest(self.personagem)
                 self.personagem.recuperar_magia_stamina()
@@ -180,3 +184,12 @@ class Floresta:
                 tela.imprimir("Dragão foi embora.", "vermelho")
                 sleep(2)
             tela.limpar_tela()
+    
+    def _lutar_ou_fugir(self):
+        tela.limpar_tela()
+        tela.imprimir('Boss encontrado. Deseja lutar ou fugir?: ')
+        resposta = tela.obter_string().lower()
+        if resposta in ['lutar']:
+            return True
+        else:
+            return False

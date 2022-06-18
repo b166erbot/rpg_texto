@@ -30,20 +30,6 @@ class Artigo:
             return "o"
 
 
-def requisitar_level(lista: list, valor: int):
-    """Função que retorna o lvl minimo."""
-    minimo = float("inf")
-    lista = list(lista)
-    if valor <= lista[0]:
-        return lista[0]
-    for valor2 in lista:
-        if valor2 < valor:
-            minimo = valor2
-        else:
-            break
-    return minimo
-
-
 def regra_3(status: int, porcentagem: int, status2: int):
     """Função que retorna o resultado da regra de 3."""
     return int((status2 * porcentagem) / status)

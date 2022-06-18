@@ -20,7 +20,7 @@ class Moedas:
         elif isinstance(other, self.__class__):
             return self.__class__(self._moedas + other._moedas)
         else:
-            raise TypeError(f"tipo não suportavel {other.__class__}")
+            raise TypeError(f"tipo não suportável {other.__class__}")
 
     def __radd__(self, other):
         if isinstance(other, int):
@@ -28,7 +28,7 @@ class Moedas:
         elif isinstance(other, self.__class__):
             return self.__class__(self._moedas + other._moedas)
         else:
-            raise TypeError(f"tipo não suportavel {other.__class__}")
+            raise TypeError(f"tipo não suportável {other.__class__}")
 
     def __sub__(self, other):
         if isinstance(other, int):
@@ -36,7 +36,7 @@ class Moedas:
         elif isinstance(other, self.__class__):
             return self.__class__(self._moedas - other._moedas)
         else:
-            raise TypeError(f"tipo não suportavel {other.__class__}")
+            raise TypeError(f"tipo não suportável {other.__class__}")
 
     def __rsub__(self, other):
         if isinstance(other, int):
@@ -44,7 +44,7 @@ class Moedas:
         elif isinstance(other, self.__class__):
             return self.__class__(self._moedas - other._moedas)
         else:
-            raise TypeError(f"tipo não suportavel {other.__class__}")
+            raise TypeError(f"tipo não suportável {other.__class__}")
 
 
 class Pratas(Moedas):

@@ -21,7 +21,10 @@ from jogo.itens.pocoes import curas
 from jogo.itens.quest import ItemQuest
 from jogo.itens.vestes import tudo as roupas
 from jogo.tela.imprimir import Imprimir, formatar_status
-from jogo.utils import arrumar_porcentagem, regra_3, requisitar_level
+from jogo.utils import arrumar_porcentagem, regra_3
+from jogo.experiencia import Experiencia
+from jogo.funcionabilidades import Contador
+
 
 tela = Imprimir()
 
@@ -60,11 +63,8 @@ class Humano:
     ):
         self.nome = nome
         self.level = level
-        leveis = enumerate(
-            [0, 499, 999, 1999, 3499, 5499, 7999, 10999, 14499], 1
-        )
-        self._leveis = {y: x for x, y in leveis}
-        self.experiencia = experiencia
+        leveis = [499, 999, 1999, 3499, 5499, 7999, 10999, 14499]
+        self.experiencia = Experiencia(experiencia, leveis)
         self.status = Counter(
             status
             or {
@@ -95,11 +95,14 @@ class Humano:
             "Anel": Anel,
         }
         self.quests = []
-        porcentagem = enumerate([25, 50, 75, 100, 125, 150, 175, 200], 1)
+        porcentagem = enumerate(
+            [27, 54, 81, 108, 135, 162, 189, 216], 1
+        )
         self._porcentagem_arm_res_total = dict(porcentagem)
         self.porcentagem_armadura = 0
         self.porcentagem_resistencia = 0
         self.atualizar_status()
+        self._contador = Contador(4)
 
     @property
     def vida_maxima(self):
@@ -140,13 +143,19 @@ class Humano:
             subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
             other.status["vida"] -= dano - subtrair_dano
             caracter = tela.obter_caracter()
-            # if caracter in [ord(x) for x in '12']: não funciona???
             if caracter != -1 and chr(caracter).isnumeric():
                 caracter = int(chr(caracter))
                 if caracter in [1, 2]:
                     habilidade = self.habilidades[caracter]
                     if self.consumir_magia_stamina():
                         habilidade(other)
+                        self._contador.resetar()
+                else:
+                    self._contador.acrescentar()
+            else:
+                self._contador.acrescentar()
+            if self._contador.usar:
+                self._recuperar_magia_stamina()
             other.arrumar_vida()
             tela.imprimir_combate(formatar_status(self), 1)
             await sleep(0.5)
@@ -213,8 +222,7 @@ class Humano:
 
     def atualizar_status(self):
         """Método que atualiza o status."""
-        experiencia = requisitar_level(self._leveis.keys(), self.experiencia)
-        self.level = self._leveis[experiencia]
+        self.level = self.experiencia.level
         equipamentos = [
             equipamento
             for equipamento in self.equipamentos.values()
@@ -248,7 +256,7 @@ class Humano:
             regra_3(
                 self._porcentagem_arm_res_total[self.level],
                 100,
-                self._resistencias,
+                self._resistencia,
             )
         )
 
@@ -283,7 +291,7 @@ class Humano:
         return armadura
 
     @property
-    def _resistencias(self):
+    def _resistencia(self):
         equipamentos = [
             equipamento
             for equipamento in self.equipamentos.values()
@@ -296,6 +304,11 @@ class Humano:
         resistencia = sum(map(lambda x: x.resistencia, vestes))
         return resistencia
 
+    def _recuperar_magia_stamina(self):
+        if self.status['magia'] <= 80:
+            self.status['magia'] += 20
+        elif self.status['stamina'] <= 80:
+            self.status['stamina'] += 20
 
 class Arqueiro(Humano):
     def __init__(self, *args, **kwargs):

@@ -27,7 +27,7 @@ from jogo.personagens.npc import (
     ComercianteItemQuest,
     Pessoa,
 )
-from jogo.quests.quests import quests_da_lorena, quests_do_eivor
+from jogo.quests import quests_da_lorena, quests_do_eivor
 from jogo.tela.imprimir import Imprimir
 from jogo.tela.menu import Menu
 from jogo.utils import carregar_jogo

@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 
 from jogo.locais.areas_abertas import Floresta
 from jogo.locais.habitaveis import Vilarejo
-from jogo.quests.quests import ItemQuest
+from jogo.quests import ItemQuest
 from jogo.tela.imprimir import Imprimir, formas
 from jogo.utils import chunk, salvar_jogo
 
@@ -43,8 +43,8 @@ class Menu:
 
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""
-        mixer.music.load("vilarejo.ogg")
-        mixer.music.play()
+        # mixer.music.load("vilarejo.ogg")
+        # mixer.music.play()
         forma = f"{formas[227]} {{}} {formas[228]}"
         while True:
             tela.limpar_tela()
@@ -286,7 +286,7 @@ class Menu:
         )
         condicoes = [
             self.personagem.level == 1,
-            self.personagem.experiencia == 0,
+            int(self.personagem.experiencia) == 0,
             len(pocoes) < 10,
         ]
         if all(condicoes):
@@ -307,11 +307,11 @@ class Menu:
 # TODO: colocar mais npcs com quests.
 # TODO: lutar ou fugir do boss?
 # TODO: poções, venenos.
-# TODO: dragões.
 # TODO: combate entre personagens bots.
 # TODO: colocar o nome dos ataques tanto dos inimigos tanto do personagem na tela.
 # TODO: com o level, colocar subclasses aos personagens.
 # TODO: fazer uma função que imprime a história do jogo.
+# TODO: histórias tem botão de skip (não sei se tem como fazer)
 # TODO: obsessão por primitivos na classe Humano (não tem como)
 # TODO: adicionar quests que fazer os bosses dropar o item.
 # TODO: elixir deve ter um preço diferente para cada level.
@@ -321,8 +321,7 @@ class Menu:
 # TODO: interagir com cenários e destruílos?
 # TODO: fazer quests onde o personagem precise interagir com 2 ou mais npcs.
 # TODO: botar um simbolo diferente para a moeda draconica.
-# TODO: zerar o xp caso o personagem suba de level.
-# TODO: colocar uma mensagem pra quando o personagem tiver lvl 1, ele
-# seja avisado para comprar poções.
-# TODO: balancear armadura e resistencia.
 # TODO: fazer 10 poções ocuparem o mesmo espaço? (não sei se tem como)
+# TODO: monstros/bosses que tiverem um lvl maior, dão mais dano.
+# a porcentagem da armadura e resistencia cai.
+# TODO: atacar como bot não está escolhendo uma habilidade.

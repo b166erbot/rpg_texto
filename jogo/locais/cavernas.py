@@ -100,7 +100,7 @@ class Caverna:
             self.morto()
             return
         elif self.personagem.status["vida"] > 0:
-            self.personagem.experiencia += boss.experiencia
+            self.personagem.experiencia.depositar_experiencia(boss.experiencia)
             boss.sortear_drops(self.personagem)
         self.personagem.recuperar_magia_stamina()
         tela.limpar_tela()
@@ -118,7 +118,9 @@ class Caverna:
                 combate(self.personagem, inimigo)
                 if self.personagem.status["vida"] == 0:
                     return True
-                self.personagem.experiencia += inimigo.experiencia
+                self.personagem.experiencia.depositar_experiencia(
+                    inimigo.experiencia
+                )
                 inimigo.sortear_drops(self.personagem)
                 self.personagem.recuperar_magia_stamina()
             tela.limpar_tela2()

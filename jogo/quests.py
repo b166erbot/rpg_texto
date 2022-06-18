@@ -36,7 +36,7 @@ class Quest:
 
     def depositar_xp(self, personagem):
         """Método que dá o xp para o personagem."""
-        personagem.experiencia += self.xp
+        personagem.experiencia.depositar_experiencia(self.xp)
 
     def historia(self):
         raise NotImplementedError("Método não implementado.")

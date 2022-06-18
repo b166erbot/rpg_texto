@@ -9,6 +9,8 @@ from jogo.itens.vestes import Anel, Roupa
 from jogo.itens.vestes import tudo as vestes
 from jogo.tela.imprimir import Imprimir, efeito_digitando, formatar_status
 from jogo.utils import arrumar_porcentagem, regra_3
+from jogo.funcionabilidades import Contador
+
 
 tela = Imprimir()
 
@@ -42,6 +44,7 @@ class Monstro:
         self.porcentagem_armadura = 0
         self.porcentagem_resistencia = 0
         self.atualizar_status()
+        self._contador = Contador(4)
 
     async def atacar(self, other):
         """Método que ataca como bot o personagem."""
@@ -51,10 +54,14 @@ class Monstro:
                 if self.status["stamina"] >= 20:
                     self.status["stamina"] -= 20
                     habilidade(other)
+                    self._contador.resetar()
             else:
                 dano = self.status["dano"]
                 subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
                 other.status["vida"] -= dano - subtrair_dano
+                self._contador.acrescentar()
+            if self._contador.usar:
+                self._recuperar_stamina()
             other.arrumar_vida()
             tela.imprimir_combate(formatar_status(self), 2)
             await sleep(0.5)
@@ -90,10 +97,10 @@ class Monstro:
                 item = Item(**status_dict)
             elif issubclass(Item, Roupa):
                 status = [
-                    randint(1, 3),
+                    randint(1, 6),
                     randint(1, 3),
                     randint(5, 20),
-                    randint(1, 3),
+                    randint(1, 6),
                 ]
                 status = map(lambda x: x * self.level, status)
                 status_nomes = ["armadura", "velo_movi", "vida", "resistencia"]
@@ -102,9 +109,9 @@ class Monstro:
             elif issubclass(Item, Anel):
                 status = [
                     randint(1, 3),
-                    randint(5, 20),
-                    randint(1, 3),
-                    randint(1, 3),
+                    randint(3, 20),
+                    randint(1, 6),
+                    randint(1, 6),
                 ]
                 status = map(lambda x: x * self.level, status)
                 status_nomes = ["dano", "vida", "resistencia", "armadura"]
@@ -141,7 +148,7 @@ class Monstro:
         return status
 
     def dar_experiencia(self, personagem):
-        personagem.experiencia += self.experiencia
+        personagem.experiencia.depositar_experiencia(self.experiencia)
 
     def atualizar_status(self):
         self.porcentagem_armadura = arrumar_porcentagem(
@@ -158,6 +165,10 @@ class Monstro:
                 self.status["resistencia"],
             )
         )
+    
+    def _recuperar_stamina(self):
+        if self.status['stamina'] <= 80:
+            self.status['stamina'] += 20
 
 
 class Boss(Monstro):
@@ -177,10 +188,10 @@ class Boss(Monstro):
             item = Item(**status_dict)
         elif issubclass(Item, Roupa):
             status = [
-                randint(2, 3),
+                randint(3, 6),
                 randint(2, 3),
                 randint(12, 20),
-                randint(2, 3),
+                randint(3, 6),
             ]
             status = map(lambda x: x * self.level, status)
             status_nomes = ["armadura", "velo_movi", "vida", "resistencia"]
