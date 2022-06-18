@@ -101,9 +101,10 @@ class Menu:
                         f"{p.nome} [{p.classe}]: "
                         f"vida - {p.status['vida']}, "
                         f"armadura - {p.status['armadura']}, "
-                        f"armadura % - {p.porcentagem_armadura}%, "
+                        f"defesa da armadura % - {p.porcentagem_armadura}%, "
                         f"resistencia - {p.status['resistencia']}, "
-                        f"resistencia % - {p.porcentagem_resistencia}%, "
+                        "defesa da resistencia % - "
+                        f"{p.porcentagem_resistencia}%, "
                         f"dano - {p.status['dano']}, "
                         f"{str(p.moedas['Pratas'])}, "
                         f"{str(p.moedas['Draconica'])}, "
@@ -203,7 +204,7 @@ class Menu:
             floresta = nomes_florestas_dict[int(numero)]
             floresta = Floresta(floresta, self.personagem, numero)
             floresta.explorar()
-            self.personagem.recuperar_magia_stamina()
+            self.personagem.recuperar_magia_stamina_cem_porcento()
             self.personagem.ressucitar()
             mixer.music.stop()
 
@@ -303,9 +304,7 @@ class Menu:
         return True
 
 
-# TODO: restaurar a estamina/magia estando parado nos turnos.
 # TODO: colocar mais npcs com quests.
-# TODO: lutar ou fugir do boss?
 # TODO: poções, venenos.
 # TODO: combate entre personagens bots.
 # TODO: colocar o nome dos ataques tanto dos inimigos tanto do personagem na tela.
@@ -313,7 +312,7 @@ class Menu:
 # TODO: fazer uma função que imprime a história do jogo.
 # TODO: histórias tem botão de skip (não sei se tem como fazer)
 # TODO: obsessão por primitivos na classe Humano (não tem como)
-# TODO: adicionar quests que fazer os bosses dropar o item.
+# TODO: adicionar quests que fazem os bosses dropar o item.
 # TODO: elixir deve ter um preço diferente para cada level.
 # TODO: level nos equipamentos, itens.
 # TODO: fazer sets de equipamentos com bonus de atributos.
@@ -322,6 +321,4 @@ class Menu:
 # TODO: fazer quests onde o personagem precise interagir com 2 ou mais npcs.
 # TODO: botar um simbolo diferente para a moeda draconica.
 # TODO: fazer 10 poções ocuparem o mesmo espaço? (não sei se tem como)
-# TODO: monstros/bosses que tiverem um lvl maior, dão mais dano.
-# a porcentagem da armadura e resistencia cai.
-# TODO: atacar como bot não está escolhendo uma habilidade.
+# TODO: implementar multiplos saves (não sei se tem como)

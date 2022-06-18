@@ -1,12 +1,13 @@
 import shelve
+from statistics import mean
 
 
-def salvar_jogo(nome_do_objeto, objeto, nome_do_arquivo):
+def salvar_jogo(nome_do_objeto: str, objeto, nome_do_arquivo: str):
     save = shelve.open("save.pkl")
     save[nome_do_objeto] = objeto
 
 
-def carregar_jogo(nome_do_objeto, nome_do_arquivo):
+def carregar_jogo(nome_do_objeto, nome_do_arquivo: str):
     save = shelve.open("save.pkl")
     return save[nome_do_objeto]
 
@@ -43,3 +44,9 @@ def arrumar_porcentagem(valor: int) -> int:
         return 0
     else:
         return valor
+
+
+def calcular_experiencia(valor_maximo, valor_minimo) -> list[float, int]:
+    """Função que retorna uma lista com os valores dos leveis."""
+    media = mean([valor_maximo, valor_minimo])
+    return [media * x for x in range(1, 9)]

@@ -11,6 +11,9 @@ def combate(personagem1, personagem2):
 
     # daqui pra baixo é só putaria e linkin park tocando...
     personagens = list(permutations([personagem1, personagem2], 2))
+    # reduzir a porcentagem de armadura/resistencia com base no lvl do inimigo
+    personagem1.atualizar_porcentagem_por_level(personagem2.level - 1)
+    personagem2.atualizar_porcentagem_por_level(personagem1.level - 1)
     ciclo = get_event_loop()
     tarefas = [ciclo.create_task(x.atacar(y)) for x, y in personagens]
     tela.limpar_tela()
@@ -20,4 +23,7 @@ def combate(personagem1, personagem2):
     )
     ciclo.run_until_complete(wait(tarefas))
     tela.limpar_tela()
+    # retornar ao normal a porcentagem de armadura/resistencia
+    personagem1.atualizar_status()
+    personagem2.atualizar_status()
     # ciclo.close()

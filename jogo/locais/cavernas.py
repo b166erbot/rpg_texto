@@ -102,7 +102,7 @@ class Caverna:
         elif self.personagem.status["vida"] > 0:
             self.personagem.experiencia.depositar_experiencia(boss.experiencia)
             boss.sortear_drops(self.personagem)
-        self.personagem.recuperar_magia_stamina()
+        self.personagem.recuperar_magia_stamina_cem_porcento()
         tela.limpar_tela()
         tela.limpar_tela2()
 

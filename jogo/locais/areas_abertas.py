@@ -70,12 +70,14 @@ class Floresta:
             if tela.obter_string().lower() in ["s", "sim"]:
                 caverna = Caverna("poço azul", self.personagem, self.level)
                 caverna.explorar()
-                self.personagem.recuperar_magia_stamina()
+                self.personagem.recuperar_magia_stamina_cem_porcento()
                 self.personagem.ressucitar()
                 tela.imprimir("saindo da caverna")
                 sleep(2)
             tela.limpar_tela()
         elif str(caminho) == "boss":
+            tela.limpar_tela()
+            tela.imprimir('Boss encontrado.')
             lutar = self._lutar_ou_fugir()
             if lutar:
                 status = {
@@ -100,7 +102,7 @@ class Floresta:
                     boss.sortear_drops(self.personagem)
                     boss.sortear_drops_quest(self.personagem)
                 tela.limpar_tela2()
-                self.personagem.recuperar_magia_stamina()
+                self.personagem.recuperar_magia_stamina_cem_porcento()
         morte = self.sortear_inimigos()
         if morte:
             self.morto()
@@ -126,7 +128,7 @@ class Floresta:
                     )
                     inimigo.sortear_drops(self.personagem)
                     inimigo.sortear_drops_quest(self.personagem)
-                self.personagem.recuperar_magia_stamina()
+                self.personagem.recuperar_magia_stamina_cem_porcento()
             tela.limpar_tela2()
             return False
 
@@ -169,13 +171,12 @@ class Floresta:
                 "stamina": 100,
                 "velo-movi": 1,
             }
-            boss = Dragao(self.level + 2, status)
+            boss = Dragao(self.level + 1, status)
             tela.limpar_tela()
             tela.imprimir("Dragão encontrado!\n", "vermelho")
             tela.imprimir(str(boss) + "\n")
-            tela.imprimir("Deseja lutar contra dragão?: ")
-            resposta = tela.obter_string().lower()
-            if resposta in ["s", "sim"]:
+            lutar = self._lutar_ou_fugir()
+            if lutar:
                 combate(self.personagem, boss)
                 if not self.personagem.status["vida"] == 0:
                     boss.sortear_drops(self.personagem)
@@ -184,10 +185,10 @@ class Floresta:
                 tela.imprimir("Dragão foi embora.", "vermelho")
                 sleep(2)
             tela.limpar_tela()
-    
+
     def _lutar_ou_fugir(self):
-        tela.limpar_tela()
-        tela.imprimir('Boss encontrado. Deseja lutar ou fugir?: ')
+        # esse método não limpa a tela, favor manter.
+        tela.imprimir('Deseja lutar ou fugir?: ')
         resposta = tela.obter_string().lower()
         if resposta in ['lutar']:
             return True

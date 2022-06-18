@@ -1,6 +1,6 @@
 from asyncio import sleep
 from collections import Counter
-from random import choice, randint
+from random import randint
 from time import sleep as sleep2
 
 from jogo.itens.armas import (
@@ -126,10 +126,19 @@ class Humano:
         """Método que ataca como bot."""
         while all([other.status["vida"] > 0, self.status["vida"] > 0]):
             self.consumir_pocoes()
-            dano = self.status["dano"]
-            subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
-            other.status["vida"] -= dano - subtrair_dano
-            other.arrumar_vida()
+            if randint(0, 2) == 2:
+                habilidade = self.habilidades[randint(1, 2)]
+                if self.consumir_magia_stamina():
+                    habilidade(other)
+                    self._contador.resetar()
+            else:
+                dano = self.status["dano"]
+                subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+                other.status["vida"] -= dano - subtrair_dano
+                other.arrumar_vida()
+                self._contador.acrescentar()
+            if self._contador.usar:
+                self._recuperar_magia_stamina()
             tela.imprimir_combate(formatar_status(self), self)
             await sleep(0.2)
         tela.imprimir_combate(formatar_status(self), self)
@@ -191,7 +200,7 @@ class Humano:
             return poção
         return False
 
-    def recuperar_magia_stamina(self):
+    def recuperar_magia_stamina_cem_porcento(self):
         """Método que recupera a magia e stamina para máximo."""
         self.status["magia"] = 100
         self.status["stamina"] = 100
@@ -278,6 +287,7 @@ class Humano:
 
     @property
     def _armadura(self):
+        """Método que retorna a armadura dos equipamentos."""
         equipamentos = [
             equipamento
             for equipamento in self.equipamentos.values()
@@ -292,6 +302,7 @@ class Humano:
 
     @property
     def _resistencia(self):
+        """Método que retorna a resistencia dos equipamentos."""
         equipamentos = [
             equipamento
             for equipamento in self.equipamentos.values()
@@ -309,6 +320,16 @@ class Humano:
             self.status['magia'] += 20
         elif self.status['stamina'] <= 80:
             self.status['stamina'] += 20
+    
+    def atualizar_porcentagem_por_level(self, level):
+        """Método que atualiza a porcentagem dependendo do level do inimigo."""
+        self.porcentagem_armadura -= (8 * level)
+        self.porcentagem_resistencia -= (8 * level)
+        if self.porcentagem_armadura < 0:
+            self.porcentagem_armadura = 0
+        if self.porcentagem_resistencia < 0:
+            self.porcentagem_resistencia = 0
+
 
 class Arqueiro(Humano):
     def __init__(self, *args, **kwargs):
