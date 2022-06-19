@@ -171,12 +171,14 @@ class Monstro:
 
     def atualizar_porcentagem_por_level(self, level: int):
         """Método que atualiza a porcentagem dependendo do level do inimigo."""
-        self.porcentagem_armadura -= 8 * level
-        self.porcentagem_resistencia -= 8 * level
-        if self.porcentagem_armadura < 0:
-            self.porcentagem_armadura = 0
-        if self.porcentagem_resistencia < 0:
-            self.porcentagem_resistencia = 0
+        diferenca = self.level - level
+        if diferenca > 0:
+            self.porcentagem_armadura -= 8 * diferenca
+            self.porcentagem_resistencia -= 8 * diferenca
+            if self.porcentagem_armadura < 0:
+                self.porcentagem_armadura = 0
+            if self.porcentagem_resistencia < 0:
+                self.porcentagem_resistencia = 0
 
 
 class Boss(Monstro):

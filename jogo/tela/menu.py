@@ -321,4 +321,3 @@ class Menu:
 # TODO: fazer quests onde o personagem precise interagir com 2 ou mais npcs.
 # TODO: botar um simbolo diferente para a moeda draconica.
 # TODO: fazer 10 poções ocuparem o mesmo espaço? (não sei se tem como)
-# TODO: implementar multiplos saves (não sei se tem como)
