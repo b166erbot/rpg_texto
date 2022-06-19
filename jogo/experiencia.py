@@ -1,11 +1,10 @@
 class Experiencia:
     def __init__(self, xp: int, leveis: list, level: int = 1):
         self.xp = 0
-        leveis += [float('inf')]
+        leveis += [float("inf")]
         self._leveis_dict = dict(enumerate(leveis, 1))
         self.level = level
         self.depositar_experiencia(xp)
-
 
     def __repr__(self):
         return f"{self.xp}"
@@ -27,5 +26,5 @@ class Experiencia:
             else:
                 self.xp -= diferenca
             xp_requerido = self._leveis_dict.get(self.level)
-        if xp_requerido == float('inf'):
+        if xp_requerido == float("inf"):
             self.xp = 0

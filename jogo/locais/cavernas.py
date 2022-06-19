@@ -2,9 +2,6 @@ from random import choice, randint
 from time import sleep
 
 from jogo.assincrono.combate import combate
-from jogo.itens.pocoes import curas
-from jogo.itens.vestes import Anel, Roupa
-from jogo.itens.vestes import tudo as vestes
 from jogo.personagens.monstros import bosses_comuns, monstros_comuns
 from jogo.tela.imprimir import Imprimir, efeito_digitando
 

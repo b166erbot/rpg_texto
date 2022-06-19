@@ -2,6 +2,7 @@ from asyncio import sleep
 from collections import Counter
 from random import choice, randint
 
+from jogo.funcionabilidades import Contador
 from jogo.itens.armas import Arma
 from jogo.itens.armas import tudo as armas
 from jogo.itens.quest import ItemQuest
@@ -9,8 +10,6 @@ from jogo.itens.vestes import Anel, Roupa
 from jogo.itens.vestes import tudo as vestes
 from jogo.tela.imprimir import Imprimir, efeito_digitando, formatar_status
 from jogo.utils import arrumar_porcentagem, regra_3
-from jogo.funcionabilidades import Contador
-
 
 tela = Imprimir()
 
@@ -165,15 +164,15 @@ class Monstro:
                 self.status["resistencia"],
             )
         )
-    
+
     def _recuperar_stamina(self):
-        if self.status['stamina'] <= 80:
-            self.status['stamina'] += 20
-    
+        if self.status["stamina"] <= 80:
+            self.status["stamina"] += 20
+
     def atualizar_porcentagem_por_level(self, level: int):
         """Método que atualiza a porcentagem dependendo do level do inimigo."""
-        self.porcentagem_armadura -= (8 * level)
-        self.porcentagem_resistencia -= (8 * level)
+        self.porcentagem_armadura -= 8 * level
+        self.porcentagem_resistencia -= 8 * level
         if self.porcentagem_armadura < 0:
             self.porcentagem_armadura = 0
         if self.porcentagem_resistencia < 0:

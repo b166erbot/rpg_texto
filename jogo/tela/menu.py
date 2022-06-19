@@ -6,8 +6,9 @@ from unittest.mock import MagicMock
 from jogo.locais.areas_abertas import Floresta
 from jogo.locais.habitaveis import Vilarejo
 from jogo.quests import ItemQuest
+from jogo.save import salvar_jogo
 from jogo.tela.imprimir import Imprimir, formas
-from jogo.utils import chunk, salvar_jogo
+from jogo.utils import chunk
 
 # Silenciar o pygame para não imprimir nada na tela
 sys.stdout = MagicMock()
@@ -21,7 +22,8 @@ tela = Imprimir()
 
 
 class Menu:
-    def __init__(self, personagem):
+    def __init__(self, personagem, nome_jogo: str):
+        self._nome_jogo = nome_jogo
         texto = ["O que deseja fazer?"]
         texto2 = [
             "explorar uma floresta",
@@ -118,14 +120,12 @@ class Menu:
                 case 8:
                     self._obter_numero_quests()
                 case 9:
-                    salvar_jogo("personagem", self.personagem, "save.pkl")
-                    npcs = filter(lambda x: x.salvar, self._npcs)
-                    for npc in npcs:
-                        salvar_jogo(npc.nome, npc, "save.pkl")
+                    npcs = list(filter(lambda x: x.salvar, self._npcs))
+                    salvar_jogo(self.personagem, npcs, self._nome_jogo)
                     tela.imprimir("jogo salvo", "cyan")
                     sleep(3)
                 case 10:
-                    arquivo = Path("save.pkl")
+                    arquivo = Path(self._nome_jogo)
                     if arquivo.exists():
                         arquivo.unlink()
                         tela.imprimir("save deletado", "cyan")

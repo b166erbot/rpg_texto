@@ -3,6 +3,8 @@ from collections import Counter
 from random import randint
 from time import sleep as sleep2
 
+from jogo.experiencia import Experiencia
+from jogo.funcionabilidades import Contador
 from jogo.itens.armas import (
     Adaga,
     Arco_curto,
@@ -22,9 +24,6 @@ from jogo.itens.quest import ItemQuest
 from jogo.itens.vestes import tudo as roupas
 from jogo.tela.imprimir import Imprimir, formatar_status
 from jogo.utils import arrumar_porcentagem, regra_3
-from jogo.experiencia import Experiencia
-from jogo.funcionabilidades import Contador
-
 
 tela = Imprimir()
 
@@ -95,9 +94,7 @@ class Humano:
             "Anel": Anel,
         }
         self.quests = []
-        porcentagem = enumerate(
-            [27, 54, 81, 108, 135, 162, 189, 216], 1
-        )
+        porcentagem = enumerate([27, 54, 81, 108, 135, 162, 189, 216], 1)
         self._porcentagem_arm_res_total = dict(porcentagem)
         self.porcentagem_armadura = 0
         self.porcentagem_resistencia = 0
@@ -316,15 +313,15 @@ class Humano:
         return resistencia
 
     def _recuperar_magia_stamina(self):
-        if self.status['magia'] <= 80:
-            self.status['magia'] += 20
-        elif self.status['stamina'] <= 80:
-            self.status['stamina'] += 20
-    
+        if self.status["magia"] <= 80:
+            self.status["magia"] += 20
+        elif self.status["stamina"] <= 80:
+            self.status["stamina"] += 20
+
     def atualizar_porcentagem_por_level(self, level):
         """Método que atualiza a porcentagem dependendo do level do inimigo."""
-        self.porcentagem_armadura -= (8 * level)
-        self.porcentagem_resistencia -= (8 * level)
+        self.porcentagem_armadura -= 8 * level
+        self.porcentagem_resistencia -= 8 * level
         if self.porcentagem_armadura < 0:
             self.porcentagem_armadura = 0
         if self.porcentagem_resistencia < 0:

@@ -1,6 +1,4 @@
 import curses
-from itertools import cycle
-from re import sub
 from time import sleep
 
 formas = (
