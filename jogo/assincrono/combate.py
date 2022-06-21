@@ -24,6 +24,6 @@ def combate(personagem1, personagem2):
     ciclo.run_until_complete(wait(tarefas))
     tela.limpar_tela()
     # retornar ao normal a porcentagem de armadura/resistencia
-    personagem1.atualizar_status()
-    personagem2.atualizar_status()
+    personagem1.atualizar_porcentagem()
+    personagem2.atualizar_porcentagem()
     # ciclo.close()

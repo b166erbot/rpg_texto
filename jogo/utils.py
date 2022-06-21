@@ -2,16 +2,6 @@ import shelve
 from statistics import mean
 
 
-def salvar_jogo(nome_do_objeto: str, objeto, nome_do_arquivo: str):
-    save = shelve.open("save.pkl")
-    save[nome_do_objeto] = objeto
-
-
-def carregar_jogo(nome_do_objeto, nome_do_arquivo: str):
-    save = shelve.open("save.pkl")
-    return save[nome_do_objeto]
-
-
 def chunk(lista, numero):
     return [lista[x : x + numero] for x in range(0, len(lista), numero)]
 
@@ -50,3 +40,19 @@ def calcular_experiencia(valor_maximo, valor_minimo) -> list[float, int]:
     """Função que retorna uma lista com os valores dos leveis."""
     media = mean([valor_maximo, valor_minimo])
     return [media * x for x in range(1, 9)]
+
+
+class Contador:
+    def __init__(self, contagem_maxima: int):
+        self._contagem_maxima = contagem_maxima
+        self._contagem = 0
+
+    def acrescentar(self):
+        self._contagem += 1
+
+    def resetar(self):
+        self._contagem = 0
+
+    @property
+    def usar(self):
+        return True if self._contagem > self._contagem_maxima else False

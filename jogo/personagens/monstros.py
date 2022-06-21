@@ -2,14 +2,13 @@ from asyncio import sleep
 from collections import Counter
 from random import choice, randint
 
-from jogo.funcionabilidades import Contador
 from jogo.itens.armas import Arma
 from jogo.itens.armas import tudo as armas
 from jogo.itens.quest import ItemQuest
 from jogo.itens.vestes import Anel, Roupa
 from jogo.itens.vestes import tudo as vestes
 from jogo.tela.imprimir import Imprimir, efeito_digitando, formatar_status
-from jogo.utils import arrumar_porcentagem, regra_3
+from jogo.utils import Contador, arrumar_porcentagem, regra_3
 
 tela = Imprimir()
 
@@ -97,12 +96,11 @@ class Monstro:
             elif issubclass(Item, Roupa):
                 status = [
                     randint(1, 6),
-                    randint(1, 3),
                     randint(5, 20),
                     randint(1, 6),
                 ]
                 status = map(lambda x: x * self.level, status)
-                status_nomes = ["armadura", "velo_movi", "vida", "resistencia"]
+                status_nomes = ["armadura", "vida", "resistencia"]
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(**status_dict)
             elif issubclass(Item, Anel):
@@ -150,6 +148,9 @@ class Monstro:
         personagem.experiencia.depositar_experiencia(self.experiencia)
 
     def atualizar_status(self):
+        self.atualizar_porcentagem()
+
+    def atualizar_porcentagem(self):
         self.porcentagem_armadura = arrumar_porcentagem(
             regra_3(
                 self._porcentagem_arm_res_total[self.level],
@@ -199,12 +200,11 @@ class Boss(Monstro):
         elif issubclass(Item, Roupa):
             status = [
                 randint(3, 6),
-                randint(2, 3),
                 randint(12, 20),
                 randint(3, 6),
             ]
             status = map(lambda x: x * self.level, status)
-            status_nomes = ["armadura", "velo_movi", "vida", "resistencia"]
+            status_nomes = ["armadura", "vida", "resistencia"]
             status_dict = dict(zip(status_nomes, status))
             item = Item(**status_dict)
         elif issubclass(Item, Anel):

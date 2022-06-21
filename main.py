@@ -8,10 +8,17 @@ import curses
 curses.initscr()
 curses.start_color()
 
+curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
+curses.init_pair(2, curses.COLOR_CYAN, curses.COLOR_BLACK)
+curses.init_pair(3, curses.COLOR_RED, curses.COLOR_BLACK)
+curses.init_pair(4, curses.COLOR_MAGENTA, curses.COLOR_BLACK)
+curses.init_pair(5, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+
 from time import sleep
 
 from jogo.itens.moedas import Draconica
 from jogo.itens.pocoes import curas
+from jogo.itens.quest import ItemQuest
 from jogo.personagens.classes import (
     Arqueiro,
     Assassino,
@@ -51,7 +58,12 @@ def novo_jogo_saves(nomes: list[str]):
         if bool(personagens):
             tela.imprimir("jogo carregado", "cyan")
             sleep(2)
-            return personagens
+            bram = ComercianteItemQuest(
+                "Bram", [Draconica], [ItemQuest("Coração de Dragão")]
+            )
+            personagens_, nome_do_save = personagens
+            personagens_ += (bram,)
+            return (personagens_, nome_do_save)
         else:
             return False
     elif resposta == "novo jogo":
@@ -62,17 +74,19 @@ def novo_jogo_saves(nomes: list[str]):
         quests = [quest(eivor.nome) for quest in quests_do_eivor]
         eivor.receber_quest(quests)
         tiago = Banqueiro("Tiago")
-        bram = ComercianteItemQuest("Bram", [Draconica])
+        bram = ComercianteItemQuest(
+            "Bram", [Draconica], [ItemQuest("Coração de Dragão")]
+        )
         personagem = novo_personagem()
         nome_jogo = ""
         while not bool(nome_jogo):
             tela.limpar_tela()
             tela.imprimir("qual é o nome do seu save?: ", "cyan")
             nome_jogo = tela.obter_string()
-        npcs = [lorena, eivor, tiago, bram]
+        npcs = [lorena, eivor, tiago]
         nome_jogo += ".pkl"
         salvar_jogo(personagem, npcs, nome_jogo)
-        return ([personagem] + npcs, nome_jogo)
+        return ([personagem] + npcs + [bram], nome_jogo)
 
 
 def novo_personagem():
@@ -109,15 +123,11 @@ def main():
     personagens_nome_jogo = ""
     while not bool(personagens_nome_jogo):
         personagens_nome_jogo = novo_jogo_saves(
-            ["Personagem", "Lorena", "Eivor", "Tiago", "Bram"]
+            ["Personagem", "Lorena", "Eivor", "Tiago"]
         )
     personagens, nome_jogo = personagens_nome_jogo
     personagem, lorena, eivor, tiago, bram = personagens
     comerciante = Comerciante("farkas", curas)
-    import curses, pdb
-
-    curses.endwin()
-    pdb.set_trace()
     menu = Menu(personagem, nome_jogo)
     menu.obter_npcs([lorena, comerciante, tiago, eivor, bram])
     menu.ciclo()

@@ -77,7 +77,7 @@ class Floresta:
             tela.limpar_tela()
         elif str(caminho) == "boss":
             tela.limpar_tela()
-            tela.imprimir("Boss encontrado.")
+            tela.imprimir("Boss encontrado.\n")
             lutar = self._lutar_ou_fugir()
             if lutar:
                 status = {

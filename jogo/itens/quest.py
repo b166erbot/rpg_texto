@@ -9,10 +9,7 @@ class ItemQuest:
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
             return False
-        condicoes = [
-            self.nome == other.nome,
-        ]
-        if all(condicoes):
+        if self.nome == other.nome:
             return True
         else:
             return False

@@ -1,19 +1,26 @@
-from dataclasses import dataclass, field
-
 from jogo.itens.moedas import Pratas
 
 
-@dataclass
 class Arma:
-    nome: str = field(repr=False)
-    dano: int
-    velo_ataque: int
-    critico: int
-    tipo: str = field(repr=False, default="Arma", init=False)
-    classe: str = field(repr=False)
-
-    def __post_init__(self):
+    def __init__(
+        self, nome: str, dano: int, velo_ataque: int, critico: int, classe: str
+    ):
+        self.nome = nome
+        self.dano = dano
+        self.velo_ataque = velo_ataque
+        self.critico = critico
+        self.tipo = "Arma"
+        self.classe = classe
+        self.bonus = []
         self.preco = Pratas((self.dano + self.velo_ataque + self.critico) * 8)
+        self.conjunto = "item comum"
+
+    def __repr__(self):
+        retorno = (
+            f"{self.nome}(dan: {self.dano}, vel_ata: {self.velo_ataque}, "
+            f"crit: {self.critico})"
+        )
+        return retorno
 
 
 class Espada_longa(Arma):

@@ -25,18 +25,11 @@ class Comerciante(Npc):
         super().__init__(nome, "Comerciante")
         self.itens = {numero: item for numero, item in enumerate(itens, 1)}
         self.tabela = [
-            f"{numero} - {item.nome} {item.preco}"
+            f"{numero} - {item.nome}. {item.preco}"
             for numero, item in self.itens.items()
         ]
         self.tabela_cortada = chunk(self.tabela, 16)
         self.salvar = False
-
-    def distinguir_moeda(self, item, quantidade: int, personagem):
-        """Método que faz as compras pelo personagem."""
-        if isinstance(item.preco, Pratas):
-            self.comprar(item, quantidade, personagem, "Pratas")
-        elif isinstance(item.preco, Draconica):
-            self.comprar(item, quantidade, personagem, "Draconica")
 
     def comprar(self, item, quantidade: int, personagem, tipo_de_moeda: str):
         preço = quantidade * int(item.preco)
@@ -59,9 +52,8 @@ class Comerciante(Npc):
             quantidade = tela.obter_string()
             if not bool(quantidade):
                 break
-            self.distinguir_moeda(
-                self.itens[int(numero)], int(quantidade), personagem
-            )
+            item = self.itens[int(numero)]
+            self.comprar(item, int(quantidade), personagem, item.preco.nome)
             tela.limpar_tela()
             numero = self._obter_numero(
                 "Deseja mais alguma coisa?: ", personagem
@@ -213,11 +205,13 @@ class Pessoa(Npc):
 
 
 class ComercianteItemQuest(Npc):
-    def __init__(self, nome: str, itens: list):
+    def __init__(self, nome: str, itens: list, requisitos: list):
         super().__init__(nome, "Comerciante Item Quest")
         self.itens = {numero: item for numero, item in enumerate(itens, 1)}
+        itens = zip(self.itens.items(), requisitos)
         self.tabela = [
-            f"{numero} - {item.nome}" for numero, item in self.itens.items()
+            f"{numero} - {item.nome}. requerido -> {item_requerido}"
+            for (numero, item), item_requerido in itens
         ]
         self.tabela_cortada = chunk(self.tabela, 16)
         self.salvar = False

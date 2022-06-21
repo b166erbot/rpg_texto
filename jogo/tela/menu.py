@@ -10,6 +10,9 @@ from jogo.save import salvar_jogo
 from jogo.tela.imprimir import Imprimir, formas
 from jogo.utils import chunk
 
+# from jogo.itens.vestes import tudo as roupas, roupas_draconicas
+# from jogo.itens.armas import tudo as armas
+
 # Silenciar o pygame para não imprimir nada na tela
 sys.stdout = MagicMock()
 from pygame import mixer
@@ -42,6 +45,18 @@ class Menu:
             f"{numero} - {texto}" for numero, texto in enumerate(texto2, 1)
         ]
         self.personagem = personagem
+        # for item in roupas:
+        #     personagem.inventario.append(item(
+        #         vida=10, armadura=3, resistencia=3
+        #     ))
+        # for item in roupas_draconicas:
+        #     personagem.inventario.append(item(
+        #         vida=10, armadura=3, resistencia=3
+        #     ))
+        # for item in armas:
+        #     personagem.inventario.append(item(
+        #         dano=3, velo_ataque=2, critico=1
+        #     ))
 
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""
@@ -120,7 +135,7 @@ class Menu:
                 case 8:
                     self._obter_numero_quests()
                 case 9:
-                    npcs = list(filter(lambda x: x.salvar, self._npcs))
+                    npcs = filter(lambda x: x.salvar, self._npcs)
                     salvar_jogo(self.personagem, npcs, self._nome_jogo)
                     tela.imprimir("jogo salvo", "cyan")
                     sleep(3)
@@ -321,3 +336,4 @@ class Menu:
 # TODO: fazer quests onde o personagem precise interagir com 2 ou mais npcs.
 # TODO: botar um simbolo diferente para a moeda draconica.
 # TODO: fazer 10 poções ocuparem o mesmo espaço? (não sei se tem como)
+# TODO: arrumar bug que a vida está enchendo nos turnos da floresta

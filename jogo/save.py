@@ -29,10 +29,10 @@ def carregar_jogo_tela(nomes: list[str]):
         sleep(3)
         return
     resposta = ""
-    while not resposta.isnumeric() and resposta not in arquivos:
+    while not resposta.isnumeric() or resposta not in arquivos:
         tela.limpar_tela()
         for numero, arquivo in arquivos.items():
-            tela.imprimir(f"{numero} - {arquivo}\n", "cyan")
+            tela.imprimir(f"{numero} - {arquivo[:-4]}\n", "cyan")
         tela.imprimir("Deseja carregar qual jogo?: ", "cyan")
         resposta = tela.obter_string()
     return (
@@ -42,6 +42,7 @@ def carregar_jogo_tela(nomes: list[str]):
 
 
 def salvar_jogo(personagem, npcs, nome_jogo):
+    # tem que salvar com o nome de personagem pois fica fácil de recuperar com esse nome
     _salvar_jogo("Personagem", personagem, nome_jogo)
     for npc in npcs:
         _salvar_jogo(npc.nome, npc, nome_jogo)

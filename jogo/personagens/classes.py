@@ -4,7 +4,6 @@ from random import randint
 from time import sleep as sleep2
 
 from jogo.experiencia import Experiencia
-from jogo.funcionabilidades import Contador
 from jogo.itens.armas import (
     Adaga,
     Arco_curto,
@@ -17,13 +16,14 @@ from jogo.itens.armas import (
     Luvas_de_ferro,
     Machado,
 )
-from jogo.itens.itens import SemItemEquipado
+from jogo.itens.itens import CalcularBonus, SemItemEquipado
 from jogo.itens.moedas import Draconica, Pratas
 from jogo.itens.pocoes import curas
 from jogo.itens.quest import ItemQuest
+from jogo.itens.vestes import roupas_draconicas
 from jogo.itens.vestes import tudo as roupas
 from jogo.tela.imprimir import Imprimir, formatar_status
-from jogo.utils import arrumar_porcentagem, regra_3
+from jogo.utils import Contador, arrumar_porcentagem, regra_3
 
 tela = Imprimir()
 
@@ -98,6 +98,7 @@ class Humano:
         self._porcentagem_arm_res_total = dict(porcentagem)
         self.porcentagem_armadura = 0
         self.porcentagem_resistencia = 0
+        self._calcular_bonus = CalcularBonus(self)
         self.atualizar_status()
         self._contador = Contador(4)
 
@@ -253,6 +254,10 @@ class Humano:
         self.status["resistencia"] = resistencia
         self.status["armadura"] = armadura
         self.status["dano"] = dano
+        self.atualizar_porcentagem()
+        self._calcular_bonus.calcular(self.equipamentos.values())
+
+    def atualizar_porcentagem(self):
         self.porcentagem_armadura = arrumar_porcentagem(
             regra_3(
                 self._porcentagem_arm_res_total[self.level], 100, self._armadura
@@ -358,7 +363,7 @@ class Arqueiro(Humano):
         condicao = any(
             map(
                 lambda x: isinstance(equipamento, x),
-                roupas + [Arco_longo, Arco_curto],
+                roupas + roupas_draconicas + [Arco_longo, Arco_curto],
             )
         )
         if condicao:
@@ -400,7 +405,9 @@ class Guerreiro(Humano):
         condicao = any(
             map(
                 lambda x: isinstance(equipamento, x),
-                roupas + [Espada_longa, Espada_curta, Machado],
+                roupas
+                + roupas_draconicas
+                + [Espada_longa, Espada_curta, Machado],
             )
         )
         if condicao:
@@ -441,7 +448,7 @@ class Mago(Humano):
         condicao = any(
             map(
                 lambda x: isinstance(equipamento, x),
-                roupas + [Cajado, Cajado_negro],
+                roupas + roupas_draconicas + [Cajado, Cajado_negro],
             )
         )
         if condicao:
@@ -481,7 +488,10 @@ class Assassino(Humano):
     def equipar(self, equipamento):
         """Método que equipa um equipamento."""
         condicao = any(
-            map(lambda x: isinstance(equipamento, x), roupas + [Adaga])
+            map(
+                lambda x: isinstance(equipamento, x),
+                roupas + roupas_draconicas + [Adaga],
+            )
         )
         if condicao:
             index = self.inventario.index(equipamento)
@@ -523,7 +533,7 @@ class Clerigo(Humano):
         condicao = any(
             map(
                 lambda x: isinstance(equipamento, x),
-                roupas + [Cajado, Cajado_negro],
+                roupas + roupas_draconicas + [Cajado, Cajado_negro],
             )
         )
         if condicao:
@@ -562,7 +572,11 @@ class Monge(Humano):
 
     def equipar(self, equipamento):
         """Método que equipa um equipamento."""
-        condicao = any(map(lambda x: isinstance(equipamento, x), roupas))
+        condicao = any(
+            map(
+                lambda x: isinstance(equipamento, x), roupas + roupas_draconicas
+            )
+        )
         if condicao:
             # tira o equipamento do inventario
             index = self.inventario.index(equipamento)
