@@ -9,9 +9,9 @@ from jogo.quests import ItemQuest
 from jogo.save import salvar_jogo
 from jogo.tela.imprimir import Imprimir, formas
 from jogo.utils import chunk
-
 # from jogo.itens.vestes import tudo as roupas, roupas_draconicas
 # from jogo.itens.armas import tudo as armas
+# from jogo.itens.item_secundario import tudo as item_secundario
 
 # Silenciar o pygame para não imprimir nada na tela
 sys.stdout = MagicMock()
@@ -57,6 +57,17 @@ class Menu:
         #     personagem.inventario.append(item(
         #         dano=3, velo_ataque=2, critico=1
         #     ))
+        # for item in item_secundario:
+        #     if item.tipo == "Escudo":
+        #         personagem.inventario.append(item(
+        #             vida = 10, armadura = 5, resistencia = 5,
+        #             bloqueio = 80
+        #         ))
+        #     elif item.tipo == "Arma":
+        #         personagem.inventario.append(item(
+        #             dano = 10, critico = 15,
+        #             porcentagem_critico = 15
+        #         ))
 
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""
@@ -113,19 +124,8 @@ class Menu:
                     self.vender_item()
                 case 7:
                     tela.limpar_tela()
-                    p = self.personagem
                     tela.imprimir(
-                        f"{p.nome} [{p.classe}]: "
-                        f"vida - {p.status['vida']}, "
-                        f"armadura - {p.status['armadura']}, "
-                        f"defesa da armadura % - {p.porcentagem_armadura}%, "
-                        f"resistencia - {p.status['resistencia']}, "
-                        "defesa da resistencia % - "
-                        f"{p.porcentagem_resistencia}%, "
-                        f"dano - {p.status['dano']}, "
-                        f"{str(p.moedas['Pratas'])}, "
-                        f"{str(p.moedas['Draconica'])}, "
-                        f"xp - {p.experiencia}, level - {p.level}\n",
+                        self._arrumar_status(self.personagem),
                         "cyan",
                     )
                     tela.imprimir(
@@ -249,20 +249,25 @@ class Menu:
                     f"{numero} - {item} [classe: {item.classe}]"
                     if item.tipo
                     in [
-                        "Arma",
-                        "Peitoral",
                         "Elmo",
+                        "Peitoral",
                         "Calça",
                         "Botas",
                         "Luvas",
                         "Anel",
+                        "Amuleto",
+                        "Arma"
                     ]
                     else f"{numero} - {item}"
                 )
-                if self.personagem.equipamentos.get(item.tipo) is item:
-                    tela.imprimir(mensagem2 + "\n", "amarelo")
+                equipamento_equipado = map(
+                    lambda x: x is item,
+                    self.personagem.equipamentos.values()
+                )
+                if any(equipamento_equipado):
+                    tela.imprimir(mensagem2 + '\n', 'amarelo')
                 else:
-                    tela.imprimir(mensagem2 + "\n")
+                    tela.imprimir(mensagem2 + '\n')
             tela.imprimir(mensagem, "cyan")
             numero = tela.obter_string()
         return numero
@@ -308,7 +313,7 @@ class Menu:
         if all(condicoes):
             tela.imprimir(
                 "Como é a sua primeira vez, certifique-se de comprar de "
-                "10 a 15 poções de vida média.\n"
+                "15 a 20 poções de vida média no comerciante do vilarejo.\n"
             )
             tela.imprimir("Deseja continuar mesmo assim?: ")
             caracter = tela.obter_string().lower()
@@ -317,6 +322,31 @@ class Menu:
             else:
                 return False
         return True
+    
+    def _arrumar_status(self, personagem):
+        p = personagem
+        armadura = f"armadura - {p.status['armadura']}"
+        resistencia = f"resistencia - {p.status['resistencia']}"
+        arm_porc = f"defesa da armadura % - {p.porcentagem_armadura}%"
+        resi_porc = f"defesa da resistencia % - {p.porcentagem_resistencia}%"
+        experiencia = f"xp - {p.experiencia}"
+        pratas = f"{str(p.moedas['Pratas'])}"
+        tamanhos = (
+            len(x) for x in (
+                armadura, resistencia, experiencia, pratas
+            )
+        )
+        len_max = max(tamanhos)
+        textos = [
+            f"{p.nome} [{p.classe}]:",
+            f"vida - {p.status['vida']}",
+            f"{armadura: <{len_max + 3}}{arm_porc}",
+            f"{resistencia: <{len_max + 3}}{resi_porc}",
+            f"dano - {p.status['dano']}",
+            f"{pratas: <{len_max + 3}}{str(p.moedas['Draconica'])}",
+            f"{experiencia: <{len_max + 3}}level - {p.level}",
+        ]
+        return '\n'.join(textos) + '\n'
 
 
 # TODO: colocar mais npcs com quests.
@@ -330,10 +360,12 @@ class Menu:
 # TODO: adicionar quests que fazem os bosses dropar o item.
 # TODO: elixir deve ter um preço diferente para cada level.
 # TODO: level nos equipamentos, itens.
-# TODO: fazer sets de equipamentos com bonus de atributos.
 # TODO: implementar stun.
 # TODO: interagir com cenários e destruílos?
 # TODO: fazer quests onde o personagem precise interagir com 2 ou mais npcs.
 # TODO: botar um simbolo diferente para a moeda draconica.
 # TODO: fazer 10 poções ocuparem o mesmo espaço? (não sei se tem como)
-# TODO: arrumar bug que a vida está enchendo nos turnos da floresta
+# TODO: implementar deletar save no inicio
+# TODO: recalibrar a armadura e resistencia (tanto pro monstro quanto pro personagem)
+# TODO: saves tem o mesmo nome gera um bug
+# TODO: implementar critico

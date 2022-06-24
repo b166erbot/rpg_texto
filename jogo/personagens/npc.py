@@ -284,37 +284,51 @@ class Banqueiro(Npc):
         self.tamanho_do_inventario = 30
         self.inventario = []
 
+    def e_possivel_guardar(self, item):
+        if len(self.inventario) < self.tamanho_do_inventario:
+            return True
+        else:
+            return False
+
     def guardar_item(self, item, personagem):
         """Método que guarda um item no inventario do banqueiro."""
-        if len(self.inventario) < self.tamanho_do_inventario:
-            self.inventario.append(item)
-            index = personagem.inventario.index(item)
-            personagem.inventario.pop(index)
-        else:
-            tela.imprimir("inventario do banqueiro cheio.")
-            sleep(2)
+        # guardar o item no banqueiro
+        self.inventario.append(item)
+        # remover o item no inventario
+        index = personagem.inventario.index(item)
+        personagem.inventario.pop(index)
 
     def retirar(self, item, personagem):
         """Método que retira um item do inventario do banqueiro."""
         index = self.inventario.index(item)
-        guardado = personagem.inventario.append(item)
-        if guardado:
+        if personagem.e_possivel_guardar(item):
+            personagem.inventario.append(item)
             self.inventario.pop(index)
+        else:
+            tela.imprimir(
+                "não foi possível adicionar item ao inventario, "
+                "inventario cheio."
+            )
+            sleep(3)
 
     def interagir(self, personagem):
         """Método que interage com o personagem."""
         tela.limpar_tela()
-        tela.imprimir("1 -> guardar, 2 -> adquirir\n")
-        tela.imprimir("deseja guardar ou adquirir um item?: ")
+        tela.imprimir("1 -> guardar, 2 -> retirar\n")
+        tela.imprimir("deseja guardar ou retirar um item?: ")
         numero = tela.obter_string()
         while numero.isnumeric():
-            if numero == "1":
+            if numero == "1": # gardar
                 item = self._obter_equipamentos_personagem(
                     "deseja guardar qual item?: ", personagem
                 )
                 if bool(item):
-                    self.guardar_item(item, personagem)
-            elif numero == "2":
+                    if self.e_possivel_guardar(item):
+                        self.guardar_item(item, personagem)
+                    else:
+                        tela.imprimir("inventario do banqueiro cheio.")
+                        sleep(2)
+            elif numero == "2": # retirar
                 item = self._obter_equipamentos_banqueiro(
                     "deseja obter qual item?: ", personagem
                 )

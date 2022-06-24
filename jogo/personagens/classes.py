@@ -4,24 +4,10 @@ from random import randint
 from time import sleep as sleep2
 
 from jogo.experiencia import Experiencia
-from jogo.itens.armas import (
-    Adaga,
-    Arco_curto,
-    Arco_longo,
-    Botas_de_ferro,
-    Cajado,
-    Cajado_negro,
-    Espada_curta,
-    Espada_longa,
-    Luvas_de_ferro,
-    Machado,
-)
 from jogo.itens.itens import CalcularBonus, SemItemEquipado
 from jogo.itens.moedas import Draconica, Pratas
 from jogo.itens.pocoes import curas
 from jogo.itens.quest import ItemQuest
-from jogo.itens.vestes import roupas_draconicas
-from jogo.itens.vestes import tudo as roupas
 from jogo.tela.imprimir import Imprimir, formatar_status
 from jogo.utils import Contador, arrumar_porcentagem, regra_3
 
@@ -52,18 +38,20 @@ class Humano:
         status={},
         experiencia=0,
         moedas={"Pratas": 1500, "Draconica": 0},
-        peitoral=SemItemEquipado("Peitoral"),
-        elmo=SemItemEquipado("Elmo"),
-        calca=SemItemEquipado("Calça"),
-        botas=SemItemEquipado("Botas"),
-        luvas=SemItemEquipado("Luvas"),
-        arma=SemItemEquipado("Arma"),
-        Anel=SemItemEquipado("Anel"),
+        peitoral=SemItemEquipado("Peitoral", "Peitoral"),
+        elmo=SemItemEquipado("Elmo", "Elmo"),
+        calca=SemItemEquipado("Calça", "Calça"),
+        botas=SemItemEquipado("Botas", "Botas"),
+        luvas=SemItemEquipado("Luvas", "Luvas"),
+        arma=SemItemEquipado("Arma", "Arma"),
+        anel=SemItemEquipado("Anel", "Anel"),
+        amuleto=SemItemEquipado("Amuleto", "Amuleto"),
+        item_secundario=SemItemEquipado('Item secundário', 'Item secundário')
     ):
         self.nome = nome
         self.level = level
         leveis = [499, 999, 1999, 3499, 5499, 7999, 10999, 14499]
-        self.experiencia = Experiencia(experiencia, leveis)
+        self.experiencia = Experiencia(experiencia, leveis, level)
         self.status = Counter(
             status
             or {
@@ -91,7 +79,9 @@ class Humano:
             "Botas": botas,
             "Luvas": luvas,
             "Arma": arma,
-            "Anel": Anel,
+            "Anel": anel,
+            "Amuleto": amuleto,
+            "Item secundário": item_secundario
         }
         self.quests = []
         porcentagem = enumerate([27, 54, 81, 108, 135, 162, 189, 216], 1)
@@ -107,7 +97,16 @@ class Humano:
         """Método que retorna a vida máxima."""
         equipamentos = filter(lambda x: x, self.equipamentos.values())
         equipamentos = filter(
-            lambda x: x.tipo in ["Elmo", "Peitoral", "Calça", "Botas", "Anel"],
+            lambda x: x.tipo in [
+                "Elmo",
+                "Peitoral",
+                "Calça",
+                "Luvas",
+                "Botas",
+                "Anel",
+                'Amuleto',
+                "Escudo"
+            ],
             equipamentos,
         )
         vida = map(lambda x: x.vida, equipamentos)
@@ -215,14 +214,20 @@ class Humano:
 
     def desequipar(self, equipamento):
         """Método que desequipa um item no inventário."""
-        equipamento2 = self.equipamentos.get(equipamento.tipo)
+        equipamento2 = self.equipamentos.get(equipamento.tipo_equipar)
         if equipamento2 and equipamento2 is equipamento:
-            guardado = self.guardar_item(equipamento)
-            if guardado:
-                self.equipamentos[equipamento.tipo] = SemItemEquipado(
-                    equipamento.tipo
+            if self.e_possivel_guardar(equipamento):
+                self.guardar_item(equipamento)
+                self.equipamentos[equipamento.tipo_equipar] = SemItemEquipado(
+                    equipamento.tipo, equipamento.tipo_equipar
                 )
                 self.atualizar_status()
+            else:
+                tela.imprimir(
+                    "não foi possível adicionar item ao inventario, "
+                    "inventario cheio."
+                )
+                sleep2(3)
 
     def equipar(self, equipamento):
         raise NotImplementedError("Método não implementado.")
@@ -237,13 +242,21 @@ class Humano:
         ]
         vestes = list(
             filter(
-                lambda x: x.tipo
-                in ["Elmo", "Peitoral", "Calça", "Botas", "Anel"],
+                lambda x: x.tipo in [
+                    "Elmo",
+                    "Peitoral",
+                    "Calça",
+                    "Luvas",
+                    "Botas",
+                    "Anel",
+                    "Amuleto",
+                    "Escudo"
+                ],
                 equipamentos,
             )
         )
         equipamentos_dano = filter(
-            lambda x: x.tipo in ["Anel", "Arma"], equipamentos
+            lambda x: x.tipo in ["Anel", "Arma", "Amuleto"], equipamentos
         )
         dano = map(lambda x: x.dano, equipamentos_dano)
         dano = 5 + sum(dano)
@@ -271,21 +284,20 @@ class Humano:
             )
         )
 
-    def guardar_item(self, item):
-        """Método que guarda um item no inventario se possível."""
+    def e_possivel_guardar(self, item):
         itens = list(
             filter(lambda x: not isinstance(x, ItemQuest), self.inventario)
         )
         if isinstance(item, ItemQuest):
-            self.inventario.append(item)
             return True
         elif len(itens) < 30:
-            self.inventario.append(item)
             return True
         else:
-            tela.imprimir("não foi possível adicionar item ao inventario")
-            sleep2(3)
             return False
+
+    def guardar_item(self, item):
+        """Método que guarda um item no inventario se possível."""
+        self.inventario.append(item)
 
     @property
     def _armadura(self):
@@ -296,7 +308,16 @@ class Humano:
             if bool(equipamento)
         ]
         vestes = filter(
-            lambda x: x.tipo in ["Elmo", "Peitoral", "Calça", "Botas", "Anel"],
+            lambda x: x.tipo in [
+                "Elmo",
+                "Peitoral",
+                "Calça",
+                "Luvas",
+                "Botas",
+                "Anel",
+                "Amuleto",
+                "Escudo"
+            ],
             equipamentos,
         )
         armadura = sum(map(lambda x: x.armadura, vestes))
@@ -311,7 +332,16 @@ class Humano:
             if bool(equipamento)
         ]
         vestes = filter(
-            lambda x: x.tipo in ["Elmo", "Peitoral", "Calça", "Botas", "Anel"],
+            lambda x: x.tipo in [
+                "Elmo",
+                "Peitoral",
+                "Calça",
+                "Luvas",
+                "Botas",
+                "Anel",
+                "Amuleto",
+                "Escudo"
+            ],
             equipamentos,
         )
         resistencia = sum(map(lambda x: x.resistencia, vestes))
@@ -360,18 +390,12 @@ class Arqueiro(Humano):
 
     def equipar(self, equipamento):
         """Método que equipa um equipamento."""
-        condicao = any(
-            map(
-                lambda x: isinstance(equipamento, x),
-                roupas + roupas_draconicas + [Arco_longo, Arco_curto],
-            )
-        )
-        if condicao:
+        if equipamento.classe in ['Todos', 'Arqueiro']:
             index = self.inventario.index(equipamento)
             self.inventario.pop(index)
-            if bool(self.equipamentos[equipamento.tipo]):
-                self.inventario.append(self.equipamentos[equipamento.tipo])
-            self.equipamentos[equipamento.tipo] = equipamento
+            if bool(self.equipamentos[equipamento.tipo_equipar]):
+                self.inventario.append(self.equipamentos[equipamento.tipo_equipar])
+            self.equipamentos[equipamento.tipo_equipar] = equipamento
             self.atualizar_status()
 
 
@@ -402,20 +426,12 @@ class Guerreiro(Humano):
 
     def equipar(self, equipamento):
         """Método que equipa um equipamento."""
-        condicao = any(
-            map(
-                lambda x: isinstance(equipamento, x),
-                roupas
-                + roupas_draconicas
-                + [Espada_longa, Espada_curta, Machado],
-            )
-        )
-        if condicao:
+        if equipamento.classe in ['Todos', 'Guerreiro']:
             index = self.inventario.index(equipamento)
             self.inventario.pop(index)
-            if bool(self.equipamentos[equipamento.tipo]):
-                self.inventario.append(self.equipamentos[equipamento.tipo])
-            self.equipamentos[equipamento.tipo] = equipamento
+            if bool(self.equipamentos[equipamento.tipo_equipar]):
+                self.inventario.append(self.equipamentos[equipamento.tipo_equipar])
+            self.equipamentos[equipamento.tipo_equipar] = equipamento
             self.atualizar_status()
 
 
@@ -445,18 +461,12 @@ class Mago(Humano):
 
     def equipar(self, equipamento):
         """Método que equipa um equipamento."""
-        condicao = any(
-            map(
-                lambda x: isinstance(equipamento, x),
-                roupas + roupas_draconicas + [Cajado, Cajado_negro],
-            )
-        )
-        if condicao:
+        if equipamento.classe in ['Todos', 'Mago']:
             index = self.inventario.index(equipamento)
             self.inventario.pop(index)
-            if bool(self.equipamentos[equipamento.tipo]):
-                self.inventario.append(self.equipamentos[equipamento.tipo])
-            self.equipamentos[equipamento.tipo] = equipamento
+            if bool(self.equipamentos[equipamento.tipo_equipar]):
+                self.inventario.append(self.equipamentos[equipamento.tipo_equipar])
+            self.equipamentos[equipamento.tipo_equipar] = equipamento
             self.atualizar_status()
 
 
@@ -487,18 +497,12 @@ class Assassino(Humano):
 
     def equipar(self, equipamento):
         """Método que equipa um equipamento."""
-        condicao = any(
-            map(
-                lambda x: isinstance(equipamento, x),
-                roupas + roupas_draconicas + [Adaga],
-            )
-        )
-        if condicao:
+        if equipamento.classe in ['Todos', 'Assassino']:
             index = self.inventario.index(equipamento)
             self.inventario.pop(index)
-            if bool(self.equipamentos[equipamento.tipo]):
-                self.inventario.append(self.equipamentos[equipamento.tipo])
-            self.equipamentos[equipamento.tipo] = equipamento
+            if bool(self.equipamentos[equipamento.tipo_equipar]):
+                self.inventario.append(self.equipamentos[equipamento.tipo_equipar])
+            self.equipamentos[equipamento.tipo_equipar] = equipamento
             self.atualizar_status()
 
 
@@ -530,18 +534,12 @@ class Clerigo(Humano):
 
     def equipar(self, equipamento):
         """Método que equipa um equipamento."""
-        condicao = any(
-            map(
-                lambda x: isinstance(equipamento, x),
-                roupas + roupas_draconicas + [Cajado, Cajado_negro],
-            )
-        )
-        if condicao:
+        if equipamento.classe in ['Todos', 'Mago']:
             index = self.inventario.index(equipamento)
             self.inventario.pop(index)
-            if bool(self.equipamentos[equipamento.tipo]):
-                self.inventario.append(self.equipamentos[equipamento.tipo])
-            self.equipamentos[equipamento.tipo] = equipamento
+            if bool(self.equipamentos[equipamento.tipo_equipar]):
+                self.inventario.append(self.equipamentos[equipamento.tipo_equipar])
+            self.equipamentos[equipamento.tipo_equipar] = equipamento
             self.atualizar_status()
 
 
@@ -572,21 +570,16 @@ class Monge(Humano):
 
     def equipar(self, equipamento):
         """Método que equipa um equipamento."""
-        condicao = any(
-            map(
-                lambda x: isinstance(equipamento, x), roupas + roupas_draconicas
-            )
-        )
-        if condicao:
+        if equipamento.classe == 'Todos':
             # tira o equipamento do inventario
             index = self.inventario.index(equipamento)
             self.inventario.pop(index)
             # se tiver equipamento equipado, mova-o para o inventario
-            if bool(self.equipamentos[equipamento.tipo]):
-                self.inventario.append(self.equipamentos[equipamento.tipo])
+            if bool(self.equipamentos[equipamento.tipo_equipar]):
+                self.inventario.append(self.equipamentos[equipamento.tipo_equipar])
             # equipa o equipamento
-            self.equipamentos[equipamento.tipo] = equipamento
-        if isinstance(equipamento, Luvas_de_ferro):
+            self.equipamentos[equipamento.tipo_equipar] = equipamento
+        if equipamento.nome == "Luvas de ferro":
             # tira o equipamento do inventario
             index = self.inventario.index(equipamento)
             self.inventario.pop(index)
@@ -594,7 +587,7 @@ class Monge(Humano):
             self.desequipar(self.equipamentos["Luvas"])
             # equipa o item
             self.equipamentos["Luvas"] = equipamento
-        elif isinstance(equipamento, Botas_de_ferro):
+        elif equipamento.nome == "Botas de ferro":
             # tira o equipamento do inventario
             index = self.inventario.index(equipamento)
             self.inventario.pop(index)

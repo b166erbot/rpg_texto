@@ -154,9 +154,16 @@ class Floresta:
                 ),
             ]
             if all(condicoes):
-                self.personagem.guardar_item(quest.item)
-                tela.imprimir(f"item {quest.item.nome} adiquirido.\n")
-                sleep(1)
+                if self.personagem.e_possivel_guardar(quest.item):
+                    self.personagem.guardar_item(quest.item)
+                    tela.imprimir(f"item {quest.item.nome} adiquirido.\n")
+                    sleep(1)
+                else:
+                    tela.imprimir(
+                        "não foi possível adicionar item ao inventario, "
+                        "inventario cheio."
+                    )
+                    sleep(3)
 
     def _sortear_boss_dragao(self):
         if randint(1, 25) == 25:
@@ -190,7 +197,7 @@ class Floresta:
         # esse método não limpa a tela, favor manter.
         tela.imprimir("Deseja lutar ou fugir?: ")
         resposta = tela.obter_string().lower()
-        if resposta in ["lutar"]:
+        if resposta == "lutar":
             return True
         else:
             return False

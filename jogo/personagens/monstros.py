@@ -2,10 +2,8 @@ from asyncio import sleep
 from collections import Counter
 from random import choice, randint
 
-from jogo.itens.armas import Arma
 from jogo.itens.armas import tudo as armas
 from jogo.itens.quest import ItemQuest
-from jogo.itens.vestes import Anel, Roupa
 from jogo.itens.vestes import tudo as vestes
 from jogo.tela.imprimir import Imprimir, efeito_digitando, formatar_status
 from jogo.utils import Contador, arrumar_porcentagem, regra_3
@@ -87,13 +85,13 @@ class Monstro:
         if randint(0, 2) == 1:
             efeito_digitando("Loot encontrado.")
             Item = choice(vestes + armas)
-            if issubclass(Item, Arma):
+            if Item.tipo == 'Arma':
                 status = [randint(1, 5), randint(1, 2), randint(1, 3)]
                 status = map(lambda x: x * self.level, status)
                 status_nomes = ["dano", "velo_ataque", "critico"]
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(**status_dict)
-            elif issubclass(Item, Roupa):
+            elif Item.tipo == 'Roupa': # a classe tem tipo -> Roupa
                 status = [
                     randint(1, 6),
                     randint(5, 20),
@@ -103,7 +101,7 @@ class Monstro:
                 status_nomes = ["armadura", "vida", "resistencia"]
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(**status_dict)
-            elif issubclass(Item, Anel):
+            elif Item.tipo in ['Anel', 'Amuleto']:
                 status = [
                     randint(1, 3),
                     randint(3, 20),
@@ -117,7 +115,14 @@ class Monstro:
             personagem.moedas["Pratas"] += randint(
                 30 * self.level, 50 * self.level
             )
-            personagem.guardar_item(item)
+            if personagem.e_possivel_guardar(item):
+                personagem.guardar_item(item)
+            else:
+                tela.imprimir(
+                    "não foi possível adicionar item ao inventario, "
+                    "inventario cheio."
+                )
+                sleep(3)
 
     def sortear_drops_quest(self, personagem):
         """Método que dá itens de quests para o personagem."""
@@ -135,7 +140,8 @@ class Monstro:
             ]
             if all(condicoes):
                 tela.imprimir(f"Item {quest.item.nome} adiquirido\n")
-                personagem.guardar_item(quest.item)
+                if personagem.e_possivel_gardar(quest.item):
+                    personagem.guardar_item(quest.item)
 
     def __str__(self):
         status = (
@@ -191,13 +197,13 @@ class Boss(Monstro):
         """Método que dá item e pratas ao personagem."""
         efeito_digitando("Loot encontrado.")
         Item = choice(vestes + armas)
-        if issubclass(Item, Arma):
+        if Item.tipo == 'Arma':
             status = [randint(3, 5), randint(2, 2), randint(2, 3)]
             status = map(lambda x: x * self.level, status)
             status_nomes = ["dano", "velo_ataque", "critico"]
             status_dict = dict(zip(status_nomes, status))
             item = Item(**status_dict)
-        elif issubclass(Item, Roupa):
+        elif Item.tipo == 'Roupa': # a classe tem tipo -> Roupa
             status = [
                 randint(3, 6),
                 randint(12, 20),
@@ -207,7 +213,7 @@ class Boss(Monstro):
             status_nomes = ["armadura", "vida", "resistencia"]
             status_dict = dict(zip(status_nomes, status))
             item = Item(**status_dict)
-        elif issubclass(Item, Anel):
+        elif Item.tipo in ['Anel', 'Amuleto']:
             status = [
                 randint(2, 3),
                 randint(12, 20),
@@ -219,7 +225,14 @@ class Boss(Monstro):
             status_dict = dict(zip(status_nomes, status))
             item = Item(nome="Anel", **status_dict)
         personagem.moedas["Pratas"] += randint(30 * self.level, 50 * self.level)
-        personagem.guardar_item(item)
+        if personagem.e_possivel_guardar(item):
+            personagem.guardar_item(item)
+        else:
+            tela.imprimir(
+                    "não foi possível adicionar item ao inventario, "
+                    "inventario cheio."
+                )
+            sleep(3)
 
 
 class Tartaruga(Monstro):

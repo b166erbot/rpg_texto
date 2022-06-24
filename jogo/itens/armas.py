@@ -9,6 +9,7 @@ class Arma:
         self.dano = dano
         self.velo_ataque = velo_ataque
         self.critico = critico
+        self.tipo_equipar = "Arma"
         self.tipo = "Arma"
         self.classe = classe
         self.bonus = []
