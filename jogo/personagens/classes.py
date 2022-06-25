@@ -150,7 +150,7 @@ class Humano:
             caracter = tela.obter_caracter()
             if caracter != -1:
                 caracter = chr(caracter)
-                if caracter in ['1', '2']:
+                if caracter in ["1", "2"]:
                     habilidade = self.habilidades[caracter]
                     if self.consumir_magia_stamina():
                         habilidade(other)
@@ -259,9 +259,7 @@ class Humano:
 
     def atualizar_porcentagem(self):
         self.porcentagem_armadura = arrumar_porcentagem(
-            regra_3(
-                self._porcentagem_total[self.level], 100, self._armadura
-            )
+            regra_3(self._porcentagem_total[self.level], 100, self._armadura)
         )
         self.porcentagem_resistencia = arrumar_porcentagem(
             regra_3(

@@ -9,7 +9,6 @@ from jogo.quests import ItemQuest
 from jogo.save import salvar_jogo
 from jogo.tela.imprimir import Imprimir, formas
 from jogo.utils import chunk
-from jogo.itens.armas import tudo as armas
 
 # Silenciar o pygame para não imprimir nada na tela
 sys.stdout = MagicMock()
@@ -43,15 +42,11 @@ class Menu:
             f"{numero} - {texto}" for numero, texto in enumerate(texto2, 1)
         ]
         self.personagem = personagem
-        for item in armas:
-            personagem.inventario.append(item(
-                dano = 5, critico = 30, velo_ataque = 2
-            ))
 
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""
-        # mixer.music.load("vilarejo.ogg")
-        # mixer.music.play()
+        mixer.music.load("vilarejo.ogg")
+        mixer.music.play()
         forma = f"{formas[227]} {{}} {formas[228]}"
         while True:
             tela.limpar_tela()
@@ -236,18 +231,17 @@ class Menu:
                         "Anel",
                         "Amuleto",
                         "Arma",
-                        "Escudo"
+                        "Escudo",
                     ]
                     else f"{numero} - {item}"
                 )
                 equipamento_equipado = map(
-                    lambda x: x is item,
-                    self.personagem.equipamentos.values()
+                    lambda x: x is item, self.personagem.equipamentos.values()
                 )
                 if any(equipamento_equipado):
-                    tela.imprimir(mensagem2 + '\n', 'amarelo')
+                    tela.imprimir(mensagem2 + "\n", "amarelo")
                 else:
-                    tela.imprimir(mensagem2 + '\n')
+                    tela.imprimir(mensagem2 + "\n")
             tela.imprimir(mensagem, "cyan")
             numero = tela.obter_string()
         return numero
@@ -302,7 +296,7 @@ class Menu:
             else:
                 return False
         return True
-    
+
     def _arrumar_status(self, personagem):
         p = personagem
         armadura = f"armadura - {p.status['armadura']}"
@@ -314,10 +308,8 @@ class Menu:
         por_cri = f"porcentagem de dano critico - {p.porcentagem_critico}"
         critico = f"critico - {p.status['critico']}"
         tamanhos = (
-            len(x) for x in (
-                armadura, resistencia, experiencia, pratas,
-                critico
-            )
+            len(x)
+            for x in (armadura, resistencia, experiencia, pratas, critico)
         )
         len_max = max(tamanhos) + 3
         textos = [
@@ -330,7 +322,7 @@ class Menu:
             f"{pratas: <{len_max}}{str(p.moedas['Draconica'])}",
             f"{experiencia: <{len_max}}level - {p.level}",
         ]
-        return '\n'.join(textos) + '\n'
+        return "\n".join(textos) + "\n"
 
 
 # TODO: colocar mais npcs com quests.

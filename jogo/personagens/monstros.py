@@ -176,7 +176,7 @@ class Monstro:
             regra_3(
                 self._porcentagem_total[self.level],
                 100,
-                self.status['critico'],
+                self.status["critico"],
             )
         )
 
