@@ -3,10 +3,11 @@ from jogo.itens.moedas import Pratas
 
 class PocaoDeCura:
     tipo = "Poções"
+
     def __init__(self, pontos_cura: int):
         self.pontos_cura = pontos_cura
         self.consumida = False
-        self.classe = 'Poções'
+        self.classe = "Poções"
 
     def __repr__(self):
         return f"{self.nome.capitalize()} - " f"Cura: {self.pontos_cura}"
@@ -54,6 +55,7 @@ class PocaoDeVidaExtraGrande(PocaoDeCura):
 
 class Elixir:
     tipo = "Poções"
+
     def __init__(self, porcentagem: int):
         self.porcentagem = porcentagem
         self.consumida = False

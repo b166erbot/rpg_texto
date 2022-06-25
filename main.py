@@ -14,6 +14,7 @@ curses.init_pair(3, curses.COLOR_RED, curses.COLOR_BLACK)
 curses.init_pair(4, curses.COLOR_MAGENTA, curses.COLOR_BLACK)
 curses.init_pair(5, curses.COLOR_YELLOW, curses.COLOR_BLACK)
 
+from pathlib import Path
 from time import sleep
 
 from jogo.itens.moedas import Draconica
@@ -37,15 +38,13 @@ from jogo.quests import quests_da_lorena, quests_do_eivor
 from jogo.save import carregar_jogo_tela, salvar_jogo
 from jogo.tela.imprimir import Imprimir
 from jogo.tela.menu import Menu
-from pathlib import Path
 
 tela = Imprimir()
 
 
 def novo_jogo_saves(nomes: list[str]):
     mensagens = {
-        str(x): y for x, y
-        in enumerate(["novo jogo", "carregar jogo"], 1)
+        str(x): y for x, y in enumerate(["novo jogo", "carregar jogo"], 1)
     }
     resposta = ""
     while not resposta.isnumeric() and not resposta in mensagens:
@@ -82,13 +81,13 @@ def novo_jogo_saves(nomes: list[str]):
         personagem = novo_personagem()
         nome_jogo = ""
         arquivos = [arquivo.name for arquivo in Path().glob("*.pkl")]
-        arquivos.append('.pkl')
-        while not bool(nome_jogo) or nome_jogo + '.pkl' in arquivos:
+        arquivos.append(".pkl")
+        while not bool(nome_jogo) or nome_jogo + ".pkl" in arquivos:
             tela.limpar_tela()
             tela.imprimir("qual é o nome do seu save?: ", "cyan")
             nome_jogo = tela.obter_string()
-            if nome_jogo + '.pkl' in arquivos:
-                tela.imprimir('erro: nome do arquivo existente', 'vermelho')
+            if nome_jogo + ".pkl" in arquivos:
+                tela.imprimir("erro: nome do arquivo existente", "vermelho")
                 sleep(3)
         npcs = [lorena, eivor, tiago]
         nome_jogo += ".pkl"

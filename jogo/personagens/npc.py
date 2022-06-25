@@ -318,7 +318,7 @@ class Banqueiro(Npc):
         tela.imprimir("deseja guardar ou retirar um item?: ")
         numero = tela.obter_string()
         while numero.isnumeric():
-            if numero == "1": # gardar
+            if numero == "1":  # gardar
                 item = self._obter_equipamentos_personagem(
                     "deseja guardar qual item?: ", personagem
                 )
@@ -328,7 +328,7 @@ class Banqueiro(Npc):
                     else:
                         tela.imprimir("inventario do banqueiro cheio.")
                         sleep(2)
-            elif numero == "2": # retirar
+            elif numero == "2":  # retirar
                 item = self._obter_equipamentos_banqueiro(
                     "deseja obter qual item?: ", personagem
                 )

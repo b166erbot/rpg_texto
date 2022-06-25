@@ -9,9 +9,7 @@ from jogo.quests import ItemQuest
 from jogo.save import salvar_jogo
 from jogo.tela.imprimir import Imprimir, formas
 from jogo.utils import chunk
-# from jogo.itens.vestes import tudo as roupas, roupas_draconicas
-# from jogo.itens.armas import tudo as armas
-# from jogo.itens.item_secundario import tudo as item_secundario
+from jogo.itens.armas import tudo as armas
 
 # Silenciar o pygame para não imprimir nada na tela
 sys.stdout = MagicMock()
@@ -45,29 +43,10 @@ class Menu:
             f"{numero} - {texto}" for numero, texto in enumerate(texto2, 1)
         ]
         self.personagem = personagem
-        # for item in roupas:
-        #     personagem.inventario.append(item(
-        #         vida=10, armadura=3, resistencia=3
-        #     ))
-        # for item in roupas_draconicas:
-        #     personagem.inventario.append(item(
-        #         vida=10, armadura=3, resistencia=3
-        #     ))
-        # for item in armas:
-        #     personagem.inventario.append(item(
-        #         dano=3, velo_ataque=2, critico=1
-        #     ))
-        # for item in item_secundario:
-        #     if item.tipo == "Escudo":
-        #         personagem.inventario.append(item(
-        #             vida = 10, armadura = 5, resistencia = 5,
-        #             bloqueio = 80
-        #         ))
-        #     elif item.tipo == "Arma":
-        #         personagem.inventario.append(item(
-        #             dano = 10, critico = 15,
-        #             porcentagem_critico = 15
-        #         ))
+        for item in armas:
+            personagem.inventario.append(item(
+                dano = 5, critico = 30, velo_ataque = 2
+            ))
 
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""
@@ -256,7 +235,8 @@ class Menu:
                         "Luvas",
                         "Anel",
                         "Amuleto",
-                        "Arma"
+                        "Arma",
+                        "Escudo"
                     ]
                     else f"{numero} - {item}"
                 )
@@ -331,20 +311,24 @@ class Menu:
         resi_porc = f"defesa da resistencia % - {p.porcentagem_resistencia}%"
         experiencia = f"xp - {p.experiencia}"
         pratas = f"{str(p.moedas['Pratas'])}"
+        por_cri = f"porcentagem de dano critico - {p.porcentagem_critico}"
+        critico = f"critico - {p.status['critico']}"
         tamanhos = (
             len(x) for x in (
-                armadura, resistencia, experiencia, pratas
+                armadura, resistencia, experiencia, pratas,
+                critico
             )
         )
-        len_max = max(tamanhos)
+        len_max = max(tamanhos) + 3
         textos = [
             f"{p.nome} [{p.classe}]:",
             f"vida - {p.status['vida']}",
-            f"{armadura: <{len_max + 3}}{arm_porc}",
-            f"{resistencia: <{len_max + 3}}{resi_porc}",
+            f"{armadura: <{len_max}}{arm_porc}",
+            f"{resistencia: <{len_max}}{resi_porc}",
             f"dano - {p.status['dano']}",
-            f"{pratas: <{len_max + 3}}{str(p.moedas['Draconica'])}",
-            f"{experiencia: <{len_max + 3}}level - {p.level}",
+            f"{critico: <{len_max}}{por_cri}%",
+            f"{pratas: <{len_max}}{str(p.moedas['Draconica'])}",
+            f"{experiencia: <{len_max}}level - {p.level}",
         ]
         return '\n'.join(textos) + '\n'
 
@@ -367,5 +351,4 @@ class Menu:
 # TODO: fazer 10 poções ocuparem o mesmo espaço? (não sei se tem como)
 # TODO: implementar deletar save no inicio
 # TODO: recalibrar a armadura e resistencia (tanto pro monstro quanto pro personagem)
-# TODO: saves tem o mesmo nome gera um bug
-# TODO: implementar critico
+# TODO: implementar baús que dropam itens/draconica?

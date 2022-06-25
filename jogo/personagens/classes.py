@@ -46,7 +46,7 @@ class Humano:
         arma=SemItemEquipado("Arma", "Arma"),
         anel=SemItemEquipado("Anel", "Anel"),
         amuleto=SemItemEquipado("Amuleto", "Amuleto"),
-        item_secundario=SemItemEquipado('Item secundário', 'Item secundário')
+        item_secundario=SemItemEquipado("Item secundário", "Item secundário"),
     ):
         self.nome = nome
         self.level = level
@@ -81,13 +81,14 @@ class Humano:
             "Arma": arma,
             "Anel": anel,
             "Amuleto": amuleto,
-            "Item secundário": item_secundario
+            "Item secundário": item_secundario,
         }
         self.quests = []
         porcentagem = enumerate([27, 54, 81, 108, 135, 162, 189, 216], 1)
-        self._porcentagem_arm_res_total = dict(porcentagem)
+        self._porcentagem_total = dict(porcentagem)
         self.porcentagem_armadura = 0
         self.porcentagem_resistencia = 0
+        self.porcentagem_critico = 0
         self._calcular_bonus = CalcularBonus(self)
         self.atualizar_status()
         self._contador = Contador(4)
@@ -97,15 +98,16 @@ class Humano:
         """Método que retorna a vida máxima."""
         equipamentos = filter(lambda x: x, self.equipamentos.values())
         equipamentos = filter(
-            lambda x: x.tipo in [
+            lambda x: x.tipo
+            in [
                 "Elmo",
                 "Peitoral",
                 "Calça",
                 "Luvas",
                 "Botas",
                 "Anel",
-                'Amuleto',
-                "Escudo"
+                "Amuleto",
+                "Escudo",
             ],
             equipamentos,
         )
@@ -145,13 +147,10 @@ class Humano:
         """Método que ataca como jogador."""
         while all([other.status["vida"] > 0, self.status["vida"] > 0]):
             self.consumir_pocoes()
-            dano = self.status["dano"]
-            subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
-            other.status["vida"] -= dano - subtrair_dano
             caracter = tela.obter_caracter()
-            if caracter != -1 and chr(caracter).isnumeric():
-                caracter = int(chr(caracter))
-                if caracter in [1, 2]:
+            if caracter != -1:
+                caracter = chr(caracter)
+                if caracter in ['1', '2']:
                     habilidade = self.habilidades[caracter]
                     if self.consumir_magia_stamina():
                         habilidade(other)
@@ -159,6 +158,9 @@ class Humano:
                 else:
                     self._contador.acrescentar()
             else:
+                dano = self.status["dano"]
+                subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+                other.status["vida"] -= dano - subtrair_dano
                 self._contador.acrescentar()
             if self._contador.usar:
                 self._recuperar_magia_stamina()
@@ -240,47 +242,39 @@ class Humano:
             for equipamento in self.equipamentos.values()
             if bool(equipamento)
         ]
-        vestes = list(
-            filter(
-                lambda x: x.tipo in [
-                    "Elmo",
-                    "Peitoral",
-                    "Calça",
-                    "Luvas",
-                    "Botas",
-                    "Anel",
-                    "Amuleto",
-                    "Escudo"
-                ],
-                equipamentos,
-            )
-        )
+        # nos equipamentos tipo "Arma" já pega o item secundário.
         equipamentos_dano = filter(
             lambda x: x.tipo in ["Anel", "Arma", "Amuleto"], equipamentos
         )
         dano = map(lambda x: x.dano, equipamentos_dano)
         dano = 5 + sum(dano)
         vida = self.vida_maxima
-        resistencia = sum(map(lambda x: x.resistencia, vestes))
-        armadura = sum(map(lambda x: x.armadura, vestes))
         self.status["vida"] = vida
-        self.status["resistencia"] = resistencia
-        self.status["armadura"] = armadura
+        self.status["resistencia"] = self._resistencia
+        self.status["armadura"] = self._armadura
         self.status["dano"] = dano
+        self.status["critico"] = self._critico
         self.atualizar_porcentagem()
         self._calcular_bonus.calcular(self.equipamentos.values())
 
     def atualizar_porcentagem(self):
         self.porcentagem_armadura = arrumar_porcentagem(
             regra_3(
-                self._porcentagem_arm_res_total[self.level], 100, self._armadura
+                self._porcentagem_total[self.level], 100, self._armadura
             )
         )
         self.porcentagem_resistencia = arrumar_porcentagem(
             regra_3(
-                self._porcentagem_arm_res_total[self.level],
+                self._porcentagem_total[self.level],
                 100,
                 self._resistencia,
+            )
+        )
+        self.porcentagem_critico = arrumar_porcentagem(
+            regra_3(
+                self._porcentagem_total[self.level],
+                100,
+                self._critico,
             )
         )
 
@@ -308,7 +302,8 @@ class Humano:
             if bool(equipamento)
         ]
         vestes = filter(
-            lambda x: x.tipo in [
+            lambda x: x.tipo
+            in [
                 "Elmo",
                 "Peitoral",
                 "Calça",
@@ -316,7 +311,7 @@ class Humano:
                 "Botas",
                 "Anel",
                 "Amuleto",
-                "Escudo"
+                "Escudo",
             ],
             equipamentos,
         )
@@ -332,7 +327,8 @@ class Humano:
             if bool(equipamento)
         ]
         vestes = filter(
-            lambda x: x.tipo in [
+            lambda x: x.tipo
+            in [
                 "Elmo",
                 "Peitoral",
                 "Calça",
@@ -340,12 +336,26 @@ class Humano:
                 "Botas",
                 "Anel",
                 "Amuleto",
-                "Escudo"
+                "Escudo",
             ],
             equipamentos,
         )
         resistencia = sum(map(lambda x: x.resistencia, vestes))
         return resistencia
+
+    @property
+    def _critico(self):
+        """Método que retorna o valor critico dos equipamentos."""
+        equipamentos = [
+            equipamento
+            for equipamento in self.equipamentos.values()
+            if bool(equipamento)
+        ]
+        itens_critico = filter(
+            lambda x: x.tipo in ["Arma", "Anel", "Amuleto"], equipamentos
+        )
+        critico = sum(map(lambda x: x.critico, itens_critico))
+        return critico
 
     def _recuperar_magia_stamina(self):
         if self.status["magia"] <= 80:
@@ -368,18 +378,20 @@ class Arqueiro(Humano):
         super().__init__(*args, **kwargs)
         habilidades = [self.tres_flechas, self.flecha_de_fogo]
         self.habilidades_nomes = ["três flexas", "flecha de fogo"]
-        self.habilidades = dict(enumerate(habilidades, 1))
+        self.habilidades = {str(x): y for x, y in enumerate(habilidades, 1)}
         self.classe = "Arqueiro"
 
     def tres_flechas(self, other):
         """Método que ataca o oponente."""
-        subtrair_dano = regra_3(100, 10, other.porcentagem_armadura)
-        other.status["vida"] -= 10 - subtrair_dano
+        dano = 10 * 2 if randint(1, 100) <= self.porcentagem_critico else 10
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        other.status["vida"] -= dano - subtrair_dano
 
     def flecha_de_fogo(self, other):
         """Método que ataca o oponente."""
-        subtrair_dano = regra_3(100, 15, other.porcentagem_resistencia)
-        other.status["vida"] -= 15 - subtrair_dano
+        dano = 15 * 2 if randint(1, 100) <= self.porcentagem_critico else 15
+        subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
+        other.status["vida"] -= dano - subtrair_dano
 
     def consumir_magia_stamina(self):
         """Método que consome a magia ou stamina."""
@@ -390,11 +402,13 @@ class Arqueiro(Humano):
 
     def equipar(self, equipamento):
         """Método que equipa um equipamento."""
-        if equipamento.classe in ['Todos', 'Arqueiro']:
+        if equipamento.classe in ["Todos", "Arqueiro"]:
             index = self.inventario.index(equipamento)
             self.inventario.pop(index)
             if bool(self.equipamentos[equipamento.tipo_equipar]):
-                self.inventario.append(self.equipamentos[equipamento.tipo_equipar])
+                self.inventario.append(
+                    self.equipamentos[equipamento.tipo_equipar]
+                )
             self.equipamentos[equipamento.tipo_equipar] = equipamento
             self.atualizar_status()
 
@@ -404,18 +418,20 @@ class Guerreiro(Humano):
         super().__init__(*args, **kwargs)
         habilidades = [self.investida, self.esmagar]
         self.habilidades_nomes = ["investida", "esmagar"]
-        self.habilidades = dict(enumerate(habilidades, 1))
+        self.habilidades = {str(x): y for x, y in enumerate(habilidades, 1)}
         self.classe = "Guerreiro"
 
     def investida(self, other):
         """Método que ataca o oponente."""
-        subtrair_dano = regra_3(100, 10, other.porcentagem_armadura)
-        other.status["vida"] -= 10 - subtrair_dano
+        dano = 10 * 2 if randint(1, 100) <= self.porcentagem_critico else 10
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        other.status["vida"] -= dano - subtrair_dano
 
     def esmagar(self, other):
         """Método que ataca o oponente."""
-        subtrair_dano = regra_3(100, 15, other.porcentagem_armadura)
-        other.status["vida"] -= 15 - subtrair_dano
+        dano = 15 * 2 if randint(1, 100) <= self.porcentagem_critico else 15
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        other.status["vida"] -= dano - subtrair_dano
 
     def consumir_magia_stamina(self):
         """Método que consome a magia ou stamina."""
@@ -426,11 +442,13 @@ class Guerreiro(Humano):
 
     def equipar(self, equipamento):
         """Método que equipa um equipamento."""
-        if equipamento.classe in ['Todos', 'Guerreiro']:
+        if equipamento.classe in ["Todos", "Guerreiro"]:
             index = self.inventario.index(equipamento)
             self.inventario.pop(index)
             if bool(self.equipamentos[equipamento.tipo_equipar]):
-                self.inventario.append(self.equipamentos[equipamento.tipo_equipar])
+                self.inventario.append(
+                    self.equipamentos[equipamento.tipo_equipar]
+                )
             self.equipamentos[equipamento.tipo_equipar] = equipamento
             self.atualizar_status()
 
@@ -438,19 +456,22 @@ class Guerreiro(Humano):
 class Mago(Humano):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        habilidades = [self.bola_de_fogo, self.lanca_de_gelo]
-        self.habilidades_nomes = ["bola de fogo", "lanca de gelo"]
-        self.habilidades = dict(enumerate(habilidades, 1))
+        habilidades = [self.lanca_de_gelo, self.bola_de_fogo]
+        self.habilidades_nomes = ["lanca de gelo", "bola de fogo"]
+        self.habilidades = {str(x): y for x, y in enumerate(habilidades, 1)}
         self.classe = "Mago"
-
-    def bola_de_fogo(self, other):
-        """Método que ataca o oponente."""
-        subtrair_dano = regra_3(100, 15, other.porcentagem_resistencia)
-        other.status["vida"] -= 15 - subtrair_dano
 
     def lanca_de_gelo(self, other):
         """Método que ataca o oponente."""
-        other.status["vida"] -= 10
+        dano = 10 * 2 if randint(1, 100) <= self.porcentagem_critico else 10
+        subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
+        other.status["vida"] -= dano - subtrair_dano
+
+    def bola_de_fogo(self, other):
+        """Método que ataca o oponente."""
+        dano = 15 * 2 if randint(1, 100) <= self.porcentagem_critico else 15
+        subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
+        other.status["vida"] -= dano - subtrair_dano
 
     def consumir_magia_stamina(self):
         """Método que consome a magia ou stamina."""
@@ -461,11 +482,13 @@ class Mago(Humano):
 
     def equipar(self, equipamento):
         """Método que equipa um equipamento."""
-        if equipamento.classe in ['Todos', 'Mago']:
+        if equipamento.classe in ["Todos", "Mago"]:
             index = self.inventario.index(equipamento)
             self.inventario.pop(index)
             if bool(self.equipamentos[equipamento.tipo_equipar]):
-                self.inventario.append(self.equipamentos[equipamento.tipo_equipar])
+                self.inventario.append(
+                    self.equipamentos[equipamento.tipo_equipar]
+                )
             self.equipamentos[equipamento.tipo_equipar] = equipamento
             self.atualizar_status()
 
@@ -475,18 +498,20 @@ class Assassino(Humano):
         super().__init__(*args, **kwargs)
         habilidades = [self.lancar_faca, self.ataque_furtivo]
         self.habilidades_nomes = ["lancar faca", "ataque furtivo"]
-        self.habilidades = dict(enumerate(habilidades, 1))
+        self.habilidades = {str(x): y for x, y in enumerate(habilidades, 1)}
         self.classe = "Assassino"
 
     def lancar_faca(self, other):
         """Método que ataca o oponente."""
-        subtrair_dano = regra_3(100, 10, other.porcentagem_armadura)
-        other.status["vida"] -= 10 - subtrair_dano
+        dano = 10 * 2 if randint(1, 100) <= self.porcentagem_critico else 10
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        other.status["vida"] -= dano - subtrair_dano
 
     def ataque_furtivo(self, other):
         """Método que ataca o oponente."""
-        subtrair_dano = regra_3(100, 15, other.porcentagem_armadura)
-        other.status["vida"] -= 15 - subtrair_dano
+        dano = 15 * 2 if randint(1, 100) <= self.porcentagem_critico else 15
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        other.status["vida"] -= dano - subtrair_dano
 
     def consumir_magia_stamina(self):
         """Método que consome a magia ou stamina."""
@@ -497,11 +522,13 @@ class Assassino(Humano):
 
     def equipar(self, equipamento):
         """Método que equipa um equipamento."""
-        if equipamento.classe in ['Todos', 'Assassino']:
+        if equipamento.classe in ["Todos", "Assassino"]:
             index = self.inventario.index(equipamento)
             self.inventario.pop(index)
             if bool(self.equipamentos[equipamento.tipo_equipar]):
-                self.inventario.append(self.equipamentos[equipamento.tipo_equipar])
+                self.inventario.append(
+                    self.equipamentos[equipamento.tipo_equipar]
+                )
             self.equipamentos[equipamento.tipo_equipar] = equipamento
             self.atualizar_status()
 
@@ -511,19 +538,21 @@ class Clerigo(Humano):
         super().__init__(*args, **kwargs)
         habilidades = [self.curar, self.luz]
         self.habilidades_nomes = ["curar", "luz"]
-        self.habilidades = dict(enumerate(habilidades, 1))
+        self.habilidades = {str(x): y for x, y in enumerate(habilidades, 1)}
         self.classe = "Clerigo"
 
     def curar(self, other):
         """Método que cura o personagem."""
-        self.status["vida"] += 25
+        vida = 25 * 2 if randint(1, 100) <= self.porcentagem_critico else 25
+        self.status["vida"] += vida
         if self.status["vida"] >= self.vida_maxima:
             self.status["vida"] = self.vida_maxima
 
     def luz(self, other):
         """Método que ataca o oponente."""
-        subtrair_dano = regra_3(100, 10, other.porcentagem_resistencias)
-        other.status["vida"] -= 10 - subtrair_dano
+        dano = 10 * 2 if randint(1, 100) <= self.porcentagem_critico else 10
+        subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
+        other.status["vida"] -= dano - subtrair_dano
 
     def consumir_magia_stamina(self):
         """Método que consome a magia ou stamina."""
@@ -534,11 +563,13 @@ class Clerigo(Humano):
 
     def equipar(self, equipamento):
         """Método que equipa um equipamento."""
-        if equipamento.classe in ['Todos', 'Mago']:
+        if equipamento.classe in ["Todos", "Mago"]:
             index = self.inventario.index(equipamento)
             self.inventario.pop(index)
             if bool(self.equipamentos[equipamento.tipo_equipar]):
-                self.inventario.append(self.equipamentos[equipamento.tipo_equipar])
+                self.inventario.append(
+                    self.equipamentos[equipamento.tipo_equipar]
+                )
             self.equipamentos[equipamento.tipo_equipar] = equipamento
             self.atualizar_status()
 
@@ -546,20 +577,22 @@ class Clerigo(Humano):
 class Monge(Humano):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        habilidades = [self.combo_de_chutes, self.multiplos_socos]
-        self.habilidades_nomes = ["combo_de_chutes", "multiplos_socos"]
-        self.habilidades = dict(enumerate(habilidades, 1))
+        habilidades = [self.multiplos_socos, self.combo_de_chutes]
+        self.habilidades_nomes = ["multiplos_socos", "combo_de_chutes"]
+        self.habilidades = {str(x): y for x, y in enumerate(habilidades, 1)}
         self.classe = "Monge"
-
-    def combo_de_chutes(self, other):
-        """Método que ataca o oponente."""
-        subtrair_dano = regra_3(100, 15, other.porcentagem_armadura)
-        other.status["vida"] -= 15 - subtrair_dano
 
     def multiplos_socos(self, other):
         """Método que ataca o oponente."""
-        subtrair_dano = regra_3(100, 10, other.porcentagem_armadura)
-        other.status["vida"] -= 10 - subtrair_dano
+        dano = 10 * 2 if randint(1, 100) <= self.porcentagem_critico else 10
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        other.status["vida"] -= dano - subtrair_dano
+
+    def combo_de_chutes(self, other):
+        """Método que ataca o oponente."""
+        dano = 15 * 2 if randint(1, 100) <= self.porcentagem_critico else 15
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        other.status["vida"] -= dano - subtrair_dano
 
     def consumir_magia_stamina(self):
         """Método que consome a magia ou stamina."""
@@ -570,13 +603,15 @@ class Monge(Humano):
 
     def equipar(self, equipamento):
         """Método que equipa um equipamento."""
-        if equipamento.classe == 'Todos':
+        if equipamento.classe == "Todos":
             # tira o equipamento do inventario
             index = self.inventario.index(equipamento)
             self.inventario.pop(index)
             # se tiver equipamento equipado, mova-o para o inventario
             if bool(self.equipamentos[equipamento.tipo_equipar]):
-                self.inventario.append(self.equipamentos[equipamento.tipo_equipar])
+                self.inventario.append(
+                    self.equipamentos[equipamento.tipo_equipar]
+                )
             # equipa o equipamento
             self.equipamentos[equipamento.tipo_equipar] = equipamento
         if equipamento.nome == "Luvas de ferro":

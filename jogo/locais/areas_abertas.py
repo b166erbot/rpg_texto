@@ -81,7 +81,7 @@ class Floresta:
             lutar = self._lutar_ou_fugir()
             if lutar:
                 status = {
-                    "vida": 300,
+                    "vida": 150,
                     "dano": 5,
                     "resistencia": 15,
                     "velo-ataque": 1,
@@ -168,7 +168,7 @@ class Floresta:
     def _sortear_boss_dragao(self):
         if randint(1, 25) == 25:
             status = {
-                "vida": 300,
+                "vida": 150,
                 "dano": 5,
                 "resistencia": 15,
                 "velo-ataque": 1,

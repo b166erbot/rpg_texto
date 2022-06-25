@@ -14,9 +14,7 @@ class Roupa:
         self.vida = vida
         self.resistencia = resistencia
         self.armadura = armadura
-        self.preco = Pratas(
-            (((vida // 2) + resistencia + armadura) * 8)
-        )
+        self.preco = Pratas((((vida // 2) + resistencia + armadura) * 8))
         self.bonus: list = []
         self.conjunto = "item comum"
 
@@ -81,8 +79,7 @@ class Anel:
         self.resistencia = resistencia
         self.armadura = armadura
         self.preco = Pratas(
-            (dano + (self.vida // 2) + resistencia + armadura)
-            * 8
+            (dano + (self.vida // 2) + resistencia + armadura) * 8
         )
         self.bonus = []
         self.conjunto = "item comum"
@@ -97,8 +94,8 @@ class Anel:
 
 
 class Amuleto:
-    tipo: str = 'Amuleto'
-    classe: str = 'Todos'
+    tipo: str = "Amuleto"
+    classe: str = "Todos"
 
     def __init__(
         self,
@@ -114,13 +111,12 @@ class Amuleto:
         self.resistencia = resistencia
         self.armadura = armadura
         self.preco = Pratas(
-            (dano + (self.vida // 2) + resistencia + armadura)
-            * 8
+            (dano + (self.vida // 2) + resistencia + armadura) * 8
         )
         self.bonus = []
         self.conjunto = "item comum"
         self.tipo_equipar = "Amuleto"
-    
+
     def __repr__(self):
         retorno = (
             f"{self.nome}(vid: {self.vida}, resis: {self.resistencia}"
@@ -144,9 +140,7 @@ class RoupaDraconica:
         self.vida = vida
         self.resistencia = resistencia
         self.armadura = armadura
-        self.preco = Draconica(
-            (((vida // 2) + resistencia + armadura) * 8)
-        )
+        self.preco = Draconica((((vida // 2) + resistencia + armadura) * 8))
         self.bonus = [
             Atributo("vida", 50, "valor real", 2),
             Atributo("resistencia", 10, "porcentagem", 3),

@@ -36,9 +36,10 @@ class Monstro:
         self.vida_ = self.status["vida"]
         self.level = level
         porcentagem = enumerate([25, 50, 75, 100, 125, 150, 175, 200], 1)
-        self._porcentagem_arm_res_total = dict(porcentagem)
+        self._porcentagem_total = dict(porcentagem)
         self.porcentagem_armadura = 0
         self.porcentagem_resistencia = 0
+        self.porcentagem_critico = 0
         self.atualizar_status()
         self._contador = Contador(4)
 
@@ -85,13 +86,13 @@ class Monstro:
         if randint(0, 2) == 1:
             efeito_digitando("Loot encontrado.")
             Item = choice(vestes + armas)
-            if Item.tipo == 'Arma':
+            if Item.tipo == "Arma":
                 status = [randint(1, 5), randint(1, 2), randint(1, 3)]
                 status = map(lambda x: x * self.level, status)
                 status_nomes = ["dano", "velo_ataque", "critico"]
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(**status_dict)
-            elif Item.tipo == 'Roupa': # a classe tem tipo -> Roupa
+            elif Item.tipo == "Roupa":  # a classe tem tipo -> Roupa
                 status = [
                     randint(1, 6),
                     randint(5, 20),
@@ -101,7 +102,7 @@ class Monstro:
                 status_nomes = ["armadura", "vida", "resistencia"]
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(**status_dict)
-            elif Item.tipo in ['Anel', 'Amuleto']:
+            elif Item.tipo in ["Anel", "Amuleto"]:
                 status = [
                     randint(1, 3),
                     randint(3, 20),
@@ -159,16 +160,23 @@ class Monstro:
     def atualizar_porcentagem(self):
         self.porcentagem_armadura = arrumar_porcentagem(
             regra_3(
-                self._porcentagem_arm_res_total[self.level],
+                self._porcentagem_total[self.level],
                 100,
                 self.status["armadura"],
             )
         )
         self.porcentagem_resistencia = arrumar_porcentagem(
             regra_3(
-                self._porcentagem_arm_res_total[self.level],
+                self._porcentagem_total[self.level],
                 100,
                 self.status["resistencia"],
+            )
+        )
+        self.porcentagem_critico = arrumar_porcentagem(
+            regra_3(
+                self._porcentagem_total[self.level],
+                100,
+                self.status['critico'],
             )
         )
 
@@ -197,13 +205,13 @@ class Boss(Monstro):
         """Método que dá item e pratas ao personagem."""
         efeito_digitando("Loot encontrado.")
         Item = choice(vestes + armas)
-        if Item.tipo == 'Arma':
+        if Item.tipo == "Arma":
             status = [randint(3, 5), randint(2, 2), randint(2, 3)]
             status = map(lambda x: x * self.level, status)
             status_nomes = ["dano", "velo_ataque", "critico"]
             status_dict = dict(zip(status_nomes, status))
             item = Item(**status_dict)
-        elif Item.tipo == 'Roupa': # a classe tem tipo -> Roupa
+        elif Item.tipo == "Roupa":  # a classe tem tipo -> Roupa
             status = [
                 randint(3, 6),
                 randint(12, 20),
@@ -213,7 +221,7 @@ class Boss(Monstro):
             status_nomes = ["armadura", "vida", "resistencia"]
             status_dict = dict(zip(status_nomes, status))
             item = Item(**status_dict)
-        elif Item.tipo in ['Anel', 'Amuleto']:
+        elif Item.tipo in ["Anel", "Amuleto"]:
             status = [
                 randint(2, 3),
                 randint(12, 20),
@@ -229,9 +237,9 @@ class Boss(Monstro):
             personagem.guardar_item(item)
         else:
             tela.imprimir(
-                    "não foi possível adicionar item ao inventario, "
-                    "inventario cheio."
-                )
+                "não foi possível adicionar item ao inventario, "
+                "inventario cheio."
+            )
             sleep(3)
 
 
@@ -246,12 +254,16 @@ class Tartaruga(Monstro):
     def investida(self, other):
         """Método que ataca o personagem."""
         dano = 4 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
         other.status["vida"] -= dano - subtrair_dano
 
     def garras_afiadas(self, other):
         """Método que ataca o personagem."""
         dano = 6 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
         other.status["vida"] -= dano - subtrair_dano
 
@@ -267,12 +279,16 @@ class Camaleao(Monstro):
     def trapasseiro(self, other):
         """Método que ataca o personagem."""
         dano = 4 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
         other.status["vida"] -= dano - subtrair_dano
 
     def roubo(self, other):
         """Método que ataca o personagem."""
         dano = 5 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
         other.status["vida"] -= dano - subtrair_dano
 
@@ -288,12 +304,16 @@ class Tamandua(Monstro):
     def abraco(self, other):
         """Método que ataca o personagem."""
         dano = 5 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
         other.status["vida"] -= dano - subtrair_dano
 
     def linguada(self, other):
         """Método que ataca o personagem."""
         dano = 3 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
         other.status["vida"] -= dano - subtrair_dano
 
@@ -309,12 +329,16 @@ class Sapo(Monstro):
     def salto(self, other):
         """Método que ataca o personagem."""
         dano = 5 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
         other.status["vida"] -= dano - subtrair_dano
 
     def linguada(self, other):
         """Método que ataca o personagem."""
         dano = 3 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
         other.status["vida"] -= dano - subtrair_dano
 
@@ -329,13 +353,17 @@ class Topera(Boss):
 
     def pulo_fatal(self, other):
         """Método que ataca o personagem."""
-        dano = 7 * self.level
+        dano = 10 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
         other.status["vida"] -= dano - subtrair_dano
 
     def terremoto(self, other):
         """Método que ataca o personagem."""
-        dano = 10 * self.level
+        dano = 15 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
         other.status["vida"] -= dano - subtrair_dano
 
@@ -350,13 +378,17 @@ class Mico(Boss):
 
     def tacar_banana(self, other):
         """Método que ataca o personagem."""
-        dano = 15 * self.level
+        dano = 10 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
         other.status["vida"] -= dano - subtrair_dano
 
     def esmagar(self, other):
         """Método que ataca o personagem."""
         dano = 15 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
         other.status["vida"] -= dano - subtrair_dano
 
@@ -372,12 +404,16 @@ class Sucuri(Boss):
     def lancamento_de_calda(self, other):
         """Método que ataca o personagem."""
         dano = 10 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
         other.status["vida"] -= dano - subtrair_dano
 
     def bote(self, other):
         """Método que ataca o personagem."""
         dano = 15 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
         other.status["vida"] -= dano - subtrair_dano
 
@@ -393,12 +429,16 @@ class ArvoreDeku(Boss):
     def braçada(self, other):
         """Método que ataca o personagem."""
         dano = 10 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
         other.status["vida"] -= dano - subtrair_dano
 
     def outono(self, other):
         """Método que ataca o personagem."""
         dano = 15 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
         other.status["vida"] -= dano - subtrair_dano
 
@@ -414,12 +454,16 @@ class Dragao(Boss):
     def patada(self, other):
         """Método que ataca o personagem."""
         dano = 10 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
         other.status["vida"] -= dano - subtrair_dano
 
     def fogo(self, other):
         """Método que ataca o personagem."""
         dano = 15 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
         other.status["vida"] -= dano - subtrair_dano
 

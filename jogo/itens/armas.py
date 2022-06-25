@@ -2,6 +2,9 @@ from jogo.itens.moedas import Pratas
 
 
 class Arma:
+    # tipo precisa ficar aqui em cima
+    tipo = "Arma"
+
     def __init__(
         self, nome: str, dano: int, velo_ataque: int, critico: int, classe: str
     ):
@@ -10,7 +13,6 @@ class Arma:
         self.velo_ataque = velo_ataque
         self.critico = critico
         self.tipo_equipar = "Arma"
-        self.tipo = "Arma"
         self.classe = classe
         self.bonus = []
         self.preco = Pratas((self.dano + self.velo_ataque + self.critico) * 8)

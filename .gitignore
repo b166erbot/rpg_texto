@@ -108,5 +108,4 @@ venv.bak/
 *.pkl.backup
 flake8.txt
 ts.py
-tests
 *.code-workspace
