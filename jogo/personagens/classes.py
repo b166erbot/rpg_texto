@@ -1,8 +1,8 @@
 from asyncio import sleep
 from collections import Counter
+from copy import copy
 from random import randint
 from time import sleep as sleep2
-from copy import copy
 
 from jogo.experiencia import Experiencia
 from jogo.itens.itens import CalcularBonus, SemItemEquipado
@@ -116,7 +116,7 @@ class Humano:
             equipamentos,
         )
         vida = map(lambda x: x.vida, equipamentos)
-        vida = self._status['vida'] + (15 * (self.level - 1)) + sum(vida)
+        vida = self._status["vida"] + (15 * (self.level - 1)) + sum(vida)
         return vida
 
     def atacar(self, other):
@@ -251,7 +251,7 @@ class Humano:
             lambda x: x.tipo in ["Anel", "Arma", "Amuleto"], equipamentos
         )
         dano = map(lambda x: x.dano, equipamentos_dano)
-        dano = self._status['dano'] + sum(dano)
+        dano = self._status["dano"] + sum(dano)
         vida = self.vida_maxima
         self.status["vida"] = vida
         self.status["resistencia"] = self._resistencia
@@ -317,9 +317,8 @@ class Humano:
             ],
             equipamentos,
         )
-        armadura = (
-            self._status['armadura'] +
-            sum(map(lambda x: x.armadura, vestes))
+        armadura = self._status["armadura"] + sum(
+            map(lambda x: x.armadura, vestes)
         )
         return armadura
 
@@ -345,9 +344,8 @@ class Humano:
             ],
             equipamentos,
         )
-        resistencia = (
-            self._status['resistencia'] + 
-            sum(map(lambda x: x.resistencia, vestes))
+        resistencia = self._status["resistencia"] + sum(
+            map(lambda x: x.resistencia, vestes)
         )
         return resistencia
 
@@ -362,9 +360,8 @@ class Humano:
         itens_critico = filter(
             lambda x: x.tipo in ["Arma", "Anel", "Amuleto"], equipamentos
         )
-        critico = (
-            self._status['critico'] +
-            sum(map(lambda x: x.critico, itens_critico))
+        critico = self._status["critico"] + sum(
+            map(lambda x: x.critico, itens_critico)
         )
         return critico
 

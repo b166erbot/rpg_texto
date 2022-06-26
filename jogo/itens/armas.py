@@ -6,11 +6,12 @@ class Arma:
     tipo = "Arma"
 
     def __init__(
-        self, nome: str,
+        self,
+        nome: str,
         dano: int,
         critico: int,
         porcentagem_critico: int,
-        classe: str
+        classe: str,
     ):
         self.nome = nome
         self.dano = dano
@@ -20,11 +21,7 @@ class Arma:
         self.classe = classe
         self.bonus = []
         self.preco = Pratas(
-            (
-                self.dano +
-                self.porcentagem_critico +
-                self.critico
-            ) * 8
+            (self.dano + self.porcentagem_critico + self.critico) * 8
         )
         self.conjunto = "item comum"
 

@@ -45,8 +45,8 @@ class Menu:
 
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""
-        # mixer.music.load("vilarejo.ogg")
-        # mixer.music.play()
+        mixer.music.load("vilarejo.ogg")
+        mixer.music.play()
         forma = f"{formas[227]} {{}} {formas[228]}"
         while True:
             tela.limpar_tela()
@@ -116,11 +116,11 @@ class Menu:
                 case 10:
                     tela.limpar_tela()
                     tela.imprimir(
-                        'Tem certeza que deseja deletar o save? '
-                        '[s/n/sim/não]: '
+                        "Tem certeza que deseja deletar o save? "
+                        "[s/n/sim/não]: "
                     )
                     resposta = tela.obter_string()
-                    if resposta in ['s', 'sim']:
+                    if resposta in ["s", "sim"]:
                         arquivo = Path(self._nome_jogo)
                         if arquivo.exists():
                             arquivo.unlink()
@@ -351,6 +351,5 @@ class Menu:
 # TODO: implementar deletar save no inicio
 # TODO: recalibrar a armadura e resistencia (tanto pro monstro quanto pro personagem)
 # TODO: implementar baús que dropam itens/draconica?
-# TODO: testar a resistencia e armadura dos monstros
 # TODO: ter um companheiro na campanha? (não sei se tem como implementar isso)
 # TODO: trols

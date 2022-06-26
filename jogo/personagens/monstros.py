@@ -4,9 +4,9 @@ from random import choice, randint
 from time import sleep as sleep2
 
 from jogo.itens.armas import tudo as armas
+from jogo.itens.item_secundario import tudo as itens_secundarios
 from jogo.itens.quest import ItemQuest
 from jogo.itens.vestes import tudo as vestes
-from jogo.itens.item_secundario import tudo as itens_secundarios
 from jogo.tela.imprimir import Imprimir, efeito_digitando, formatar_status
 from jogo.utils import Contador, arrumar_porcentagem, regra_3
 
@@ -115,7 +115,7 @@ class Monstro:
                 status_nomes = ["dano", "vida", "resistencia", "armadura"]
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(nome="Anel", **status_dict)
-            elif Item.tipo == 'Escudo':
+            elif Item.tipo == "Escudo":
                 status = [
                     randint(3, 20),
                     randint(1, 6),
@@ -123,7 +123,7 @@ class Monstro:
                     randint(1, 25),
                 ]
                 status = map(lambda x: x * self.level, status)
-                status_nomes = ['vida', 'armadura', 'resistencia', 'bloqueio']
+                status_nomes = ["vida", "armadura", "resistencia", "bloqueio"]
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(**status_dict)
             personagem.moedas["Pratas"] += randint(
@@ -245,7 +245,7 @@ class Boss(Monstro):
             status_nomes = ["dano", "vida", "resistencia", "armadura"]
             status_dict = dict(zip(status_nomes, status))
             item = Item(nome="Anel", **status_dict)
-        elif Item.tipo == 'Escudo':
+        elif Item.tipo == "Escudo":
             status = [
                 randint(10, 20),
                 randint(3, 6),
@@ -253,7 +253,7 @@ class Boss(Monstro):
                 randint(15, 25),
             ]
             status = map(lambda x: x * self.level, status)
-            status_nomes = ['vida', 'armadura', 'resistencia', 'bloqueio']
+            status_nomes = ["vida", "armadura", "resistencia", "bloqueio"]
             status_dict = dict(zip(status_nomes, status))
             item = Item(**status_dict)
         personagem.moedas["Pratas"] += randint(
