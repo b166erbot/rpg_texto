@@ -36,9 +36,10 @@ def arrumar_porcentagem(valor: int) -> int:
         return valor
 
 
-def calcular_experiencia(valor_maximo, valor_minimo) -> list[float, int]:
+def calcular_experiencia(valor) -> list[float, int]:
     """Função que retorna uma lista com os valores dos leveis."""
-    media = mean([valor_maximo, valor_minimo])
+    valor_minimo = (75 * valor) // 100
+    media = mean([valor, valor_minimo])
     return [media * x for x in range(1, 9)]
 
 

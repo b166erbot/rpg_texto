@@ -14,7 +14,7 @@ class PocaoDeCura:
 
     def consumir(self, vida_maxima):
         """Método que consome a poção."""
-        # a variável vida_maxima neste método não tem função, favor manter.
+        # a variável vida_maxima neste método não tem propósito mas é necessária, favor não remover.
         if not self.consumida:
             self.consumida = True
             return self.pontos_cura

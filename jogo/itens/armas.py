@@ -6,22 +6,32 @@ class Arma:
     tipo = "Arma"
 
     def __init__(
-        self, nome: str, dano: int, velo_ataque: int, critico: int, classe: str
+        self, nome: str,
+        dano: int,
+        critico: int,
+        porcentagem_critico: int,
+        classe: str
     ):
         self.nome = nome
         self.dano = dano
-        self.velo_ataque = velo_ataque
         self.critico = critico
+        self.porcentagem_critico = porcentagem_critico
         self.tipo_equipar = "Arma"
         self.classe = classe
         self.bonus = []
-        self.preco = Pratas((self.dano + self.velo_ataque + self.critico) * 8)
+        self.preco = Pratas(
+            (
+                self.dano +
+                self.porcentagem_critico +
+                self.critico
+            ) * 8
+        )
         self.conjunto = "item comum"
 
     def __repr__(self):
         retorno = (
-            f"{self.nome}(dan: {self.dano}, vel_ata: {self.velo_ataque}, "
-            f"crit: {self.critico})"
+            f"{self.nome}(dan: {self.dano}, "
+            f"por_cri: {self.porcentagem_critico}, crit: {self.critico})"
         )
         return retorno
 

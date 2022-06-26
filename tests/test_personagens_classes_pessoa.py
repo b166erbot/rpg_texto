@@ -5,6 +5,7 @@ import curses
 
 curses.initscr()
 from unittest import TestCase, mock
+from collections import Counter
 
 from jogo.itens.pocoes import (
     ElixirDeVidaExtraGrande,
@@ -442,3 +443,173 @@ class TestCriticoMonge(TestCase):
         self.personagem2.porcentagem_critico = 80
         self.personagem2.combo_de_chutes(self.personagem)
         self.assertEqual(self.personagem.status["vida"], 85)
+
+
+class TestPorcentagemArmaduraResistencia(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro('nome', True)
+        self.personagem2 = Arqueiro('nome', False)
+        self.personagem3 = Guerreiro('nome', True)
+        self.personagem4 = Guerreiro('nome', False)
+        self.personagem5 = Mago('nome', True)
+        self.personagem6 = Mago('nome', False)
+        self.personagem7 = Assassino('nome', True)
+        self.personagem8 = Assassino('nome', False)
+        self.personagem9 = Clerigo('nome', True)
+        self.personagem10 = Clerigo('nome', False)
+        self.personagem11 = Monge('nome', True)
+        self.personagem12 = Monge('nome', False)
+        self.personagem.porcentagem_resistencia = 80
+        self.personagem2.porcentagem_resistencia = 80
+        self.personagem.porcentagem_armadura = 80
+        self.personagem2.porcentagem_armadura = 80
+        self.personagem3.porcentagem_resistencia = 80
+        self.personagem4.porcentagem_resistencia = 80
+        self.personagem3.porcentagem_armadura = 80
+        self.personagem4.porcentagem_armadura = 80
+        self.personagem5.porcentagem_resistencia = 80
+        self.personagem6.porcentagem_resistencia = 80
+        self.personagem5.porcentagem_armadura = 80
+        self.personagem6.porcentagem_armadura = 80
+        self.personagem7.porcentagem_resistencia = 80
+        self.personagem8.porcentagem_resistencia = 80
+        self.personagem7.porcentagem_armadura = 80
+        self.personagem8.porcentagem_armadura = 80
+        self.personagem9.porcentagem_resistencia = 80
+        self.personagem10.porcentagem_resistencia = 80
+        self.personagem9.porcentagem_armadura = 80
+        self.personagem10.porcentagem_armadura = 80
+        self.personagem11.porcentagem_resistencia = 80
+        self.personagem12.porcentagem_resistencia = 80
+        self.personagem11.porcentagem_armadura = 80
+        self.personagem12.porcentagem_armadura = 80
+    
+    def test_personagem_deve_receber_dano_menos_80_porcento_na_armadura_tres_flechas(self):
+        self.personagem2.tres_flechas(self.personagem)
+        esperado = 100 - (10 - int((10 * 80) // 100))
+        self.assertEqual(self.personagem.status['vida'], esperado)
+
+    def test_personagem2_deve_receber_dano_menos_80_porcento_na_armadura_tres_flechas(self):
+        self.personagem.tres_flechas(self.personagem2)
+        esperado = 100 - (10 - int((10 * 80) // 100))
+        self.assertEqual(self.personagem2.status['vida'], esperado)
+
+    def test_personagem_deve_receber_dano_menos_80_porcento_na_resistencia_flecha_de_fogo(self):
+        self.personagem2.flecha_de_fogo(self.personagem)
+        esperado = 100 - (15 - int((15 * 80) // 100))
+        self.assertEqual(self.personagem.status['vida'], esperado)
+    
+    def test_personagem2_deve_receber_dano_menos_80_porcento_na_resistencia_flecha_de_fogo(self):
+        self.personagem.flecha_de_fogo(self.personagem2)
+        esperado = 100 - (15 - int((15 * 80) // 100))
+        self.assertEqual(self.personagem2.status['vida'], esperado)
+    
+    def test_personagem4_deve_receber_dano_menos_80_porcento_na_armadura_investida(self):
+        self.personagem3.investida(self.personagem4)
+        esperado = 100 - (10 - int((10 * 80) // 100))
+        self.assertEqual(self.personagem4.status['vida'], esperado)
+
+    def test_personagem3_deve_receber_dano_menos_80_porcento_na_armadura_investida(self):
+        self.personagem4.investida(self.personagem3)
+        esperado = 100 - (10 - int((10 * 80) // 100))
+        self.assertEqual(self.personagem3.status['vida'], esperado)
+
+    def test_personagem4_deve_receber_dano_menos_80_porcento_na_armadura_esmagar(self):
+        self.personagem3.esmagar(self.personagem4)
+        esperado = 100 - (15 - int((15 * 80) // 100))
+        self.assertEqual(self.personagem4.status['vida'], esperado)
+    
+    def test_personagem3_deve_receber_dano_menos_80_porcento_na_armadura_esmagar(self):
+        self.personagem4.esmagar(self.personagem3)
+        esperado = 100 - (15 - int((15 * 80) // 100))
+        self.assertEqual(self.personagem3.status['vida'], esperado)
+
+    def test_personagem5_deve_receber_dano_menos_80_porcento_na_resistencia_lanca_de_gelo(self):
+        self.personagem6.lanca_de_gelo(self.personagem5)
+        esperado = 100 - (10 - int((10 * 80) // 100))
+        self.assertEqual(self.personagem5.status['vida'], esperado)
+    
+    def test_personagem6_deve_receber_dano_menos_80_porcento_na_resistencia_lanca_de_gelo(self):
+        self.personagem5.lanca_de_gelo(self.personagem6)
+        esperado = 100 - (10 - int((10 * 80) // 100))
+        self.assertEqual(self.personagem6.status['vida'], esperado)
+
+    def test_personagem5_deve_receber_dano_menos_80_porcento_na_resistencia_bola_de_fogo(self):
+        self.personagem6.bola_de_fogo(self.personagem5)
+        esperado = 100 - (15 - int((15 * 80) // 100))
+        self.assertEqual(self.personagem5.status['vida'], esperado)
+
+    def test_personagem6_deve_receber_dano_menos_80_porcento_na_resistencia_bola_de_fogo(self):
+        self.personagem5.bola_de_fogo(self.personagem6)
+        esperado = 100 - (15 - int((15 * 80) // 100))
+        self.assertEqual(self.personagem6.status['vida'], esperado)
+
+    def test_personagem7_deve_receber_dano_menos_80_porcento_na_armadura_lancar_faca(self):
+        self.personagem8.lancar_faca(self.personagem7)
+        esperado = 100 - (10 - int((10 * 80) // 100))
+        self.assertEqual(self.personagem7.status['vida'], esperado)
+
+    def test_personagem8_deve_receber_dano_menos_80_porcento_na_armadura_lancar_faca(self):
+        self.personagem7.lancar_faca(self.personagem8)
+        esperado = 100 - (10 - int((10 * 80) // 100))
+        self.assertEqual(self.personagem8.status['vida'], esperado)
+
+    def test_personagem7_deve_receber_dano_menos_80_porcento_na_armadura_ataque_furtivo(self):
+        self.personagem8.ataque_furtivo(self.personagem7)
+        esperado = 100 - (15 - int((15 * 80) // 100))
+        self.assertEqual(self.personagem7.status['vida'], esperado)
+    
+    def test_personagem8_deve_receber_dano_menos_80_porcento_na_armadura_ataque_furtivo(self):
+        self.personagem7.ataque_furtivo(self.personagem8)
+        esperado = 100 - (15 - int((15 * 80) // 100))
+        self.assertEqual(self.personagem8.status['vida'], esperado)
+
+    def test_personagem9_deve_receber_dano_menos_80_porcento_na_resistencia_luz(self):
+        self.personagem10.luz(self.personagem9)
+        esperado = 100 - (10 - int((10 * 80) // 100))
+        self.assertEqual(self.personagem9.status['vida'], esperado)
+
+    def test_personagem10_deve_receber_dano_menos_80_porcento_na_resistencia_luz(self):
+        self.personagem9.luz(self.personagem10)
+        esperado = 100 - (10 - int((10 * 80) // 100))
+        self.assertEqual(self.personagem10.status['vida'], esperado)
+
+    def test_personagem11_deve_receber_dano_menos_80_porcento_na_armadura_multiplos_socos(self):
+        self.personagem12.multiplos_socos(self.personagem11)
+        esperado = 100 - (10 - int((10 * 80) // 100))
+        self.assertEqual(self.personagem11.status['vida'], esperado)
+
+    def test_personagem12_deve_receber_dano_menos_80_porcento_na_armadura_multiplos_socos(self):
+        self.personagem11.multiplos_socos(self.personagem12)
+        esperado = 100 - (10 - int((10 * 80) // 100))
+        self.assertEqual(self.personagem12.status['vida'], esperado)
+
+    def test_personagem11_deve_receber_dano_menos_80_porcento_na_armadura_combo_de_chutes(self):
+        self.personagem12.combo_de_chutes(self.personagem11)
+        esperado = 100 - (15 - int((15 * 80) // 100))
+        self.assertEqual(self.personagem11.status['vida'], esperado)
+    
+    def test_personagem12_deve_receber_dano_menos_80_porcento_na_armadura_combo_de_chutes(self):
+        self.personagem11.combo_de_chutes(self.personagem12)
+        esperado = 100 - (15 - int((15 * 80) // 100))
+        self.assertEqual(self.personagem12.status['vida'], esperado)
+
+
+class TestStatus(TestCase):
+    def setUp(self):
+        self.status = Counter({
+            "vida": 110,
+            "dano": 10,
+            "resistencia": 10,
+            "velo-ataque": 1,
+            "criti": 10,
+            "armadura": 10,
+            "magia": 100,
+            "stamina": 100,
+            "velo-movi": 1,
+        })
+        self.personagem = Arqueiro('nome', True, status=self.status)
+
+    def test_personagem_mantem_o_status_mesmo_depois_de_atualizar(self):
+        self.personagem.atualizar_status()
+        self.assertEqual(self.personagem.status, self.status)

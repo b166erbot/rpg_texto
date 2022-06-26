@@ -2,6 +2,7 @@ from asyncio import sleep
 from collections import Counter
 from random import randint
 from time import sleep as sleep2
+from copy import copy
 
 from jogo.experiencia import Experiencia
 from jogo.itens.itens import CalcularBonus, SemItemEquipado
@@ -48,7 +49,8 @@ class Humano:
         amuleto=SemItemEquipado("Amuleto", "Amuleto"),
         item_secundario=SemItemEquipado("Item secundário", "Item secundário"),
     ):
-        self.nome = nome
+        self.nome = nome.split()[0][:20]
+        self.nome_completo = nome
         self.level = level
         leveis = [499, 999, 1999, 3499, 5499, 7999, 10999, 14499]
         self.experiencia = Experiencia(experiencia, leveis, level)
@@ -66,6 +68,7 @@ class Humano:
                 "velo-movi": 1,
             }
         )
+        self._status = copy(self.status)
         self.habilidades = {}
         self.inventario = []
         self.moedas = moedas
@@ -84,7 +87,8 @@ class Humano:
             "Item secundário": item_secundario,
         }
         self.quests = []
-        porcentagem = enumerate([27, 54, 81, 108, 135, 162, 189, 216], 1)
+        # porcentagem = enumerate([27, 54, 81, 108, 135, 162, 189, 216], 1)
+        porcentagem = enumerate([42, 84, 126, 168, 210, 252, 294, 336], 1)
         self._porcentagem_total = dict(porcentagem)
         self.porcentagem_armadura = 0
         self.porcentagem_resistencia = 0
@@ -112,7 +116,7 @@ class Humano:
             equipamentos,
         )
         vida = map(lambda x: x.vida, equipamentos)
-        vida = 100 + (15 * (self.level - 1)) + sum(vida)
+        vida = self._status['vida'] + (15 * (self.level - 1)) + sum(vida)
         return vida
 
     def atacar(self, other):
@@ -247,7 +251,7 @@ class Humano:
             lambda x: x.tipo in ["Anel", "Arma", "Amuleto"], equipamentos
         )
         dano = map(lambda x: x.dano, equipamentos_dano)
-        dano = 5 + sum(dano)
+        dano = self._status['dano'] + sum(dano)
         vida = self.vida_maxima
         self.status["vida"] = vida
         self.status["resistencia"] = self._resistencia
@@ -313,7 +317,10 @@ class Humano:
             ],
             equipamentos,
         )
-        armadura = sum(map(lambda x: x.armadura, vestes))
+        armadura = (
+            self._status['armadura'] +
+            sum(map(lambda x: x.armadura, vestes))
+        )
         return armadura
 
     @property
@@ -338,7 +345,10 @@ class Humano:
             ],
             equipamentos,
         )
-        resistencia = sum(map(lambda x: x.resistencia, vestes))
+        resistencia = (
+            self._status['resistencia'] + 
+            sum(map(lambda x: x.resistencia, vestes))
+        )
         return resistencia
 
     @property
@@ -352,7 +362,10 @@ class Humano:
         itens_critico = filter(
             lambda x: x.tipo in ["Arma", "Anel", "Amuleto"], equipamentos
         )
-        critico = sum(map(lambda x: x.critico, itens_critico))
+        critico = (
+            self._status['critico'] +
+            sum(map(lambda x: x.critico, itens_critico))
+        )
         return critico
 
     def _recuperar_magia_stamina(self):

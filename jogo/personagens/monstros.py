@@ -1,10 +1,12 @@
 from asyncio import sleep
 from collections import Counter
 from random import choice, randint
+from time import sleep as sleep2
 
 from jogo.itens.armas import tudo as armas
 from jogo.itens.quest import ItemQuest
 from jogo.itens.vestes import tudo as vestes
+from jogo.itens.item_secundario import tudo as itens_secundarios
 from jogo.tela.imprimir import Imprimir, efeito_digitando, formatar_status
 from jogo.utils import Contador, arrumar_porcentagem, regra_3
 
@@ -85,17 +87,17 @@ class Monstro:
         """Método que dá item e pratas ao personagem."""
         if randint(0, 2) == 1:
             efeito_digitando("Loot encontrado.")
-            Item = choice(vestes + armas)
+            Item = choice(vestes + armas + itens_secundarios)
             if Item.tipo == "Arma":
-                status = [randint(1, 5), randint(1, 2), randint(1, 3)]
+                status = [randint(1, 5), randint(1, 25), randint(1, 3)]
                 status = map(lambda x: x * self.level, status)
-                status_nomes = ["dano", "velo_ataque", "critico"]
+                status_nomes = ["dano", "porcentagem_critico", "critico"]
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(**status_dict)
             elif Item.tipo == "Roupa":  # a classe tem tipo -> Roupa
                 status = [
                     randint(1, 6),
-                    randint(5, 20),
+                    randint(3, 20),
                     randint(1, 6),
                 ]
                 status = map(lambda x: x * self.level, status)
@@ -104,7 +106,7 @@ class Monstro:
                 item = Item(**status_dict)
             elif Item.tipo in ["Anel", "Amuleto"]:
                 status = [
-                    randint(1, 3),
+                    randint(1, 6),
                     randint(3, 20),
                     randint(1, 6),
                     randint(1, 6),
@@ -113,6 +115,17 @@ class Monstro:
                 status_nomes = ["dano", "vida", "resistencia", "armadura"]
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(nome="Anel", **status_dict)
+            elif Item.tipo == 'Escudo':
+                status = [
+                    randint(3, 20),
+                    randint(1, 6),
+                    randint(1, 6),
+                    randint(1, 25),
+                ]
+                status = map(lambda x: x * self.level, status)
+                status_nomes = ['vida', 'armadura', 'resistencia', 'bloqueio']
+                status_dict = dict(zip(status_nomes, status))
+                item = Item(**status_dict)
             personagem.moedas["Pratas"] += randint(
                 30 * self.level, 50 * self.level
             )
@@ -120,10 +133,10 @@ class Monstro:
                 personagem.guardar_item(item)
             else:
                 tela.imprimir(
-                    "não foi possível adicionar item ao inventario, "
-                    "inventario cheio."
+                    "Não foi possível adicionar item ao inventario. "
+                    "Inventario cheio."
                 )
-                sleep(3)
+                sleep2(3)
 
     def sortear_drops_quest(self, personagem):
         """Método que dá itens de quests para o personagem."""
@@ -206,15 +219,15 @@ class Boss(Monstro):
         efeito_digitando("Loot encontrado.")
         Item = choice(vestes + armas)
         if Item.tipo == "Arma":
-            status = [randint(3, 5), randint(2, 2), randint(2, 3)]
+            status = [randint(3, 5), randint(15, 25), randint(2, 3)]
             status = map(lambda x: x * self.level, status)
-            status_nomes = ["dano", "velo_ataque", "critico"]
+            status_nomes = ["dano", "porcentagem_critico", "critico"]
             status_dict = dict(zip(status_nomes, status))
             item = Item(**status_dict)
         elif Item.tipo == "Roupa":  # a classe tem tipo -> Roupa
             status = [
                 randint(3, 6),
-                randint(12, 20),
+                randint(10, 20),
                 randint(3, 6),
             ]
             status = map(lambda x: x * self.level, status)
@@ -223,16 +236,29 @@ class Boss(Monstro):
             item = Item(**status_dict)
         elif Item.tipo in ["Anel", "Amuleto"]:
             status = [
-                randint(2, 3),
-                randint(12, 20),
-                randint(2, 3),
-                randint(2, 3),
+                randint(3, 6),
+                randint(10, 20),
+                randint(3, 6),
+                randint(3, 6),
             ]
             status = map(lambda x: x * self.level, status)
             status_nomes = ["dano", "vida", "resistencia", "armadura"]
             status_dict = dict(zip(status_nomes, status))
             item = Item(nome="Anel", **status_dict)
-        personagem.moedas["Pratas"] += randint(30 * self.level, 50 * self.level)
+        elif Item.tipo == 'Escudo':
+            status = [
+                randint(10, 20),
+                randint(3, 6),
+                randint(3, 6),
+                randint(15, 25),
+            ]
+            status = map(lambda x: x * self.level, status)
+            status_nomes = ['vida', 'armadura', 'resistencia', 'bloqueio']
+            status_dict = dict(zip(status_nomes, status))
+            item = Item(**status_dict)
+        personagem.moedas["Pratas"] += randint(
+            30 * 2 * self.level, 50 * 2 * self.level
+        )
         if personagem.e_possivel_guardar(item):
             personagem.guardar_item(item)
         else:
@@ -240,7 +266,7 @@ class Boss(Monstro):
                 "não foi possível adicionar item ao inventario, "
                 "inventario cheio."
             )
-            sleep(3)
+            sleep2(3)
 
 
 class Tartaruga(Monstro):
@@ -286,7 +312,7 @@ class Camaleao(Monstro):
 
     def roubo(self, other):
         """Método que ataca o personagem."""
-        dano = 5 * self.level
+        dano = 6 * self.level
         if randint(1, 100) <= self.porcentagem_critico:
             dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
@@ -296,47 +322,47 @@ class Camaleao(Monstro):
 class Tamandua(Monstro):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.habilidades = [self.abraco, self.linguada]
+        self.habilidades = [self.linguada, self.abraco]
         self.nome = "Tamandua"
         self.classe = "Monstro comum"
         self.tipo = "trolador"
 
-    def abraco(self, other):
-        """Método que ataca o personagem."""
-        dano = 5 * self.level
-        if randint(1, 100) <= self.porcentagem_critico:
-            dano *= 2
-        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
-        other.status["vida"] -= dano - subtrair_dano
-
     def linguada(self, other):
         """Método que ataca o personagem."""
-        dano = 3 * self.level
+        dano = 4 * self.level
         if randint(1, 100) <= self.porcentagem_critico:
             dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
+        other.status["vida"] -= dano - subtrair_dano
+
+    def abraco(self, other):
+        """Método que ataca o personagem."""
+        dano = 6 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
         other.status["vida"] -= dano - subtrair_dano
 
 
 class Sapo(Monstro):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.habilidades = [self.salto, self.linguada]
+        self.habilidades = [self.linguada, self.salto]
         self.nome = "Sapo"
         self.classe = "Monstro comum"
         self.tipo = "trolador"
 
-    def salto(self, other):
+    def linguada(self, other):
         """Método que ataca o personagem."""
-        dano = 5 * self.level
+        dano = 4 * self.level
         if randint(1, 100) <= self.porcentagem_critico:
             dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
         other.status["vida"] -= dano - subtrair_dano
 
-    def linguada(self, other):
+    def salto(self, other):
         """Método que ataca o personagem."""
-        dano = 3 * self.level
+        dano = 6 * self.level
         if randint(1, 100) <= self.porcentagem_critico:
             dano *= 2
         subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)

@@ -45,8 +45,8 @@ class Menu:
 
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""
-        mixer.music.load("vilarejo.ogg")
-        mixer.music.play()
+        # mixer.music.load("vilarejo.ogg")
+        # mixer.music.play()
         forma = f"{formas[227]} {{}} {formas[228]}"
         while True:
             tela.limpar_tela()
@@ -114,13 +114,20 @@ class Menu:
                     tela.imprimir("jogo salvo", "cyan")
                     sleep(3)
                 case 10:
-                    arquivo = Path(self._nome_jogo)
-                    if arquivo.exists():
-                        arquivo.unlink()
-                        tela.imprimir("save deletado", "cyan")
-                    else:
-                        tela.imprimir("save não existente", "cyan")
-                    sleep(3)
+                    tela.limpar_tela()
+                    tela.imprimir(
+                        'Tem certeza que deseja deletar o save? '
+                        '[s/n/sim/não]: '
+                    )
+                    resposta = tela.obter_string()
+                    if resposta in ['s', 'sim']:
+                        arquivo = Path(self._nome_jogo)
+                        if arquivo.exists():
+                            arquivo.unlink()
+                            tela.imprimir("save deletado", "cyan")
+                        else:
+                            tela.imprimir("save não existente", "cyan")
+                        sleep(3)
                 case 11:
                     quit()
 
@@ -313,7 +320,7 @@ class Menu:
         )
         len_max = max(tamanhos) + 3
         textos = [
-            f"{p.nome} [{p.classe}]:",
+            f"{p.nome_completo[:67]} [{p.classe}]:",
             f"vida - {p.status['vida']}",
             f"{armadura: <{len_max}}{arm_porc}",
             f"{resistencia: <{len_max}}{resi_porc}",
@@ -344,3 +351,6 @@ class Menu:
 # TODO: implementar deletar save no inicio
 # TODO: recalibrar a armadura e resistencia (tanto pro monstro quanto pro personagem)
 # TODO: implementar baús que dropam itens/draconica?
+# TODO: testar a resistencia e armadura dos monstros
+# TODO: ter um companheiro na campanha? (não sei se tem como implementar isso)
+# TODO: trols

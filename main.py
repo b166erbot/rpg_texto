@@ -133,9 +133,9 @@ def main():
         )
     personagens, nome_jogo = personagens_nome_jogo
     personagem, lorena, eivor, tiago, bram = personagens
-    comerciante = Comerciante("farkas", curas)
+    farkas = Comerciante("farkas", curas)
     menu = Menu(personagem, nome_jogo)
-    menu.obter_npcs([lorena, comerciante, tiago, eivor, bram])
+    menu.obter_npcs([lorena, farkas, tiago, eivor, bram])
     menu.ciclo()
 
 
