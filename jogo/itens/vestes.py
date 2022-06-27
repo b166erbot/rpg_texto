@@ -8,9 +8,8 @@ class Roupa:
     classe: str = "Todos"
 
     def __init__(
-        self, nome: str, vida: int = 0, resistencia: int = 0, armadura: int = 0
+        self, vida: int = 0, resistencia: int = 0, armadura: int = 0
     ):
-        self.nome = nome
         self.vida = vida
         self.resistencia = resistencia
         self.armadura = armadura
@@ -27,36 +26,41 @@ class Roupa:
 
 
 class Peitoral(Roupa):
+    nome = 'Peitoral'
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Peitoral", **kwargs)
+        super().__init__(*args, **kwargs)
         self.tipo = "Peitoral"
         self.tipo_equipar = "Peitoral"
 
 
 class Elmo(Roupa):
+    nome = 'Elmo'
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Elmo", **kwargs)
+        super().__init__(*args, **kwargs)
         self.tipo = "Elmo"
         self.tipo_equipar = "Elmo"
 
 
 class Calca(Roupa):
+    nome = 'Calça'
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Calça", **kwargs)
+        super().__init__(*args, **kwargs)
         self.tipo = "Calça"
         self.tipo_equipar = "Calça"
 
 
 class Botas(Roupa):
+    nome = 'Botas'
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Botas", **kwargs)
+        super().__init__(*args, **kwargs)
         self.tipo = "Botas"
         self.tipo_equipar = "Botas"
 
 
 class Luvas(Roupa):
+    nome = 'Luvas'
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Luvas", **kwargs)
+        super().__init__(*args, **kwargs)
         self.tipo = "Luvas"
         self.tipo_equipar = "Luvas"
 
@@ -64,16 +68,15 @@ class Luvas(Roupa):
 class Anel:
     tipo: str = "Anel"
     classe: str = "Todos"
+    nome = "Anel"
 
     def __init__(
         self,
-        nome: str = "Anel",
         dano: int = 0,
         vida: int = 0,
         resistencia: int = 0,
         armadura: int = 0,
     ):
-        self.nome = nome
         self.dano = dano
         self.vida = vida
         self.resistencia = resistencia
@@ -96,16 +99,15 @@ class Anel:
 class Amuleto:
     tipo: str = "Amuleto"
     classe: str = "Todos"
+    nome = "Amuleto"
 
     def __init__(
         self,
-        nome: str = "Amuleto",
         dano: int = 0,
         vida: int = 0,
         resistencia: int = 0,
         armadura: int = 0,
     ):
-        self.nome = nome
         self.dano = dano
         self.vida = vida
         self.resistencia = resistencia
@@ -134,9 +136,8 @@ class RoupaDraconica:
     classe: str = "Todos"
 
     def __init__(
-        self, nome: str, vida: int = 0, resistencia: int = 0, armadura: int = 0
+        self, vida: int = 0, resistencia: int = 0, armadura: int = 0
     ):
-        self.nome = nome
         self.vida = vida
         self.resistencia = resistencia
         self.armadura = armadura
@@ -156,24 +157,27 @@ class RoupaDraconica:
 
 
 class PeitoralDraconico(RoupaDraconica):
+    nome = "Pei Draconico"
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Pei Draconico", **kwargs)
+        super().__init__(*args, **kwargs)
         self.tipo = "Peitoral"
         self.tipo_equipar = "Peitoral"
 
 
 class ElmoDraconico(RoupaDraconica):
+    nome = "Elm Draconico"
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Elm Draconico", **kwargs)
+        super().__init__(*args, **kwargs)
         self.tipo = "Elmo"
         self.tipo_equipar = "Elmo"
 
 
-class CalcaDraconio(RoupaDraconica):
+class CalcaDraconica(RoupaDraconica):
+    nome = "Cal Draconica"
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Cal Draconico", **kwargs)
+        super().__init__(*args, **kwargs)
         self.tipo = "Calça"
         self.tipo_equipar = "Calça"
 
 
-roupas_draconicas = [PeitoralDraconico, ElmoDraconico, CalcaDraconio]
+roupas_draconicas = [PeitoralDraconico, ElmoDraconico, CalcaDraconica]

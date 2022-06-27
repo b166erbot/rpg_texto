@@ -1,10 +1,10 @@
 from time import sleep
+from copy import copy
 
 from jogo.itens.moedas import Draconica
 from jogo.itens.quest import ItemQuest
 from jogo.tela.imprimir import Imprimir
 from jogo.utils import Artigo, chunk
-from jogo.itens.pocoes import PocaoDeCura, Elixir
 
 tela = Imprimir()
 
@@ -24,30 +24,19 @@ class Npc:
 class Comerciante(Npc):
     def __init__(self, nome: str, itens: list):
         super().__init__(nome, "Comerciante")
-        self.itens = {
-            str(numero): item for numero, item in enumerate(itens, 1)
-        }
-        self.tabela = []
-        for numero, item in self.itens.items():
-            # import curses, pdb; curses.endwin(); pdb.set_trace()
-            if issubclass(item, PocaoDeCura) or issubclass(item, Elixir):
-                texto = (
-                    f"{numero} - {item.nome}. "
-                    f"{item.preco} quanto cura: {item.quanto_cura}"
-                )
-            else:
-                texto = f"{numero} - {item.nome}. {item.preco}"
-            self.tabela.append(texto)
-        self.tabela_cortada = chunk(self.tabela, 16)
+        self._itens = itens
+        self.itens = dict()
+        self.tabela_cortada = []
+        self.itens_criados = []
         self.salvar = False
 
     def comprar(self, item, quantidade: int, personagem, tipo_de_moeda: str):
         preço = quantidade * int(item.preco)
         if int(personagem.moedas[tipo_de_moeda]) >= preço:
             personagem.moedas[tipo_de_moeda] -= preço
+            # ao comprar, guarda o item de qualquer forma.
             for n in range(quantidade):
-                # ao comprar, guarda o item de qualquer forma.
-                personagem.inventario.append(item())
+                personagem.inventario.append(copy(item))
         else:
             texto = "compra não realizada: dinheiro insuficiente"
             tela.imprimir(texto, "cyan")
@@ -55,6 +44,8 @@ class Comerciante(Npc):
 
     def interagir(self, personagem):
         """Método que mostra os itens e obtem o número da compra."""
+        self._criar_itens(personagem.level)
+        self._criar_tabela()
         tela.limpar_tela()
         numero = self._obter_numero("O que deseja comprar?: ", personagem)
         while numero in self.itens:
@@ -96,6 +87,35 @@ class Comerciante(Npc):
             tela.imprimir(mensagem, "cyan")
             numero = tela.obter_string()
         return numero
+    
+    def _criar_tabela(self):
+        tabela = []
+        for numero, item in self.itens.items():
+            if item.tipo == 'Poções':
+                texto = (
+                    f"{numero} - {item.nome}. "
+                    f"{item.preco} quanto cura: {item.quanto_cura}"
+                )
+            else:
+                texto = f"{numero} - {item.nome}. {item.preco}"
+            tabela.append(texto)
+        self.tabela_cortada = chunk(tabela, 16)
+    
+    def _criar_itens(self, level):
+        self.itens_criados = []
+        for item in self._itens:
+            if item.tipo == 'Poções':
+                self.itens_criados.append(item())
+            elif item.tipo == 'Roupa':
+                atributos = [20, 6, 6]
+                atributos = map(lambda x: x * level, atributos)
+                atributos_nomes = ['vida', 'resistencia', 'armadura']
+                atributos_dict = dict(zip(atributos_nomes, atributos))
+                self.itens_criados.append(item(**atributos_dict))
+        self.itens = {
+            str(numero): item for numero, item
+            in enumerate(self.itens_criados, 1)
+        }
 
 
 class Pessoa(Npc):

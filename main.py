@@ -34,6 +34,7 @@ from jogo.personagens.npc import (
     ComercianteItemQuest,
     Pessoa,
 )
+from jogo.itens.vestes import roupas_draconicas
 from jogo.quests import quests_da_lorena, quests_do_eivor
 from jogo.save import carregar_jogo_tela, salvar_jogo
 from jogo.tela.imprimir import Imprimir
@@ -133,7 +134,8 @@ def main():
         )
     personagens, nome_jogo = personagens_nome_jogo
     personagem, lorena, eivor, tiago, bram = personagens
-    farkas = Comerciante("farkas", curas)
+    itens = curas + roupas_draconicas
+    farkas = Comerciante("farkas", itens)
     menu = Menu(personagem, nome_jogo)
     menu.obter_npcs([lorena, farkas, tiago, eivor, bram])
     menu.ciclo()

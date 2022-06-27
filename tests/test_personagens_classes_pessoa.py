@@ -54,7 +54,7 @@ from jogo.itens.vestes import (
     Luvas,
     Peitoral,
     PeitoralDraconico,
-    CalcaDraconio,
+    CalcaDraconica,
     ElmoDraconico,
 )
 from jogo.personagens.monstros import (
@@ -864,7 +864,7 @@ class TestEquipandoEquipamentosOuNaoEmArqueiroVestes(TestCase):
         self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
     
     def test_equipando_calca_draconico(self):
-        item = CalcaDraconio(vida=5, resistencia=5, armadura=5)
+        item = CalcaDraconica(vida=5, resistencia=5, armadura=5)
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
@@ -1041,7 +1041,7 @@ class TestEquipandoEquipamentosOuNaoEmGuerreiroVestes(TestCase):
         self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
     
     def test_equipando_calca_draconico(self):
-        item = CalcaDraconio(vida=5, resistencia=5, armadura=5)
+        item = CalcaDraconica(vida=5, resistencia=5, armadura=5)
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
@@ -1217,7 +1217,7 @@ class TestEquipandoEquipamentosOuNaoEmMagoVestes(TestCase):
         self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
     
     def test_equipando_calca_draconico(self):
-        item = CalcaDraconio(vida=5, resistencia=5, armadura=5)
+        item = CalcaDraconica(vida=5, resistencia=5, armadura=5)
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
@@ -1394,7 +1394,7 @@ class TestEquipandoEquipamentosOuNaoEmAssassinoVestes(TestCase):
         self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
     
     def test_equipando_calca_draconico(self):
-        item = CalcaDraconio(vida=5, resistencia=5, armadura=5)
+        item = CalcaDraconica(vida=5, resistencia=5, armadura=5)
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
@@ -1571,7 +1571,7 @@ class TestEquipandoEquipamentosOuNaoEmClerigoVestes(TestCase):
         self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
     
     def test_equipando_calca_draconico(self):
-        item = CalcaDraconio(vida=5, resistencia=5, armadura=5)
+        item = CalcaDraconica(vida=5, resistencia=5, armadura=5)
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
@@ -1750,7 +1750,7 @@ class TestEquipandoEquipamentosOuNaoEmMongeVestes(TestCase):
         self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
     
     def test_equipando_calca_draconico(self):
-        item = CalcaDraconio(vida=5, resistencia=5, armadura=5)
+        item = CalcaDraconica(vida=5, resistencia=5, armadura=5)
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)

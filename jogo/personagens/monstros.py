@@ -115,7 +115,7 @@ class Monstro:
                     status = map(lambda x: x * self.level, status)
                     status_nomes = ["dano", "vida", "resistencia", "armadura"]
                     status_dict = dict(zip(status_nomes, status))
-                    item = Item(nome="Anel", **status_dict)
+                    item = Item(**status_dict)
                 case "Escudo":
                     status = [
                         randint(3, 20),
@@ -230,7 +230,7 @@ class Boss(Monstro):
         Item = choice(vestes + armas)
         match Item.tipo:
             case "Arma":
-                status = [randint(3, 6), randint(15, 25), randint(2, 3)]
+                status = [randint(3, 6), randint(8, 16), randint(3, 6)]
                 status = map(lambda x: x * self.level, status)
                 status_nomes = ["dano", "aumento_critico", "critico"]
                 status_dict = dict(zip(status_nomes, status))
@@ -255,7 +255,7 @@ class Boss(Monstro):
                 status = map(lambda x: x * self.level, status)
                 status_nomes = ["dano", "vida", "resistencia", "armadura"]
                 status_dict = dict(zip(status_nomes, status))
-                item = Item(nome="Anel", **status_dict)
+                item = Item(**status_dict)
             case "Escudo":
                 status = [
                     randint(10, 20),

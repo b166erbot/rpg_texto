@@ -357,3 +357,4 @@ class Menu:
 # TODO: implementar baús que dropam itens/draconica?
 # TODO: ter um companheiro na campanha? (não sei se tem como implementar isso)
 # TODO: trols
+# TODO: implementar chance de bloqueio do escudo
