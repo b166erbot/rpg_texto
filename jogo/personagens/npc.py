@@ -1,9 +1,10 @@
 from time import sleep
 
-from jogo.itens.moedas import Draconica, Pratas
+from jogo.itens.moedas import Draconica
 from jogo.itens.quest import ItemQuest
 from jogo.tela.imprimir import Imprimir
 from jogo.utils import Artigo, chunk
+from jogo.itens.pocoes import PocaoDeCura, Elixir
 
 tela = Imprimir()
 
@@ -23,11 +24,20 @@ class Npc:
 class Comerciante(Npc):
     def __init__(self, nome: str, itens: list):
         super().__init__(nome, "Comerciante")
-        self.itens = {numero: item for numero, item in enumerate(itens, 1)}
-        self.tabela = [
-            f"{numero} - {item.nome}. {item.preco}"
-            for numero, item in self.itens.items()
-        ]
+        self.itens = {
+            str(numero): item for numero, item in enumerate(itens, 1)
+        }
+        self.tabela = []
+        for numero, item in self.itens.items():
+            # import curses, pdb; curses.endwin(); pdb.set_trace()
+            if issubclass(item, PocaoDeCura) or issubclass(item, Elixir):
+                texto = (
+                    f"{numero} - {item.nome}. "
+                    f"{item.preco} quanto cura: {item.quanto_cura}"
+                )
+            else:
+                texto = f"{numero} - {item.nome}. {item.preco}"
+            self.tabela.append(texto)
         self.tabela_cortada = chunk(self.tabela, 16)
         self.salvar = False
 
@@ -47,12 +57,12 @@ class Comerciante(Npc):
         """Método que mostra os itens e obtem o número da compra."""
         tela.limpar_tela()
         numero = self._obter_numero("O que deseja comprar?: ", personagem)
-        while numero.isnumeric() and int(numero) in self.itens:
+        while numero in self.itens:
             tela.imprimir("Quantidade: ", "cyan")
             quantidade = tela.obter_string()
             if not bool(quantidade):
                 break
-            item = self.itens[int(numero)]
+            item = self.itens[numero]
             self.comprar(item, int(quantidade), personagem, item.preco.nome)
             tela.limpar_tela()
             numero = self._obter_numero(

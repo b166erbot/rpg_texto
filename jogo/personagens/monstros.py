@@ -21,10 +21,10 @@ class Monstro:
             or {
                 "vida": 100,
                 "dano": 3,
-                "resistencia": 5,
+                "resistencia": 8,
                 "velo-ataque": 1,
-                "critico": 5,
-                "armadura": 5,
+                "critico": 8,
+                "armadura": 8,
                 "magia": 100,
                 "stamina": 100,
                 "velo-movi": 1,
@@ -37,7 +37,7 @@ class Monstro:
         self.habilidades = []
         self.vida_ = self.status["vida"]
         self.level = level
-        porcentagem = enumerate([25, 50, 75, 100, 125, 150, 175, 200], 1)
+        porcentagem = enumerate([42, 84, 126, 168, 210, 252, 294, 336], 1)
         self._porcentagem_total = dict(porcentagem)
         self.porcentagem_armadura = 0
         self.porcentagem_resistencia = 0
@@ -88,44 +88,54 @@ class Monstro:
         if randint(0, 2) == 1:
             efeito_digitando("Loot encontrado.")
             Item = choice(vestes + armas + itens_secundarios)
-            if Item.tipo == "Arma":
-                status = [randint(1, 5), randint(1, 25), randint(1, 3)]
-                status = map(lambda x: x * self.level, status)
-                status_nomes = ["dano", "porcentagem_critico", "critico"]
-                status_dict = dict(zip(status_nomes, status))
-                item = Item(**status_dict)
-            elif Item.tipo == "Roupa":  # a classe tem tipo -> Roupa
-                status = [
-                    randint(1, 6),
-                    randint(3, 20),
-                    randint(1, 6),
-                ]
-                status = map(lambda x: x * self.level, status)
-                status_nomes = ["armadura", "vida", "resistencia"]
-                status_dict = dict(zip(status_nomes, status))
-                item = Item(**status_dict)
-            elif Item.tipo in ["Anel", "Amuleto"]:
-                status = [
-                    randint(1, 6),
-                    randint(3, 20),
-                    randint(1, 6),
-                    randint(1, 6),
-                ]
-                status = map(lambda x: x * self.level, status)
-                status_nomes = ["dano", "vida", "resistencia", "armadura"]
-                status_dict = dict(zip(status_nomes, status))
-                item = Item(nome="Anel", **status_dict)
-            elif Item.tipo == "Escudo":
-                status = [
-                    randint(3, 20),
-                    randint(1, 6),
-                    randint(1, 6),
-                    randint(1, 25),
-                ]
-                status = map(lambda x: x * self.level, status)
-                status_nomes = ["vida", "armadura", "resistencia", "bloqueio"]
-                status_dict = dict(zip(status_nomes, status))
-                item = Item(**status_dict)
+            match Item.tipo:
+                case "Arma":
+                    status = [randint(1, 6), randint(1, 16), randint(1, 6)]
+                    status = map(lambda x: x * self.level, status)
+                    status_nomes = ["dano", "aumento_critico", "critico"]
+                    status_dict = dict(zip(status_nomes, status))
+                    item = Item(**status_dict)
+                case "Roupa":  # a classe tem tipo -> Roupa
+                    status = [
+                        randint(1, 6),
+                        randint(3, 20),
+                        randint(1, 6),
+                    ]
+                    status = map(lambda x: x * self.level, status)
+                    status_nomes = ["armadura", "vida", "resistencia"]
+                    status_dict = dict(zip(status_nomes, status))
+                    item = Item(**status_dict)
+                case "Anel" | "Amuleto":
+                    status = [
+                        randint(1, 6),
+                        randint(3, 20),
+                        randint(1, 6),
+                        randint(1, 6),
+                    ]
+                    status = map(lambda x: x * self.level, status)
+                    status_nomes = ["dano", "vida", "resistencia", "armadura"]
+                    status_dict = dict(zip(status_nomes, status))
+                    item = Item(nome="Anel", **status_dict)
+                case "Escudo":
+                    status = [
+                        randint(3, 20),
+                        randint(1, 6),
+                        randint(1, 6),
+                        randint(10, 80),
+                    ]
+                    status = map(lambda x: x * self.level, status)
+                    status_nomes = ["vida", "armadura", "resistencia", "bloqueio"]
+                    status_dict = dict(zip(status_nomes, status))
+                    item = Item(**status_dict)
+                case "Adorno de arma":
+                    status = [
+                        randint(1, 6),
+                        randint(1, 16)
+                    ]
+                    status = map(lambda x: x * self.level, status)
+                    status_nomes = ['critico', 'aumento_critico']
+                    status_dict = dict(zip(status_nomes, status))
+                    item = Item(**status_dict)
             personagem.moedas["Pratas"] += randint(
                 30 * self.level, 50 * self.level
             )
@@ -218,44 +228,54 @@ class Boss(Monstro):
         """Método que dá item e pratas ao personagem."""
         efeito_digitando("Loot encontrado.")
         Item = choice(vestes + armas)
-        if Item.tipo == "Arma":
-            status = [randint(3, 5), randint(15, 25), randint(2, 3)]
-            status = map(lambda x: x * self.level, status)
-            status_nomes = ["dano", "porcentagem_critico", "critico"]
-            status_dict = dict(zip(status_nomes, status))
-            item = Item(**status_dict)
-        elif Item.tipo == "Roupa":  # a classe tem tipo -> Roupa
-            status = [
-                randint(3, 6),
-                randint(10, 20),
-                randint(3, 6),
-            ]
-            status = map(lambda x: x * self.level, status)
-            status_nomes = ["armadura", "vida", "resistencia"]
-            status_dict = dict(zip(status_nomes, status))
-            item = Item(**status_dict)
-        elif Item.tipo in ["Anel", "Amuleto"]:
-            status = [
-                randint(3, 6),
-                randint(10, 20),
-                randint(3, 6),
-                randint(3, 6),
-            ]
-            status = map(lambda x: x * self.level, status)
-            status_nomes = ["dano", "vida", "resistencia", "armadura"]
-            status_dict = dict(zip(status_nomes, status))
-            item = Item(nome="Anel", **status_dict)
-        elif Item.tipo == "Escudo":
-            status = [
-                randint(10, 20),
-                randint(3, 6),
-                randint(3, 6),
-                randint(15, 25),
-            ]
-            status = map(lambda x: x * self.level, status)
-            status_nomes = ["vida", "armadura", "resistencia", "bloqueio"]
-            status_dict = dict(zip(status_nomes, status))
-            item = Item(**status_dict)
+        match Item.tipo:
+            case "Arma":
+                status = [randint(3, 6), randint(15, 25), randint(2, 3)]
+                status = map(lambda x: x * self.level, status)
+                status_nomes = ["dano", "aumento_critico", "critico"]
+                status_dict = dict(zip(status_nomes, status))
+                item = Item(**status_dict)
+            case "Roupa": # a classe tem tipo -> Roupa
+                status = [
+                    randint(3, 6),
+                    randint(10, 20),
+                    randint(3, 6),
+                ]
+                status = map(lambda x: x * self.level, status)
+                status_nomes = ["armadura", "vida", "resistencia"]
+                status_dict = dict(zip(status_nomes, status))
+                item = Item(**status_dict)
+            case "Anel" | "Amuleto":
+                status = [
+                    randint(3, 6),
+                    randint(10, 20),
+                    randint(3, 6),
+                    randint(3, 6),
+                ]
+                status = map(lambda x: x * self.level, status)
+                status_nomes = ["dano", "vida", "resistencia", "armadura"]
+                status_dict = dict(zip(status_nomes, status))
+                item = Item(nome="Anel", **status_dict)
+            case "Escudo":
+                status = [
+                    randint(10, 20),
+                    randint(3, 6),
+                    randint(3, 6),
+                    randint(40, 80),
+                ]
+                status = map(lambda x: x * self.level, status)
+                status_nomes = ["vida", "armadura", "resistencia", "bloqueio"]
+                status_dict = dict(zip(status_nomes, status))
+                item = Item(**status_dict)
+            case "Adorno de arma":
+                    status = [
+                        randint(3, 6),
+                        randint(8, 16)
+                    ]
+                    status = map(lambda x: x * self.level, status)
+                    status_nomes = ['critico', 'aumento_critico']
+                    status_dict = dict(zip(status_nomes, status))
+                    item = Item(**status_dict)
         personagem.moedas["Pratas"] += randint(
             30 * 2 * self.level, 50 * 2 * self.level
         )

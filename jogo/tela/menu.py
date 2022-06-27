@@ -314,11 +314,15 @@ class Menu:
         pratas = f"{str(p.moedas['Pratas'])}"
         por_cri = f"porcentagem de dano critico - {p.porcentagem_critico}"
         critico = f"critico - {p.status['critico']}"
+        aum_cri = f"aumento de dano critico % - {p.aumento_dano_critico}%\n"
         tamanhos = (
             len(x)
-            for x in (armadura, resistencia, experiencia, pratas, critico)
+            for x in (
+                armadura, resistencia, experiencia, pratas, critico,
+                aum_cri
+            )
         )
-        len_max = max(tamanhos) + 3
+        len_max = max(tamanhos)
         textos = [
             f"{p.nome_completo[:67]} [{p.classe}]:",
             f"vida - {p.status['vida']}",
@@ -326,6 +330,7 @@ class Menu:
             f"{resistencia: <{len_max}}{resi_porc}",
             f"dano - {p.status['dano']}",
             f"{critico: <{len_max}}{por_cri}%",
+            f"aumento de dano critico - {p.aumento_dano_critico}\n"
             f"{pratas: <{len_max}}{str(p.moedas['Draconica'])}",
             f"{experiencia: <{len_max}}level - {p.level}",
         ]
@@ -349,7 +354,6 @@ class Menu:
 # TODO: botar um simbolo diferente para a moeda draconica.
 # TODO: fazer 10 poções ocuparem o mesmo espaço? (não sei se tem como)
 # TODO: implementar deletar save no inicio
-# TODO: recalibrar a armadura e resistencia (tanto pro monstro quanto pro personagem)
 # TODO: implementar baús que dropam itens/draconica?
 # TODO: ter um companheiro na campanha? (não sei se tem como implementar isso)
 # TODO: trols

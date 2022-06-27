@@ -42,23 +42,23 @@ class ItemDeDano:
         nome: str,
         dano: int,
         critico: int,
-        porcentagem_critico: int,
+        aumento_critico: int,
         classe: str,
     ):
         self.nome = nome
         self.dano = dano
         self.critico = critico
-        self.porcentagem_critico = porcentagem_critico
+        self.aumento_critico = aumento_critico
         self.classe = classe
         self.tipo_equipar = "Item secundário"
         self.bonus = []
-        self.preco = Pratas((dano + critico + (porcentagem_critico // 2)) * 8)
+        self.preco = Pratas((dano + critico + (aumento_critico // 2)) * 8)
         self.conjunto = "item comum"
 
     def __repr__(self):
         retorno = (
             f"{self.nome}(dan: {self.dano}, crit: {self.critico}"
-            f", crit porc: {self.porcentagem_critico})"
+            f", crit porc: {self.aumento_critico})"
         )
         return retorno
 

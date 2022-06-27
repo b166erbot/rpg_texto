@@ -16,6 +16,7 @@ from jogo.itens.armas import (
     Espada_longa,
     Luvas_de_ferro,
     Machado,
+    AdornoDeArma,
 )
 from jogo.itens.item_secundario import Adaga as AdagaSecundaria
 from jogo.itens.item_secundario import (
@@ -143,6 +144,10 @@ class TestMonstroDropandoItensCorretamenteItensPrincipais(TestCase):
         self.monstro.sortear_drops(self.personagem)
         self.assertIsInstance(self.personagem.inventario[0], Machado)
 
+    def test_sortear_drops_retorna_adorno_de_arma(self, randint, choice, *_):
+        choice.return_value = AdornoDeArma
+        self.monstro.sortear_drops(self.personagem)
+        self.assertIsInstance(self.personagem.inventario[0], AdornoDeArma)
 
 @mock.patch("jogo.personagens.monstros.tela")
 @mock.patch("jogo.personagens.monstros.efeito_digitando")
@@ -442,6 +447,10 @@ class TestBossDropandoItensCorretamenteItensPrincipais(TestCase):
         self.monstro.sortear_drops(self.personagem)
         self.assertIsInstance(self.personagem.inventario[0], Machado)
 
+    def test_sortear_drops_retorna_adorno_de_arma(self, randint, choice, *_):
+        choice.return_value = AdornoDeArma
+        self.monstro.sortear_drops(self.personagem)
+        self.assertIsInstance(self.personagem.inventario[0], AdornoDeArma)
 
 @mock.patch("jogo.personagens.monstros.tela")
 @mock.patch("jogo.personagens.monstros.efeito_digitando")

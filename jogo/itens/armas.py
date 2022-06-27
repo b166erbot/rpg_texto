@@ -10,25 +10,25 @@ class Arma:
         nome: str,
         dano: int,
         critico: int,
-        porcentagem_critico: int,
+        aumento_critico: int,
         classe: str,
     ):
         self.nome = nome
         self.dano = dano
         self.critico = critico
-        self.porcentagem_critico = porcentagem_critico
+        self.aumento_critico = aumento_critico
         self.tipo_equipar = "Arma"
         self.classe = classe
         self.bonus = []
         self.preco = Pratas(
-            (self.dano + self.porcentagem_critico + self.critico) * 8
+            (self.dano + self.aumento_critico + self.critico) * 8
         )
         self.conjunto = "item comum"
 
     def __repr__(self):
         retorno = (
             f"{self.nome}(dan: {self.dano}, "
-            f"por_cri: {self.porcentagem_critico}, crit: {self.critico})"
+            f"por_cri: {self.aumento_critico}, crit: {self.critico})"
         )
         return retorno
 
@@ -87,6 +87,29 @@ class Botas_de_ferro(Arma):
         super().__init__(*args, nome="Botas de ferro", classe="Monge", **kwargs)
 
 
+class AdornoDeArma:
+    # tipo precisa ficar aqui em cima
+    tipo = "Adorno de arma"
+    def __init__(self, critico: int, aumento_critico: int):
+        self.nome = "Adorno de arma"
+        self.critico = critico
+        self.aumento_critico = aumento_critico
+        self.tipo_equipar = "Adorno de arma"
+        self.classe = "Todos"
+        self.bonus = []
+        self.preco = Pratas(
+            (self.aumento_critico + self.critico) * 8
+        )
+        self.conjunto = "item comum"
+
+    def __repr__(self):
+        retorno = (
+            f"{self.nome}("
+            f"aum_cri: {self.aumento_critico}, crit: {self.critico})"
+        )
+        return retorno
+
+
 tudo = [
     Espada_longa,
     Machado,
@@ -98,4 +121,5 @@ tudo = [
     Adaga,
     Luvas_de_ferro,
     Botas_de_ferro,
+    AdornoDeArma,
 ]

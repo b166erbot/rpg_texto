@@ -24,6 +24,7 @@ class PocaoDeCura:
 class PocaoDeVidaFraca(PocaoDeCura):
     nome = "poção de vida fraca"
     preco = Pratas(15)
+    quanto_cura = '30'
 
     def __init__(self):
         super().__init__(30)
@@ -32,6 +33,7 @@ class PocaoDeVidaFraca(PocaoDeCura):
 class PocaoDeVidaMedia(PocaoDeCura):
     nome = "poção de vida média"
     preco = Pratas(30)
+    quanto_cura = '60'
 
     def __init__(self):
         super().__init__(60)
@@ -40,6 +42,7 @@ class PocaoDeVidaMedia(PocaoDeCura):
 class PocaoDeVidaGrande(PocaoDeCura):
     nome = "poção de vida grande"
     preco = Pratas(45)
+    quanto_cura = '90'
 
     def __init__(self):
         super().__init__(90)
@@ -48,6 +51,7 @@ class PocaoDeVidaGrande(PocaoDeCura):
 class PocaoDeVidaExtraGrande(PocaoDeCura):
     nome = "poção de vida extra grande"
     preco = Pratas(60)
+    quanto_cura = '120'
 
     def __init__(self):
         super().__init__(120)
@@ -75,6 +79,7 @@ class Elixir:
 class ElixirDeVidaFraca(Elixir):
     nome = "elixir de vida fraca"
     preco = Pratas(100)
+    quanto_cura = '20%'
 
     def __init__(self):
         super().__init__(20)
@@ -83,6 +88,7 @@ class ElixirDeVidaFraca(Elixir):
 class ElixirDeVidaMedia(Elixir):
     nome = "elixir de vida média"
     preco = Pratas(200)
+    quanto_cura = '40%'
 
     def __init__(self):
         super().__init__(40)
@@ -91,6 +97,7 @@ class ElixirDeVidaMedia(Elixir):
 class ElixirDeVidaGrande(Elixir):
     nome = "elixir de vida grande"
     preco = Pratas(300)
+    quanto_cura = '60%'
 
     def __init__(self):
         super().__init__(60)
@@ -99,6 +106,7 @@ class ElixirDeVidaGrande(Elixir):
 class ElixirDeVidaExtraGrande(Elixir):
     nome = "elixir de vida extra grande"
     preco = Pratas(400)
+    quanto_cura = '80%'
 
     def __init__(self):
         super().__init__(80)

@@ -109,3 +109,4 @@ venv.bak/
 flake8.txt
 ts.py
 *.code-workspace
+.vscode
