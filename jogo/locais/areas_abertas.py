@@ -77,22 +77,23 @@ class Floresta:
             tela.limpar_tela()
         elif str(caminho) == "boss":
             tela.limpar_tela()
+            status = {
+                "vida": 150,
+                "dano": 5,
+                "resistencia": 15,
+                "velo-ataque": 1,
+                "critico": 15,
+                "armadura": 15,
+                "magia": 100,
+                "stamina": 100,
+                "velo-movi": 1,
+            }
+            Boss = choice(bosses_comuns)
+            boss = Boss(self.level, status)
             tela.imprimir("Boss encontrado.\n")
+            tela.imprimir(str(boss) + '\n')
             lutar = self._lutar_ou_fugir()
             if lutar:
-                status = {
-                    "vida": 150,
-                    "dano": 5,
-                    "resistencia": 15,
-                    "velo-ataque": 1,
-                    "critico": 15,
-                    "armadura": 15,
-                    "magia": 100,
-                    "stamina": 100,
-                    "velo-movi": 1,
-                }
-                Boss = choice(bosses_comuns)
-                boss = Boss(self.level, status)
                 combate(self.personagem, boss)
                 if self.personagem.status["vida"] == 0:
                     self.morto()

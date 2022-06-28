@@ -856,3 +856,462 @@ class TestPorcentagemArmaduraResistenciaDragao(TestCase):
         self.personagem.flecha_de_fogo(self.monstro)
         esperado = 100 - (15 - int((15 * 80) // 100))
         self.assertEqual(self.monstro.status["vida"], esperado)
+
+
+@mock.patch('jogo.personagens.monstros.randint', return_value = 100)
+class TestBloqueioDandoMenosDanoTartaruga(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro('nome', True)
+        self.monstro = Tartaruga()
+        self.personagem.porcentagem_armadura = 0
+        self.personagem.porcentagem_resistencia = 0
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_investida(self, *_):
+        dano = 4
+        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.investida(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_garras_afiadas(self, *_):
+        dano = 6
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.garras_afiadas(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+
+
+@mock.patch('jogo.personagens.monstros.randint', return_value = 100)
+class TestBloqueioDandoMenosDanoCamaleao(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro('nome', True)
+        self.monstro = Camaleao()
+        self.personagem.porcentagem_armadura = 0
+        self.personagem.porcentagem_resistencia = 0
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_trapasseiro(self, *_):
+        dano = 4
+        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.trapasseiro(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_roubo(self, *_):
+        dano = 6
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.roubo(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+
+
+@mock.patch('jogo.personagens.monstros.randint', return_value = 100)
+class TestBloqueioDandoMenosDanoTamandua(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro('nome', True)
+        self.monstro = Tamandua()
+        self.personagem.porcentagem_armadura = 0
+        self.personagem.porcentagem_resistencia = 0
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_linguada(self, *_):
+        dano = 4
+        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.linguada(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_abraco(self, *_):
+        dano = 6
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.abraco(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+
+
+@mock.patch('jogo.personagens.monstros.randint', return_value = 100)
+class TestBloqueioDandoMenosDanoSapo(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro('nome', True)
+        self.monstro = Sapo()
+        self.personagem.porcentagem_armadura = 0
+        self.personagem.porcentagem_resistencia = 0
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_linguada(self, *_):
+        dano = 4
+        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.linguada(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_salto(self, *_):
+        dano = 6
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.salto(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+
+
+@mock.patch('jogo.personagens.monstros.randint', return_value = 100)
+class TestBloqueioDandoMenosDanoTopera(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro('nome', True)
+        self.monstro = Topera()
+        self.personagem.porcentagem_armadura = 0
+        self.personagem.porcentagem_resistencia = 0
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_pulo_fatal(self, *_):
+        dano = 10
+        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.pulo_fatal(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_terremoto(self, *_):
+        dano = 15
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.terremoto(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+
+
+@mock.patch('jogo.personagens.monstros.randint', return_value = 100)
+class TestBloqueioDandoMenosDanoMico(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro('nome', True)
+        self.monstro = Mico()
+        self.personagem.porcentagem_armadura = 0
+        self.personagem.porcentagem_resistencia = 0
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_tacar_banana(self, *_):
+        dano = 10
+        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.tacar_banana(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_esmagar(self, *_):
+        dano = 15
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.esmagar(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+
+
+@mock.patch('jogo.personagens.monstros.randint', return_value = 100)
+class TestBloqueioDandoMenosDanoSucuri(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro('nome', True)
+        self.monstro = Sucuri()
+        self.personagem.porcentagem_armadura = 0
+        self.personagem.porcentagem_resistencia = 0
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_lancamento_de_calda(self, *_):
+        dano = 10
+        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.lancamento_de_calda(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_bote(self, *_):
+        dano = 15
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.bote(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+
+
+@mock.patch('jogo.personagens.monstros.randint', return_value = 100)
+class TestBloqueioDandoMenosDanoArvoreDeku(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro('nome', True)
+        self.monstro = ArvoreDeku()
+        self.personagem.porcentagem_armadura = 0
+        self.personagem.porcentagem_resistencia = 0
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_braçada(self, *_):
+        dano = 10
+        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.braçada(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_outono(self, *_):
+        dano = 15
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.outono(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+
+
+@mock.patch('jogo.personagens.monstros.randint', return_value = 100)
+class TestBloqueioDandoMenosDanoDragao(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro('nome', True)
+        self.monstro = Dragao()
+        self.personagem.porcentagem_armadura = 0
+        self.personagem.porcentagem_resistencia = 0
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_patada(self, *_):
+        dano = 10
+        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.patada(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_fogo(self, *_):
+        dano = 15
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.fogo(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+
+
+@mock.patch('jogo.personagens.monstros.randint', return_value = 100)
+class TestBloqueioArmaduraResistenciaDandoMenosDanoTartaruga(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro('nome', True)
+        self.monstro = Tartaruga()
+        self.personagem.porcentagem_armadura = 80
+        self.personagem.porcentagem_resistencia = 80
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_investida(self, *_):
+        dano = 4
+        # primeiro o dano é redusido a armadura/resistencia
+        dano = (dano - int((dano * 80) // 100))
+        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.investida(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_garras_afiadas(self, *_):
+        dano = 6
+        dano = (dano - int((dano * 80) // 100))
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.garras_afiadas(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+
+
+@mock.patch('jogo.personagens.monstros.randint', return_value = 100)
+class TestBloqueioArmaduraResistenciaDandoMenosDanoCamaleao(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro('nome', True)
+        self.monstro = Camaleao()
+        self.personagem.porcentagem_armadura = 80
+        self.personagem.porcentagem_resistencia = 80
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_trapasseiro(self, *_):
+        dano = 4
+        # primeiro o dano é redusido a armadura/resistencia
+        dano = (dano - int((dano * 80) // 100))
+        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.trapasseiro(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_roubo(self, *_):
+        dano = 6
+        dano = (dano - int((dano * 80) // 100))
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.roubo(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+
+
+@mock.patch('jogo.personagens.monstros.randint', return_value = 100)
+class TestBloqueioArmaduraResistenciaDandoMenosDanoTamandua(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro('nome', True)
+        self.monstro = Tamandua()
+        self.personagem.porcentagem_armadura = 80
+        self.personagem.porcentagem_resistencia = 80
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_linguada(self, *_):
+        dano = 4
+        # primeiro o dano é redusido a armadura/resistencia
+        dano = (dano - int((dano * 80) // 100))
+        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.linguada(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_abraco(self, *_):
+        dano = 6
+        dano = (dano - int((dano * 80) // 100))
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.abraco(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+
+
+@mock.patch('jogo.personagens.monstros.randint', return_value = 100)
+class TestBloqueioArmaduraResistenciaDandoMenosDanoSapo(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro('nome', True)
+        self.monstro = Sapo()
+        self.personagem.porcentagem_armadura = 80
+        self.personagem.porcentagem_resistencia = 80
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_linguada(self, *_):
+        dano = 4
+        # primeiro o dano é redusido a armadura/resistencia
+        dano = (dano - int((dano * 80) // 100))
+        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.linguada(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_salto(self, *_):
+        dano = 6
+        dano = (dano - int((dano * 80) // 100))
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.salto(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+
+
+@mock.patch('jogo.personagens.monstros.randint', return_value = 100)
+class TestBloqueioArmaduraResistenciaDandoMenosDanoTopera(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro('nome', True)
+        self.monstro = Topera()
+        self.personagem.porcentagem_armadura = 80
+        self.personagem.porcentagem_resistencia = 80
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_pulo_fatal(self, *_):
+        dano = 10
+        # primeiro o dano é redusido a armadura/resistencia
+        dano = (dano - int((dano * 80) // 100))
+        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.pulo_fatal(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_terremoto(self, *_):
+        dano = 15
+        dano = (dano - int((dano * 80) // 100))
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.terremoto(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+
+
+@mock.patch('jogo.personagens.monstros.randint', return_value = 100)
+class TestBloqueioArmaduraResistenciaDandoMenosDanoMico(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro('nome', True)
+        self.monstro = Mico()
+        self.personagem.porcentagem_armadura = 80
+        self.personagem.porcentagem_resistencia = 80
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_tacar_banana(self, *_):
+        dano = 10
+        # primeiro o dano é redusido a armadura/resistencia
+        dano = (dano - int((dano * 80) // 100))
+        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.tacar_banana(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_esmagar(self, *_):
+        dano = 15
+        dano = (dano - int((dano * 80) // 100))
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.esmagar(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+
+
+@mock.patch('jogo.personagens.monstros.randint', return_value = 100)
+class TestBloqueioArmaduraResistenciaDandoMenosDanoSucuri(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro('nome', True)
+        self.monstro = Sucuri()
+        self.personagem.porcentagem_armadura = 80
+        self.personagem.porcentagem_resistencia = 80
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_lancamento_de_calda(self, *_):
+        dano = 10
+        # primeiro o dano é redusido a armadura/resistencia
+        dano = (dano - int((dano * 80) // 100))
+        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.lancamento_de_calda(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_bote(self, *_):
+        dano = 15
+        dano = (dano - int((dano * 80) // 100))
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.bote(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+
+
+@mock.patch('jogo.personagens.monstros.randint', return_value = 100)
+class TestBloqueioArmaduraResistenciaDandoMenosDanoArvoreDeku(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro('nome', True)
+        self.monstro = ArvoreDeku()
+        self.personagem.porcentagem_armadura = 80
+        self.personagem.porcentagem_resistencia = 80
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_braçada(self, *_):
+        dano = 10
+        # primeiro o dano é redusido a armadura/resistencia
+        dano = (dano - int((dano * 80) // 100))
+        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.braçada(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_outono(self, *_):
+        dano = 15
+        dano = (dano - int((dano * 80) // 100))
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.outono(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+
+
+@mock.patch('jogo.personagens.monstros.randint', return_value = 100)
+class TestBloqueioArmaduraResistenciaDandoMenosDanoDragao(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro('nome', True)
+        self.monstro = Dragao()
+        self.personagem.porcentagem_armadura = 80
+        self.personagem.porcentagem_resistencia = 80
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_patada(self, *_):
+        dano = 10
+        # primeiro o dano é redusido a armadura/resistencia
+        dano = (dano - int((dano * 80) // 100))
+        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.patada(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)
+    
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_fogo(self, *_):
+        dano = 15
+        dano = (dano - int((dano * 80) // 100))
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.fogo(self.personagem)
+        self.assertEqual(self.personagem.status['vida'], esperado)

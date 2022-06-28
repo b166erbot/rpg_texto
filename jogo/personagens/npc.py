@@ -44,8 +44,8 @@ class Comerciante(Npc):
 
     def interagir(self, personagem):
         """Método que mostra os itens e obtem o número da compra."""
-        self._criar_itens(personagem.level)
-        self._criar_tabela()
+        self.itens = self._criar_itens(personagem.level)
+        self.tabela_cortada = self._criar_tabela()
         tela.limpar_tela()
         numero = self._obter_numero("O que deseja comprar?: ", personagem)
         while numero in self.itens:
@@ -99,7 +99,7 @@ class Comerciante(Npc):
             else:
                 texto = f"{numero} - {item.nome}. {item.preco}"
             tabela.append(texto)
-        self.tabela_cortada = chunk(tabela, 16)
+        return chunk(tabela, 16)
     
     def _criar_itens(self, level):
         self.itens_criados = []
@@ -112,7 +112,7 @@ class Comerciante(Npc):
                 atributos_nomes = ['vida', 'resistencia', 'armadura']
                 atributos_dict = dict(zip(atributos_nomes, atributos))
                 self.itens_criados.append(item(**atributos_dict))
-        self.itens = {
+        return {
             str(numero): item for numero, item
             in enumerate(self.itens_criados, 1)
         }

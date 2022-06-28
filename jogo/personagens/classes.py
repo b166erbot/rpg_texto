@@ -95,6 +95,7 @@ class Humano:
         self.porcentagem_resistencia = 0
         self.porcentagem_critico = 0
         self.aumento_dano_critico = 2.0
+        self.valor_de_bloqueio = 0
         self._calcular_bonus = CalcularBonus(self)
         self.atualizar_status()
         self._contador = Contador(4)
@@ -261,6 +262,7 @@ class Humano:
         self.status["dano"] = dano
         self.status["critico"] = self._critico
         self.aumento_dano_critico = self._aumento_critico
+        self.valor_de_bloqueio = self._bloqueio
         self.atualizar_porcentagem()
         self._calcular_bonus.calcular(self.equipamentos.values())
 
@@ -384,6 +386,15 @@ class Humano:
         ))
         aumento_critico = aumento_critico / 100 + 2
         return aumento_critico
+    
+    @property
+    def _bloqueio(self):
+        """Método que retorna o valor de bloqueio do personagem"""
+        equipamento = self.equipamentos['Item secundário']
+        if equipamento.tipo == "Escudo":
+            return equipamento.bloqueio // 100
+        else:
+            return 0
 
     def _recuperar_magia_stamina(self):
         if self.status["magia"] <= 80:

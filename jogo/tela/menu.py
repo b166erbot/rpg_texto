@@ -356,5 +356,5 @@ class Menu:
 # TODO: implementar deletar save no inicio
 # TODO: implementar baús que dropam itens/draconica?
 # TODO: ter um companheiro na campanha? (não sei se tem como implementar isso)
-# TODO: trols
+# TODO: trols, cavaleiros negros, catatumbas
 # TODO: implementar chance de bloqueio do escudo
