@@ -91,7 +91,7 @@ class Floresta:
             Boss = choice(bosses_comuns)
             boss = Boss(self.level, status)
             tela.imprimir("Boss encontrado.\n")
-            tela.imprimir(str(boss) + '\n')
+            tela.imprimir(str(boss) + "\n")
             lutar = self._lutar_ou_fugir()
             if lutar:
                 combate(self.personagem, boss)
@@ -124,7 +124,7 @@ class Floresta:
                 if self.personagem.status["vida"] == 0:
                     return True
                 else:
-                    self.personagem.experiencia.depositar_experiencia(
+                    self.personagem.experiencia.depositar_valor(
                         inimigo.experiencia
                     )
                     inimigo.sortear_drops(self.personagem)

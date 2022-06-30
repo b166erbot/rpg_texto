@@ -65,3 +65,16 @@ class Draconica(Moedas):
 
     def __str__(self):
         return f"{self.nome}: {formas[148]} {self._moedas}"
+
+
+class Glifos(Moedas):
+    nome = "Glifos"
+
+    def __init__(self, quantidade: int):
+        super().__init__(quantidade)
+
+    def __repr__(self):
+        return f"{self.nome}: {formas[151]} {self._moedas}"
+
+    def __str__(self):
+        return f"{self.nome}: {formas[151]} {self._moedas}"

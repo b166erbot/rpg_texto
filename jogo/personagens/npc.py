@@ -1,5 +1,5 @@
-from time import sleep
 from copy import copy
+from time import sleep
 
 from jogo.itens.moedas import Draconica
 from jogo.itens.quest import ItemQuest
@@ -87,11 +87,11 @@ class Comerciante(Npc):
             tela.imprimir(mensagem, "cyan")
             numero = tela.obter_string()
         return numero
-    
+
     def _criar_tabela(self):
         tabela = []
         for numero, item in self.itens.items():
-            if item.tipo == 'Poções':
+            if item.tipo == "Poções":
                 texto = (
                     f"{numero} - {item.nome}. "
                     f"{item.preco} quanto cura: {item.quanto_cura}"
@@ -100,21 +100,21 @@ class Comerciante(Npc):
                 texto = f"{numero} - {item.nome}. {item.preco}"
             tabela.append(texto)
         return chunk(tabela, 16)
-    
+
     def _criar_itens(self, level):
         self.itens_criados = []
         for item in self._itens:
-            if item.tipo == 'Poções':
+            if item.tipo == "Poções":
                 self.itens_criados.append(item())
-            elif item.tipo == 'Roupa':
+            elif item.tipo == "Roupa":
                 atributos = [20, 6, 6]
                 atributos = map(lambda x: x * level, atributos)
-                atributos_nomes = ['vida', 'resistencia', 'armadura']
+                atributos_nomes = ["vida", "resistencia", "armadura"]
                 atributos_dict = dict(zip(atributos_nomes, atributos))
                 self.itens_criados.append(item(**atributos_dict))
         return {
-            str(numero): item for numero, item
-            in enumerate(self.itens_criados, 1)
+            str(numero): item
+            for numero, item in enumerate(self.itens_criados, 1)
         }
 
 
@@ -315,6 +315,7 @@ class Banqueiro(Npc):
         self.inventario = []
 
     def e_possivel_guardar(self, item):
+        """Método que verifica se é possível guardar item no inventario."""
         if len(self.inventario) < self.tamanho_do_inventario:
             return True
         else:
@@ -424,3 +425,86 @@ class Banqueiro(Npc):
             numero = tela.obter_string()
         item = itens_dict.get(numero)
         return item
+
+
+class Ferreiro(Npc):
+    def __init__(self, nome: str):
+        super().__init__(nome, "Ferreiro")
+        self.salvar = False
+
+    def interagir(self, personagem):
+        tela.limpar_tela()
+        textos = ["derreter arma"]
+        textos_enumerados = list(enumerate(textos, 1))
+        numero = ":1"
+        while bool(numero) and not numero.isnumeric():
+            for numero, texto in textos_enumerados:
+                tela.imprimir(f"{numero} - {texto}\n")
+            tela.imprimir("O que deseja fazer?: ")
+            numero = tela.obter_string()
+        if numero == "1":
+            self.derreter_arma(personagem)
+
+    def derreter_arma(self, personagem):
+        equipamentos = list(
+            filter(
+                lambda x: x.tipo
+                in [
+                    "Peitoral",
+                    "Elmo",
+                    "Calça",
+                    "Botas",
+                    "Luvas",
+                    "Arma",
+                    "Anel",
+                    "Amuleto",
+                ],
+                personagem.inventario,
+            )
+        )
+        if len(equipamentos) == 0:
+            tela.imprimir("você não tem itens no inventario.", "cyan")
+            sleep(3)
+            return
+        item = self._obter_numero_equipamentos(equipamentos)
+        while bool(item):
+            personagem.moedas["Glifos"] += item.glifos
+            equipamentos = list(
+                filter(
+                    lambda x: x.tipo
+                    in [
+                        "Peitoral",
+                        "Elmo",
+                        "Calça",
+                        "Botas",
+                        "Luvas",
+                        "Arma",
+                        "Anel",
+                        "Amuleto",
+                    ],
+                    personagem.inventario,
+                )
+            )
+            item = self._obter_numero_equipamentos(equipamentos)
+
+    def _obter_numero_equipamentos(self, equipamentos):
+        """Método que organiza as páginas para o usuário e retorna um item."""
+        itens = list(enumerate(equipamentos))
+        itens_dict = {str(n): item for n, item in itens}
+        itens = chunk(itens, 18)
+        numeros_paginas = {f":{n}": n for n in range(1, len(itens) + 1)}
+        numero = ":1"
+        while bool(numero) and not numero.isnumeric():
+            tela.limpar_tela()
+            tela.imprimir(
+                f"páginas: {len(itens)}"
+                " - Para passar de página digite :numero exemplo-> :2\n",
+                "cyan",
+            )
+            n = numeros_paginas.get(numero, 1)
+            for numero, item in itens[n - 1]:
+                mensagem = f"{numero} - {item}"
+                tela.imprimir(mensagem + "\n", "cyan")
+            tela.imprimir("deseja derreter qual item?: ")
+            numero = tela.obter_string()
+        return itens_dict.get(numero)

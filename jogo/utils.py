@@ -1,4 +1,4 @@
-import shelve
+from itertools import takewhile
 from statistics import mean
 
 
@@ -57,3 +57,44 @@ class Contador:
     @property
     def usar(self):
         return True if self._contagem > self._contagem_maxima else False
+
+
+class Acumulador:
+    def __init__(self, valor: int, leveis: list, level: int = 1):
+        self.valor = 0
+        self._leveis = leveis
+        leveis += [float("inf")]
+        self._leveis_dict = dict(enumerate(leveis, 1))
+        self.level = level
+        self.depositar_valor(valor)
+
+    def __repr__(self):
+        return f"{self.valor}"
+
+    def __str__(self):
+        return f"{self.valor}"
+
+    def __int__(self):
+        return self.valor
+
+    def depositar_valor(self, valor: int):
+        level_maximo = list(enumerate(self._leveis, 1))[-1][0]
+        if self.level > level_maximo:
+            self.level = level_maximo
+        valor_requerido = self._leveis_dict.get(self.level)
+        self.valor += valor
+        while self.valor >= valor_requerido:
+            diferenca = self.valor - valor_requerido
+            if diferenca >= 0:
+                self.valor -= valor_requerido
+                self.level += 1
+            else:
+                self.valor -= diferenca
+            valor_requerido = self._leveis_dict.get(self.level)
+        if valor_requerido == float("inf"):
+            self.valor = 0
+
+    def valor_total(self):
+        valor = self._leveis_dict.get(self.level - 1)
+        valores = takewhile(lambda x: x <= valor, self._leveis)
+        return sum(valores) + self.valor

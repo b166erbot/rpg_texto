@@ -32,6 +32,7 @@ class Menu:
             "desequipar equipamentos",
             "mostrar equipamentos equipados",
             "vender itens",
+            "abrir caixas",
             "mostrar o status",
             "mostrar quests",
             "salvar jogo",
@@ -97,6 +98,8 @@ class Menu:
                 case 6:
                     self.vender_item()
                 case 7:
+                    self.abrir_caixas()
+                case 8:
                     tela.limpar_tela()
                     tela.imprimir(
                         self._arrumar_status(self.personagem),
@@ -106,18 +109,19 @@ class Menu:
                         "aperte enter para retornar ao menu principal: ", "cyan"
                     )
                     tela.obter_string()
-                case 8:
-                    self._obter_numero_quests()
                 case 9:
+                    self._obter_numero_quests()
+                case 10:
                     npcs = filter(lambda x: x.salvar, self._npcs)
                     salvar_jogo(self.personagem, npcs, self._nome_jogo)
                     tela.imprimir("jogo salvo", "cyan")
                     sleep(3)
-                case 10:
+                case 11:
                     tela.limpar_tela()
                     tela.imprimir(
                         "Tem certeza que deseja deletar o save? "
-                        "[s/n/sim/não]: "
+                        "[s/n/sim/não]: ",
+                        "cyan",
                     )
                     resposta = tela.obter_string()
                     if resposta in ["s", "sim"]:
@@ -128,7 +132,7 @@ class Menu:
                         else:
                             tela.imprimir("save não existente", "cyan")
                         sleep(3)
-                case 11:
+                case 12:
                     quit()
 
     def equipar_equipamentos(self):
@@ -140,13 +144,20 @@ class Menu:
             "deseja equipar qual equipamento?: ",
             equipamentos + self.personagem.inventario,
         )
-        if bool(numero):
+        while bool(numero):
             inventario = dict(
                 enumerate(equipamentos + self.personagem.inventario)
             )
             equipamento = inventario.get(int(numero))
             if bool(equipamento) and equipamento in self.personagem.inventario:
                 self.personagem.equipar(equipamento)
+            equipamentos = list(
+                filter(lambda x: x, self.personagem.equipamentos.values())
+            )
+            numero = self._obter_numero_equipamentos(
+                "deseja equipar qual equipamento?: ",
+                equipamentos + self.personagem.inventario,
+            )
 
     def vender_item(self):
         """Método que vende um item do inventário do personagem."""
@@ -167,11 +178,15 @@ class Menu:
             "deseja desequipar qual equipamento?: ",
             list(self.personagem.equipamentos.values()),
         )
-        if bool(numero):
+        while bool(numero):
             inventario = dict(enumerate(self.personagem.equipamentos.values()))
             equipamento = inventario.get(int(numero))
             if equipamento is not None:
                 self.personagem.desequipar(equipamento)
+            numero = self._obter_numero_equipamentos(
+                "deseja desequipar qual equipamento?: ",
+                list(self.personagem.equipamentos.values()),
+            )
 
     def floresta(self):
         """Método que conduz o personagem à floresta."""
@@ -239,6 +254,8 @@ class Menu:
                         "Amuleto",
                         "Arma",
                         "Escudo",
+                        "Item secundário",
+                        "Adorno de arma",
                     ]
                     else f"{numero} - {item}"
                 )
@@ -304,6 +321,59 @@ class Menu:
                 return False
         return True
 
+    def _obter_numero_caixa(self):
+        caixas = list(
+            filter(lambda x: x.tipo == "Caixa", self.personagem.inventario)
+        )
+        caixas_enumeradas = list(enumerate(caixas))
+        caixas_dict = {str(n): item for n, item in caixas_enumeradas}
+        caixas_enumeradas = chunk(caixas_enumeradas, 17)
+        numeros_paginas = {
+            f":{n}": n for n in range(1, len(caixas_enumeradas) + 1)
+        }
+        numero = ":1"
+        while bool(numero) and not numero.isnumeric():
+            tela.limpar_tela()
+            tela.imprimir(
+                f"páginas: {len(caixas_enumeradas)}"
+                " - Para passar de página digite :numero exemplo-> :2\n",
+                "cyan",
+            )
+            n = numeros_paginas.get(numero, 1)
+            for numero, item in caixas_enumeradas[n - 1]:
+                tela.imprimir(f"{numero} - {item}\n")
+            tela.imprimir("aperte enter para retornar ao menu: ", "cyan")
+            numero = tela.obter_string()
+        return caixas_dict.get(numero)
+
+    def abrir_caixas(self):
+        tela.limpar_tela()
+        caixas = list(
+            filter(lambda x: x.tipo == "Caixa", self.personagem.inventario)
+        )
+        if len(caixas) == 0:
+            tela.imprimir("você não tem caixas no inventario para abrir")
+            sleep(3)
+            return
+        caixa = self._obter_numero_caixa()
+        while len(caixas) > 0 and bool(caixa):
+            tela.limpar_tela()
+            caixas = list(
+                filter(lambda x: x.tipo == "Caixa", self.personagem.inventario)
+            )
+            tela.limpar_tela()
+            tela.imprimir(f"caixa: {caixa.nome}, deseja abrir? [sim/não]: ")
+            resposta = tela.obter_string().lower()
+            if resposta in ["s", "sim"]:
+                item = caixa.consumir()
+                tela.imprimir(f"item adquirido: {item}")
+                sleep(3)
+                if item.nome == "Draconica":
+                    self.personagem.moedas["Draconica"] += item
+                else:
+                    self.personagem.inventario.append(item)
+            caixa = self._obter_numero_caixa()
+
     def _arrumar_status(self, personagem):
         p = personagem
         armadura = f"armadura - {p.status['armadura']}"
@@ -318,8 +388,12 @@ class Menu:
         tamanhos = (
             len(x)
             for x in (
-                armadura, resistencia, experiencia, pratas, critico,
-                aum_cri
+                armadura,
+                resistencia,
+                experiencia,
+                pratas,
+                critico,
+                aum_cri,
             )
         )
         len_max = max(tamanhos)
@@ -332,6 +406,7 @@ class Menu:
             f"{critico: <{len_max}}{por_cri}%",
             f"aumento de dano critico - {p.aumento_dano_critico}\n"
             f"{pratas: <{len_max}}{str(p.moedas['Draconica'])}",
+            f"{p.moedas['Glifos']}",
             f"{experiencia: <{len_max}}level - {p.level}",
         ]
         return "\n".join(textos) + "\n"
@@ -345,7 +420,6 @@ class Menu:
 # TODO: fazer uma função que imprime a história do jogo.
 # TODO: histórias tem botão de skip (não sei se tem como fazer)
 # TODO: obsessão por primitivos na classe Humano (não tem como)
-# TODO: adicionar quests que fazem os bosses dropar o item.
 # TODO: elixir deve ter um preço diferente para cada level.
 # TODO: level nos equipamentos, itens.
 # TODO: implementar stun.
@@ -356,5 +430,11 @@ class Menu:
 # TODO: implementar deletar save no inicio
 # TODO: implementar baús que dropam itens/draconica?
 # TODO: ter um companheiro na campanha? (não sei se tem como implementar isso)
-# TODO: trols, cavaleiros negros, catatumbas
-# TODO: implementar chance de bloqueio do escudo
+# TODO: trols, cavaleiros negros, catatumbas[areas abertas, ala a direita, tunel]
+# TODO: eventos especiais acontecem de tempos em tempos
+# TODO: implementar glifos? (armas derretidas geram glifos)
+# TODO: implementar pets. pets dão porcentagem de algum atributo.
+# TODO: implementar durabilidade nas armas?
+# TODO: testar o acumulador do utils
+# TODO: cavernas tem estalagmites(no chão) e estalactites(no teto)
+# TODO: sangramento por dano de armas ou mobs

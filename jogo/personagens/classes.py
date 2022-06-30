@@ -4,13 +4,12 @@ from copy import copy
 from random import randint
 from time import sleep as sleep2
 
-from jogo.experiencia import Experiencia
 from jogo.itens.itens import CalcularBonus, SemItemEquipado
-from jogo.itens.moedas import Draconica, Pratas
+from jogo.itens.moedas import Draconica, Glifos, Pratas
 from jogo.itens.pocoes import curas
 from jogo.itens.quest import ItemQuest
 from jogo.tela.imprimir import Imprimir, formatar_status
-from jogo.utils import Contador, arrumar_porcentagem, regra_3
+from jogo.utils import Acumulador, Contador, arrumar_porcentagem, regra_3
 
 tela = Imprimir()
 
@@ -38,7 +37,7 @@ class Humano:
         level=1,
         status={},
         experiencia=0,
-        moedas={"Pratas": 1500, "Draconica": 0},
+        moedas={"Pratas": 1500, "Draconica": 0, "Glifos": 0},
         peitoral=SemItemEquipado("Peitoral", "Peitoral"),
         elmo=SemItemEquipado("Elmo", "Elmo"),
         calca=SemItemEquipado("Calça", "Calça"),
@@ -48,13 +47,13 @@ class Humano:
         anel=SemItemEquipado("Anel", "Anel"),
         amuleto=SemItemEquipado("Amuleto", "Amuleto"),
         item_secundario=SemItemEquipado("Item secundário", "Item secundário"),
-        adorno_de_arma = SemItemEquipado('Adorno de arma', 'Adorno de arma')
+        adorno_de_arma=SemItemEquipado("Adorno de arma", "Adorno de arma"),
     ):
         self.nome = nome.split()[0][:20]
         self.nome_completo = nome
         self.level = level
         leveis = [499, 999, 1999, 3499, 5499, 7999, 10999, 14499]
-        self.experiencia = Experiencia(experiencia, leveis, level)
+        self.experiencia = Acumulador(experiencia, leveis, level)
         self.status = Counter(
             status
             or {
@@ -75,6 +74,7 @@ class Humano:
         self.moedas = moedas
         self.moedas["Pratas"] = Pratas(self.moedas["Pratas"])
         self.moedas["Draconica"] = Draconica(self.moedas["Draconica"])
+        self.moedas["Glifos"] = Glifos(self.moedas["Glifos"])
         self.jogador = jogador
         self.equipamentos = {
             "Peitoral": peitoral,
@@ -369,7 +369,7 @@ class Humano:
             map(lambda x: x.critico, itens_critico)
         )
         return critico
-    
+
     @property
     def _aumento_critico(self):
         """Método que retorna o aumento do dano critico"""
@@ -381,16 +381,16 @@ class Humano:
         itens_aumento_critico = filter(
             lambda x: x.tipo in ["Arma", "Adorno de arma"], equipamentos
         )
-        aumento_critico = sum(map(
-            lambda x: x.aumento_critico, itens_aumento_critico
-        ))
+        aumento_critico = sum(
+            map(lambda x: x.aumento_critico, itens_aumento_critico)
+        )
         aumento_critico = aumento_critico / 100 + 2
         return aumento_critico
-    
+
     @property
     def _bloqueio(self):
         """Método que retorna o valor de bloqueio do personagem"""
-        equipamento = self.equipamentos['Item secundário']
+        equipamento = self.equipamentos["Item secundário"]
         if equipamento.tipo == "Escudo":
             return equipamento.bloqueio // 100
         else:

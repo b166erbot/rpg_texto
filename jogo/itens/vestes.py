@@ -1,5 +1,6 @@
 from jogo.itens.itens import Atributo
-from jogo.itens.moedas import Draconica, Pratas
+from jogo.itens.moedas import Draconica, Glifos, Pratas
+from jogo.utils import Acumulador
 
 
 class Roupa:
@@ -8,14 +9,28 @@ class Roupa:
     classe: str = "Todos"
 
     def __init__(
-        self, vida: int = 0, resistencia: int = 0, armadura: int = 0
+        self,
+        vida: int,
+        resistencia: int,
+        armadura: int,
+        level: int = 1,
     ):
-        self.vida = vida
-        self.resistencia = resistencia
-        self.armadura = armadura
-        self.preco = Pratas((((vida // 2) + resistencia + armadura) * 8))
-        self.bonus: list = []
+        self.vida = vida * level
+        self.resistencia = resistencia * level
+        self.armadura = armadura * level
+        self._valores_base = {
+            "vida": vida,
+            "resistencia": resistencia,
+            "armadura": armadura,
+            "level": level,
+        }
+        self.bonus = []
         self.conjunto = "item comum"
+        self.preco = Pratas((((vida // 2) + resistencia + armadura) * 8))
+        self.glifos = Glifos(12 * level)
+        self.level = level
+        leveis = [100, 200, 300, 400, 500, 600, 700, 800]
+        self.glifos_level = Acumulador(0, leveis, level)
 
     def __repr__(self):
         retorno = (
@@ -24,9 +39,25 @@ class Roupa:
         )
         return retorno
 
+    def receber_glifos(self, glifos):
+        self.glifos_level.depositar_valor(int(glifos))
+        self.level = self.glifos_level.level
+        self.vida = self._valores_base["vida"] * self.level
+        self.resistencia = self._valores_base["resistencia"] * self.level
+        self.armadura = self._valores_base["armadura"] * self.level
+
+    def remover_glifos(self):
+        glifos = Glifos(self.glifos_level.valor_total())
+        self.level = self._valores_base["level"]
+        self.vida = self._valores_base["vida"] * self.level
+        self.resistencia = self._valores_base["resistencia"] * self.level
+        self.armadura = self._valores_base["armadura"] * self.level
+        return glifos
+
 
 class Peitoral(Roupa):
-    nome = 'Peitoral'
+    nome = "Peitoral"
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tipo = "Peitoral"
@@ -34,7 +65,8 @@ class Peitoral(Roupa):
 
 
 class Elmo(Roupa):
-    nome = 'Elmo'
+    nome = "Elmo"
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tipo = "Elmo"
@@ -42,7 +74,8 @@ class Elmo(Roupa):
 
 
 class Calca(Roupa):
-    nome = 'Calça'
+    nome = "Calça"
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tipo = "Calça"
@@ -50,7 +83,8 @@ class Calca(Roupa):
 
 
 class Botas(Roupa):
-    nome = 'Botas'
+    nome = "Botas"
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tipo = "Botas"
@@ -58,7 +92,8 @@ class Botas(Roupa):
 
 
 class Luvas(Roupa):
-    nome = 'Luvas'
+    nome = "Luvas"
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tipo = "Luvas"
@@ -72,21 +107,33 @@ class Anel:
 
     def __init__(
         self,
-        dano: int = 0,
-        vida: int = 0,
-        resistencia: int = 0,
-        armadura: int = 0,
+        dano: int,
+        vida: int,
+        resistencia: int,
+        armadura: int,
+        level: int = 1,
     ):
-        self.dano = dano
-        self.vida = vida
-        self.resistencia = resistencia
-        self.armadura = armadura
-        self.preco = Pratas(
-            (dano + (self.vida // 2) + resistencia + armadura) * 8
-        )
+        self.dano = dano * level
+        self.vida = vida * level
+        self.resistencia = resistencia * level
+        self.armadura = armadura * level
+        self._valores_base = {
+            "dano": dano,
+            "vida": vida,
+            "resistencia": resistencia,
+            "armadura": armadura,
+            "level": level,
+        }
         self.bonus = []
         self.conjunto = "item comum"
         self.tipo_equipar = "Anel"
+        self.preco = Pratas(
+            (dano + (self.vida // 2) + resistencia + armadura) * 8
+        )
+        self.glifos = Glifos(12 * level)
+        self.level = level
+        leveis = [100, 200, 300, 400, 500, 600, 700, 800]
+        self.glifos_level = Acumulador(0, leveis, level)
 
     def __repr__(self):
         retorno = (
@@ -94,6 +141,23 @@ class Anel:
             f", arm: {self.armadura}, dan: {self.dano})"
         )
         return retorno
+
+    def receber_glifos(self, glifos):
+        self.glifos_level.depositar_valor(int(glifos))
+        self.level = self.glifos_level.level
+        self.dano = self._valores_base["dano"] * self.level
+        self.vida = self._valores_base["vida"] * self.level
+        self.armadura = self._valores_base["armadura"] * self.level
+        self.resistencia = self._valores_base["resistencia"] * self.level
+
+    def remover_glifos(self):
+        glifos = Glifos(self.glifos_level.valor_total())
+        self.level = self._valores_base["level"]
+        self.dano = self._valores_base["dano"] * self.level
+        self.vida = self._valores_base["vida"] * self.level
+        self.armadura = self._valores_base["armadura"] * self.level
+        self.resistencia = self._valores_base["resistencia"] * self.level
+        return glifos
 
 
 class Amuleto:
@@ -103,21 +167,33 @@ class Amuleto:
 
     def __init__(
         self,
-        dano: int = 0,
-        vida: int = 0,
-        resistencia: int = 0,
-        armadura: int = 0,
+        dano: int,
+        vida: int,
+        resistencia: int,
+        armadura: int,
+        level: int = 1,
     ):
-        self.dano = dano
-        self.vida = vida
-        self.resistencia = resistencia
-        self.armadura = armadura
-        self.preco = Pratas(
-            (dano + (self.vida // 2) + resistencia + armadura) * 8
-        )
+        self.dano = dano * level
+        self.vida = vida * level
+        self.resistencia = resistencia * level
+        self.armadura = armadura * level
+        self._valores_base = {
+            "dano": dano,
+            "vida": vida,
+            "resistencia": resistencia,
+            "armadura": armadura,
+            "level": level,
+        }
         self.bonus = []
         self.conjunto = "item comum"
         self.tipo_equipar = "Amuleto"
+        self.preco = Pratas(
+            (dano + (self.vida // 2) + resistencia + armadura) * 8
+        )
+        self.glifos = Glifos(12 * level)
+        self.level = level
+        leveis = [100, 200, 300, 400, 500, 600, 700, 800]
+        self.glifos_level = Acumulador(0, leveis, level)
 
     def __repr__(self):
         retorno = (
@@ -126,8 +202,22 @@ class Amuleto:
         )
         return retorno
 
+    def receber_glifos(self, glifos):
+        self.glifos_level.depositar_valor(int(glifos))
+        self.level = self.glifos_level.level
+        self.dano = self._valores_base["dano"] * self.level
+        self.vida = self._valores_base["vida"] * self.level
+        self.armadura = self._valores_base["armadura"] * self.level
+        self.resistencia = self._valores_base["resistencia"] * self.level
 
-tudo = [Peitoral, Elmo, Calca, Botas, Luvas, Anel, Amuleto]
+    def remover_glifos(self):
+        glifos = Glifos(self.glifos_level.valor_total())
+        self.level = self._valores_base["level"]
+        self.dano = self._valores_base["dano"] * self.level
+        self.vida = self._valores_base["vida"] * self.level
+        self.armadura = self._valores_base["armadura"] * self.level
+        self.resistencia = self._valores_base["resistencia"] * self.level
+        return glifos
 
 
 class RoupaDraconica:
@@ -136,17 +226,31 @@ class RoupaDraconica:
     classe: str = "Todos"
 
     def __init__(
-        self, vida: int = 0, resistencia: int = 0, armadura: int = 0
+        self,
+        vida: int,
+        resistencia: int,
+        armadura: int,
+        level: int = 1,
     ):
-        self.vida = vida
-        self.resistencia = resistencia
-        self.armadura = armadura
-        self.preco = Draconica((((vida // 2) + resistencia + armadura) * 8))
+        self.vida = vida * level
+        self.resistencia = resistencia * level
+        self.armadura = armadura * level
+        self._valores_base = {
+            "vida": vida,
+            "resistencia": resistencia,
+            "armadura": armadura,
+            "level": level,
+        }
         self.bonus = [
             Atributo("vida", 50, "valor real", 2),
             Atributo("resistencia", 10, "porcentagem", 3),
         ]
         self.conjunto = "item Draconico"
+        self.preco = Draconica((((vida // 2) + resistencia + armadura) * 8))
+        self.glifos = Glifos(200 * level)
+        self.level = level
+        leveis = [100, 200, 300, 400, 500, 600, 700, 800]
+        self.glifos_level = Acumulador(0, leveis, level)
 
     def __repr__(self):
         retorno = (
@@ -155,9 +259,25 @@ class RoupaDraconica:
         )
         return retorno
 
+    def receber_glifos(self, glifos):
+        self.glifos_level.depositar_valor(int(glifos))
+        self.level = self.glifos_level.level
+        self.vida = self._valores_base["vida"] * self.level
+        self.armadura = self._valores_base["armadura"] * self.level
+        self.resistencia = self._valores_base["resistencia"] * self.level
+
+    def remover_glifos(self):
+        glifos = Glifos(self.glifos_level.valor_total())
+        self.level = self._valores_base["level"]
+        self.vida = self._valores_base["vida"] * self.level
+        self.armadura = self._valores_base["armadura"] * self.level
+        self.resistencia = self._valores_base["resistencia"] * self.level
+        return glifos
+
 
 class PeitoralDraconico(RoupaDraconica):
     nome = "Pei Draconico"
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tipo = "Peitoral"
@@ -166,6 +286,7 @@ class PeitoralDraconico(RoupaDraconica):
 
 class ElmoDraconico(RoupaDraconica):
     nome = "Elm Draconico"
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tipo = "Elmo"
@@ -174,10 +295,12 @@ class ElmoDraconico(RoupaDraconica):
 
 class CalcaDraconica(RoupaDraconica):
     nome = "Cal Draconica"
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tipo = "Calça"
         self.tipo_equipar = "Calça"
 
 
+tudo = [Peitoral, Elmo, Calca, Botas, Luvas, Anel, Amuleto]
 roupas_draconicas = [PeitoralDraconico, ElmoDraconico, CalcaDraconica]

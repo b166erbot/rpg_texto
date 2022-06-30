@@ -4,6 +4,7 @@ from random import choice, randint
 from time import sleep as sleep2
 
 from jogo.itens.armas import tudo as armas
+from jogo.itens.caixas import CaixaDraconica
 from jogo.itens.item_secundario import tudo as itens_secundarios
 from jogo.itens.quest import ItemQuest
 from jogo.itens.vestes import tudo as vestes
@@ -90,9 +91,18 @@ class Monstro:
             Item = choice(vestes + armas + itens_secundarios)
             match Item.tipo:
                 case "Arma":
-                    status = [randint(1, 6), randint(1, 16), randint(1, 6)]
-                    status = map(lambda x: x * self.level, status)
-                    status_nomes = ["dano", "aumento_critico", "critico"]
+                    status = [
+                        randint(1, 6),
+                        randint(1, 16),
+                        randint(1, 6),
+                        self.level,
+                    ]
+                    status_nomes = [
+                        "dano",
+                        "aumento_critico",
+                        "critico",
+                        "level",
+                    ]
                     status_dict = dict(zip(status_nomes, status))
                     item = Item(**status_dict)
                 case "Roupa":  # a classe tem tipo -> Roupa
@@ -100,9 +110,9 @@ class Monstro:
                         randint(1, 6),
                         randint(3, 20),
                         randint(1, 6),
+                        self.level,
                     ]
-                    status = map(lambda x: x * self.level, status)
-                    status_nomes = ["armadura", "vida", "resistencia"]
+                    status_nomes = ["armadura", "vida", "resistencia", "level"]
                     status_dict = dict(zip(status_nomes, status))
                     item = Item(**status_dict)
                 case "Anel" | "Amuleto":
@@ -111,9 +121,15 @@ class Monstro:
                         randint(3, 20),
                         randint(1, 6),
                         randint(1, 6),
+                        self.level,
                     ]
-                    status = map(lambda x: x * self.level, status)
-                    status_nomes = ["dano", "vida", "resistencia", "armadura"]
+                    status_nomes = [
+                        "dano",
+                        "vida",
+                        "resistencia",
+                        "armadura",
+                        "level",
+                    ]
                     status_dict = dict(zip(status_nomes, status))
                     item = Item(**status_dict)
                 case "Escudo":
@@ -122,18 +138,24 @@ class Monstro:
                         randint(1, 6),
                         randint(1, 6),
                         randint(10, 80),
+                        self.level,
                     ]
-                    status = map(lambda x: x * self.level, status)
-                    status_nomes = ["vida", "armadura", "resistencia", "bloqueio"]
+                    status_nomes = [
+                        "vida",
+                        "armadura",
+                        "resistencia",
+                        "bloqueio",
+                        "level",
+                    ]
                     status_dict = dict(zip(status_nomes, status))
                     item = Item(**status_dict)
                 case "Adorno de arma":
                     status = [
                         randint(1, 6),
-                        randint(1, 16)
+                        randint(1, 16),
+                        self.level,
                     ]
-                    status = map(lambda x: x * self.level, status)
-                    status_nomes = ['critico', 'aumento_critico']
+                    status_nomes = ["critico", "aumento_critico", "level"]
                     status_dict = dict(zip(status_nomes, status))
                     item = Item(**status_dict)
             personagem.moedas["Pratas"] += randint(
@@ -176,7 +198,7 @@ class Monstro:
         return status
 
     def dar_experiencia(self, personagem):
-        personagem.experiencia.depositar_experiencia(self.experiencia)
+        personagem.experiencia.depositar_valor(self.experiencia)
 
     def atualizar_status(self):
         self.atualizar_porcentagem()
@@ -231,19 +253,23 @@ class Boss(Monstro):
         Item = choice(vestes + armas)
         match Item.tipo:
             case "Arma":
-                status = [randint(3, 6), randint(8, 16), randint(3, 6)]
-                status = map(lambda x: x * self.level, status)
-                status_nomes = ["dano", "aumento_critico", "critico"]
+                status = [
+                    randint(3, 6),
+                    randint(8, 16),
+                    randint(3, 6),
+                    self.level,
+                ]
+                status_nomes = ["dano", "aumento_critico", "critico", "level"]
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(**status_dict)
-            case "Roupa": # a classe tem tipo -> Roupa
+            case "Roupa":  # a classe tem tipo -> Roupa
                 status = [
                     randint(3, 6),
                     randint(10, 20),
                     randint(3, 6),
+                    self.level,
                 ]
-                status = map(lambda x: x * self.level, status)
-                status_nomes = ["armadura", "vida", "resistencia"]
+                status_nomes = ["armadura", "vida", "resistencia", "level"]
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(**status_dict)
             case "Anel" | "Amuleto":
@@ -252,9 +278,15 @@ class Boss(Monstro):
                     randint(10, 20),
                     randint(3, 6),
                     randint(3, 6),
+                    self.level,
                 ]
-                status = map(lambda x: x * self.level, status)
-                status_nomes = ["dano", "vida", "resistencia", "armadura"]
+                status_nomes = [
+                    "dano",
+                    "vida",
+                    "resistencia",
+                    "armadura",
+                    "level",
+                ]
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(**status_dict)
             case "Escudo":
@@ -263,20 +295,26 @@ class Boss(Monstro):
                     randint(3, 6),
                     randint(3, 6),
                     randint(40, 80),
+                    self.level,
                 ]
-                status = map(lambda x: x * self.level, status)
-                status_nomes = ["vida", "armadura", "resistencia", "bloqueio"]
+                status_nomes = [
+                    "vida",
+                    "armadura",
+                    "resistencia",
+                    "bloqueio",
+                    "level",
+                ]
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(**status_dict)
             case "Adorno de arma":
-                    status = [
-                        randint(3, 6),
-                        randint(8, 16)
-                    ]
-                    status = map(lambda x: x * self.level, status)
-                    status_nomes = ['critico', 'aumento_critico']
-                    status_dict = dict(zip(status_nomes, status))
-                    item = Item(**status_dict)
+                status = [
+                    randint(3, 6),
+                    randint(8, 16),
+                    self.level,
+                ]
+                status_nomes = ["critico", "aumento_critico", "level"]
+                status_dict = dict(zip(status_nomes, status))
+                item = Item(**status_dict)
         personagem.moedas["Pratas"] += randint(
             30 * 2 * self.level, 50 * 2 * self.level
         )
@@ -538,7 +576,7 @@ class Dragao(Boss):
         subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
         dano -= subtrair_dano
         subtrair_dano2 = other.valor_de_bloqueio * dano
-        
+
         other.status["vida"] -= dano - subtrair_dano2
 
     def fogo(self, other):
@@ -549,12 +587,13 @@ class Dragao(Boss):
         subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
         dano -= subtrair_dano
         subtrair_dano2 = other.valor_de_bloqueio * dano
-        
+
         other.status["vida"] -= dano - subtrair_dano2
 
     def sortear_drops(self, personagem):
         super().sortear_drops(personagem)
         personagem.inventario.append(ItemQuest("Coração de Dragão"))
+        personagem.inventario.append(CaixaDraconica())
 
 
 monstros_comuns = [Tartaruga, Camaleao, Tamandua, Sapo]

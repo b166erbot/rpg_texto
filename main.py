@@ -20,6 +20,7 @@ from time import sleep
 from jogo.itens.moedas import Draconica
 from jogo.itens.pocoes import curas
 from jogo.itens.quest import ItemQuest
+from jogo.itens.vestes import roupas_draconicas
 from jogo.personagens.classes import (
     Arqueiro,
     Assassino,
@@ -32,9 +33,9 @@ from jogo.personagens.npc import (
     Banqueiro,
     Comerciante,
     ComercianteItemQuest,
+    Ferreiro,
     Pessoa,
 )
-from jogo.itens.vestes import roupas_draconicas
 from jogo.quests import quests_da_lorena, quests_do_eivor
 from jogo.save import carregar_jogo_tela, salvar_jogo
 from jogo.tela.imprimir import Imprimir
@@ -63,22 +64,24 @@ def novo_jogo_saves(nomes: list[str]):
             bram = ComercianteItemQuest(
                 "Bram", [Draconica], [ItemQuest("Coração de Dragão")]
             )
+            hagar = Ferreiro("Hagar")
             personagens_, nome_do_save = personagens
-            personagens_ += (bram,)
+            personagens_ += (bram, hagar)
             return (personagens_, nome_do_save)
         else:
             return False
     elif resposta == "novo jogo":
-        lorena = Pessoa("Lorena")
-        quests = [quest(lorena.nome) for quest in quests_da_lorena]
-        lorena.receber_quest(quests)
+        azura = Pessoa("Azura")
+        quests = [quest(azura.nome) for quest in quests_da_lorena]
+        azura.receber_quest(quests)
         eivor = Pessoa("Eivor")
         quests = [quest(eivor.nome) for quest in quests_do_eivor]
         eivor.receber_quest(quests)
-        tiago = Banqueiro("Tiago")
+        tavon = Banqueiro("Tavon")
         bram = ComercianteItemQuest(
             "Bram", [Draconica], [ItemQuest("Coração de Dragão")]
         )
+        hagar = Ferreiro("Hagar")
         personagem = novo_personagem()
         nome_jogo = ""
         arquivos = [arquivo.name for arquivo in Path().glob("*.pkl")]
@@ -90,10 +93,10 @@ def novo_jogo_saves(nomes: list[str]):
             if nome_jogo + ".pkl" in arquivos:
                 tela.imprimir("erro: nome do arquivo existente", "vermelho")
                 sleep(3)
-        npcs = [lorena, eivor, tiago]
+        npcs = [azura, eivor, tavon]
         nome_jogo += ".pkl"
         salvar_jogo(personagem, npcs, nome_jogo)
-        return ([personagem] + npcs + [bram], nome_jogo)
+        return ([personagem] + npcs + [bram, hagar], nome_jogo)
 
 
 def novo_personagem():
@@ -130,14 +133,14 @@ def main():
     personagens_nome_jogo = ""
     while not bool(personagens_nome_jogo):
         personagens_nome_jogo = novo_jogo_saves(
-            ["Personagem", "Lorena", "Eivor", "Tiago"]
+            ["Personagem", "Azura", "Eivor", "Tavon"]
         )
     personagens, nome_jogo = personagens_nome_jogo
-    personagem, lorena, eivor, tiago, bram = personagens
+    personagem, azura, eivor, tavon, bram, hagar = personagens
     itens = curas + roupas_draconicas
     farkas = Comerciante("farkas", itens)
     menu = Menu(personagem, nome_jogo)
-    menu.obter_npcs([lorena, farkas, tiago, eivor, bram])
+    menu.obter_npcs([azura, farkas, tavon, eivor, bram, hagar])
     menu.ciclo()
 
 
