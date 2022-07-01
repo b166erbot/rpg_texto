@@ -43,20 +43,11 @@ class Menu:
             f"{numero} - {texto}" for numero, texto in enumerate(texto2, 1)
         ]
         self.personagem = personagem
-        for item in roupas[:-2]:
-            item2 = item(vida=5, armadura=5, resistencia=5)
-            personagem.inventario.append(item2)
-            personagem.equipar(item2)
-        for item in roupas[:-2]:
-            personagem.inventario.append(
-                item(vida=5, armadura=5, resistencia=5)
-            )
-        personagem.moedas["Glifos"] += 1500
 
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""
-        # mixer.music.load("vilarejo.ogg")
-        # mixer.music.play()
+        mixer.music.load("vilarejo.ogg")
+        mixer.music.play()
         forma = f"{formas[227]} {{}} {formas[228]}"
         while True:
             tela.limpar_tela()
