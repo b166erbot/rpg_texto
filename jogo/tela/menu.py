@@ -3,6 +3,7 @@ from pathlib import Path
 from time import sleep
 from unittest.mock import MagicMock
 
+from jogo.itens.vestes import tudo as roupas
 from jogo.locais.areas_abertas import Floresta
 from jogo.locais.habitaveis import Vilarejo
 from jogo.quests import ItemQuest
@@ -31,7 +32,6 @@ class Menu:
             "equipar equipamentos",
             "desequipar equipamentos",
             "mostrar equipamentos equipados",
-            "vender itens",
             "abrir caixas",
             "mostrar o status",
             "mostrar quests",
@@ -43,11 +43,20 @@ class Menu:
             f"{numero} - {texto}" for numero, texto in enumerate(texto2, 1)
         ]
         self.personagem = personagem
+        for item in roupas[:-2]:
+            item2 = item(vida=5, armadura=5, resistencia=5)
+            personagem.inventario.append(item2)
+            personagem.equipar(item2)
+        for item in roupas[:-2]:
+            personagem.inventario.append(
+                item(vida=5, armadura=5, resistencia=5)
+            )
+        personagem.moedas["Glifos"] += 1500
 
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""
-        mixer.music.load("vilarejo.ogg")
-        mixer.music.play()
+        # mixer.music.load("vilarejo.ogg")
+        # mixer.music.play()
         forma = f"{formas[227]} {{}} {formas[228]}"
         while True:
             tela.limpar_tela()
@@ -96,10 +105,8 @@ class Menu:
                     )
                     tela.obter_string()
                 case 6:
-                    self.vender_item()
-                case 7:
                     self.abrir_caixas()
-                case 8:
+                case 7:
                     tela.limpar_tela()
                     tela.imprimir(
                         self._arrumar_status(self.personagem),
@@ -109,14 +116,14 @@ class Menu:
                         "aperte enter para retornar ao menu principal: ", "cyan"
                     )
                     tela.obter_string()
-                case 9:
+                case 8:
                     self._obter_numero_quests()
-                case 10:
+                case 9:
                     npcs = filter(lambda x: x.salvar, self._npcs)
                     salvar_jogo(self.personagem, npcs, self._nome_jogo)
                     tela.imprimir("jogo salvo", "cyan")
                     sleep(3)
-                case 11:
+                case 10:
                     tela.limpar_tela()
                     tela.imprimir(
                         "Tem certeza que deseja deletar o save? "
@@ -132,7 +139,7 @@ class Menu:
                         else:
                             tela.imprimir("save não existente", "cyan")
                         sleep(3)
-                case 12:
+                case 11:
                     quit()
 
     def equipar_equipamentos(self):
@@ -158,19 +165,6 @@ class Menu:
                 "deseja equipar qual equipamento?: ",
                 equipamentos + self.personagem.inventario,
             )
-
-    def vender_item(self):
-        """Método que vende um item do inventário do personagem."""
-        numero = self._obter_numero_equipamentos(
-            "deseja vender qual equipamento?: ", self.personagem.inventario
-        )
-        if bool(numero):
-            inventario = dict(enumerate(self.personagem.inventario))
-            equipamento = inventario.get(int(numero))
-            if equipamento is not None:
-                if not isinstance(equipamento, ItemQuest):
-                    self.personagem.desequipar(equipamento)
-                    self.personagem.vender(equipamento)
 
     def desequipar(self):
         """Método que desequipa um equipamento do personagem."""
@@ -421,20 +415,17 @@ class Menu:
 # TODO: histórias tem botão de skip (não sei se tem como fazer)
 # TODO: obsessão por primitivos na classe Humano (não tem como)
 # TODO: elixir deve ter um preço diferente para cada level.
-# TODO: level nos equipamentos, itens.
 # TODO: implementar stun.
 # TODO: interagir com cenários e destruílos?
 # TODO: fazer quests onde o personagem precise interagir com 2 ou mais npcs.
-# TODO: botar um simbolo diferente para a moeda draconica.
+# TODO: botar um simbolo diferente nas moedas glifo e draconica.
 # TODO: fazer 10 poções ocuparem o mesmo espaço? (não sei se tem como)
 # TODO: implementar deletar save no inicio
 # TODO: implementar baús que dropam itens/draconica?
 # TODO: ter um companheiro na campanha? (não sei se tem como implementar isso)
 # TODO: trols, cavaleiros negros, catatumbas[areas abertas, ala a direita, tunel]
 # TODO: eventos especiais acontecem de tempos em tempos
-# TODO: implementar glifos? (armas derretidas geram glifos)
 # TODO: implementar pets. pets dão porcentagem de algum atributo.
 # TODO: implementar durabilidade nas armas?
-# TODO: testar o acumulador do utils
-# TODO: cavernas tem estalagmites(no chão) e estalactites(no teto)
 # TODO: sangramento por dano de armas ou mobs
+# TODO: mover o vender equipamentos para o comerciante.

@@ -127,9 +127,7 @@ class Anel:
         self.bonus = []
         self.conjunto = "item comum"
         self.tipo_equipar = "Anel"
-        self.preco = Pratas(
-            (dano + (self.vida // 2) + resistencia + armadura) * 8
-        )
+        self.preco = Pratas((dano + (vida // 2) + resistencia + armadura) * 8)
         self.glifos = Glifos(12 * level)
         self.level = level
         leveis = [100, 200, 300, 400, 500, 600, 700, 800]
@@ -187,9 +185,7 @@ class Amuleto:
         self.bonus = []
         self.conjunto = "item comum"
         self.tipo_equipar = "Amuleto"
-        self.preco = Pratas(
-            (dano + (self.vida // 2) + resistencia + armadura) * 8
-        )
+        self.preco = Pratas((dano + (vida // 2) + resistencia + armadura) * 8)
         self.glifos = Glifos(12 * level)
         self.level = level
         leveis = [100, 200, 300, 400, 500, 600, 700, 800]

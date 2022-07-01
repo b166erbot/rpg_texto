@@ -30,7 +30,96 @@ class Comerciante(Npc):
         self.itens_criados = []
         self.salvar = False
 
+    def interagir(self, personagem):
+        """Método que mostra os itens e obtem o número da compra."""
+        textos = [
+            "comprar",
+            "vender",
+        ]
+        textos_enumerados = list(enumerate(textos, 1))
+        numeros_texto = [str(n) for n, texto in textos_enumerados]
+        numero = ":1"
+        numeros_pagina = [":1", ":2"]
+        while numero in numeros_pagina + numeros_texto:
+            tela.limpar_tela()
+            for numero, texto in textos_enumerados:
+                tela.imprimir(f"{numero} - {texto}\n")
+            tela.imprimir("O que deseja fazer?: ")
+            numero = tela.obter_string()
+            if numero == "1":
+                self.interagir_comprar(personagem)
+            if numero == "2":
+                self.interagir_vender(personagem)
+
+    def interagir_vender(self, personagem):
+        """Método que interage com o usuário e vende itens."""
+        itens = [
+            f"{numero} - {item}"
+            for numero, item in enumerate(personagem.inventario)
+        ]
+        if len(itens) == 0:
+            tela.imprimir("você não tem itens no inventario.")
+            sleep(2)
+        itens = chunk(itens, 16)
+        numero = self._obter_numero(
+            "deseja vender qual equipamento?: ",
+            personagem,
+            itens,
+        )
+        while bool(numero):
+            tela.limpar_tela()
+            inventario = {
+                str(n): item for n, item in enumerate(personagem.inventario)
+            }
+            if len(inventario) == 0:
+                break
+            equipamento = inventario.get(numero)
+            if equipamento is not None:
+                if not isinstance(equipamento, ItemQuest):
+                    self.vender(personagem, equipamento, equipamento.preco.nome)
+                    tela.imprimir(
+                        f"item {equipamento} vendido. {equipamento.preco}"
+                    )
+            itens = [
+                f"{numero} - {item}"
+                for numero, item in enumerate(personagem.inventario)
+            ]
+            itens = chunk(itens, 16)
+            numero = self._obter_numero(
+                "deseja vender qual equipamento?: ",
+                personagem,
+                itens,
+            )
+
+    def interagir_comprar(self, personagem):
+        """Método que interage com o usuário e compra itens."""
+        self.itens = self._criar_itens(personagem.level)
+        self.tabela_cortada = self._criar_tabela()
+        tela.limpar_tela()
+        numero = self._obter_numero(
+            "O que deseja comprar?: ",
+            personagem,
+            self.tabela_cortada,
+        )
+        while numero in self.itens:
+            tela.imprimir("Quantidade: ", "cyan")
+            quantidade = tela.obter_string()
+            if not bool(quantidade):
+                break
+            item = self.itens[numero]
+            self.comprar(item, int(quantidade), personagem, item.preco.nome)
+            tela.limpar_tela()
+            numero = self._obter_numero(
+                "Deseja mais alguma coisa?: ",
+                personagem,
+                self.tabela_cortada,
+            )
+        tela.limpar_tela()
+        tela.imprimir("volte sempre!", "cyan")
+        sleep(1)
+
     def comprar(self, item, quantidade: int, personagem, tipo_de_moeda: str):
+        """Método que de fato, faz a compra dos itens."""
         preço = quantidade * int(item.preco)
         if int(personagem.moedas[tipo_de_moeda]) >= preço:
             personagem.moedas[tipo_de_moeda] -= preço
@@ -42,47 +131,32 @@ class Comerciante(Npc):
             tela.imprimir(texto, "cyan")
             sleep(3)
 
-    def interagir(self, personagem):
-        """Método que mostra os itens e obtem o número da compra."""
-        self.itens = self._criar_itens(personagem.level)
-        self.tabela_cortada = self._criar_tabela()
-        tela.limpar_tela()
-        numero = self._obter_numero("O que deseja comprar?: ", personagem)
-        while numero in self.itens:
-            tela.imprimir("Quantidade: ", "cyan")
-            quantidade = tela.obter_string()
-            if not bool(quantidade):
-                break
-            item = self.itens[numero]
-            self.comprar(item, int(quantidade), personagem, item.preco.nome)
-            tela.limpar_tela()
-            numero = self._obter_numero(
-                "Deseja mais alguma coisa?: ", personagem
-            )
-        tela.limpar_tela()
-        tela.imprimir("volte sempre!", "cyan")
-        sleep(1)
+    def vender(self, personagem, equipamento, tipo_de_moeda: str):
+        personagem.moedas[tipo_de_moeda] += equipamento.preco
+        index = personagem.inventario.index(equipamento)
+        personagem.inventario.pop(index)
 
-    def _obter_numero(self, mensagem: str, personagem):
+    def _obter_numero(self, mensagem: str, personagem, itens_cortados):
         """Método que organiza as páginas para o usuário e retorna um numero."""
         numeros_paginas = {
-            f":{n}": n for n in range(1, len(self.tabela_cortada) + 1)
+            f":{n}": n for n in range(1, len(itens_cortados) + 1)
         }
         numero = ":1"
         while numero in numeros_paginas:
             tela.limpar_tela()
             tela.imprimir(
-                f"páginas: {len(self.tabela_cortada)}"
+                f"páginas: {len(itens_cortados)}"
                 " - Para passar de página digite :numero exemplo-> :2\n",
                 "cyan",
             )
             tela.imprimir(
                 f"seu dinheiro: {personagem.moedas['Pratas']} "
-                f"- {personagem.moedas['Draconica']}\n",
+                f"- {personagem.moedas['Draconica']} "
+                f"- {personagem.moedas['Glifos']}\n",
                 "cyan",
             )
             n = numeros_paginas.get(numero, 1)
-            for texto in self.tabela_cortada[n - 1]:
+            for texto in itens_cortados[n - 1]:
                 tela.imprimir(texto + "\n", "cyan")
             tela.imprimir(mensagem, "cyan")
             numero = tela.obter_string()
@@ -433,32 +507,30 @@ class Ferreiro(Npc):
         self.salvar = False
 
     def interagir(self, personagem):
-        tela.limpar_tela()
-        textos = ["derreter arma"]
+        textos = [
+            "derreter arma",
+            "acrescentar glifos",
+            "remover glifos",
+        ]
         textos_enumerados = list(enumerate(textos, 1))
+        numeros_texto = [str(n) for n, texto in textos_enumerados]
         numero = ":1"
-        while bool(numero) and not numero.isnumeric():
+        numeros_pagina = [":1", ":2"]
+        while numero in numeros_pagina + numeros_texto:
+            tela.limpar_tela()
             for numero, texto in textos_enumerados:
                 tela.imprimir(f"{numero} - {texto}\n")
             tela.imprimir("O que deseja fazer?: ")
             numero = tela.obter_string()
-        if numero == "1":
-            self.derreter_arma(personagem)
+            if numero == "1":
+                self.derreter_arma(personagem)
+            if numero == "2":
+                self.acrescentar_glifos(personagem)
 
     def derreter_arma(self, personagem):
         equipamentos = list(
             filter(
-                lambda x: x.tipo
-                in [
-                    "Peitoral",
-                    "Elmo",
-                    "Calça",
-                    "Botas",
-                    "Luvas",
-                    "Arma",
-                    "Anel",
-                    "Amuleto",
-                ],
+                _retornar_itens_equipaveis,
                 personagem.inventario,
             )
         )
@@ -466,28 +538,85 @@ class Ferreiro(Npc):
             tela.imprimir("você não tem itens no inventario.", "cyan")
             sleep(3)
             return
-        item = self._obter_numero_equipamentos(equipamentos)
+        item = self._obter_numero_equipamentos(
+            equipamentos,
+            "deseja derreter qual item?: ",
+            personagem,
+        )
         while bool(item):
             personagem.moedas["Glifos"] += item.glifos
+            index = personagem.inventario.index(item)
+            personagem.inventario.pop(index)
             equipamentos = list(
                 filter(
-                    lambda x: x.tipo
-                    in [
-                        "Peitoral",
-                        "Elmo",
-                        "Calça",
-                        "Botas",
-                        "Luvas",
-                        "Arma",
-                        "Anel",
-                        "Amuleto",
-                    ],
+                    _retornar_itens_equipaveis,
                     personagem.inventario,
                 )
             )
-            item = self._obter_numero_equipamentos(equipamentos)
+            if len(equipamentos) == 0:
+                break
+            item = self._obter_numero_equipamentos(
+                equipamentos,
+                "deseja derreter qual item?: ",
+                personagem,
+            )
 
-    def _obter_numero_equipamentos(self, equipamentos):
+    def acrescentar_glifos(self, personagem):
+        equipamentos = [
+            equipamento
+            for equipamento in personagem.equipamentos.values()
+            if bool(equipamento)
+        ]
+        equipamentos += list(
+            filter(
+                _retornar_itens_equipaveis,
+                personagem.inventario,
+            )
+        )
+        if len(equipamentos) == 0:
+            tela.imprimir(
+                "você não tem itens no inventario e nem equipados.", "cyan"
+            )
+            sleep(3)
+            return
+        item = self._obter_numero_equipamentos(
+            equipamentos,
+            "deseja acrescentar em qual item?: ",
+            personagem,
+        )
+        while bool(item):
+            tela.limpar_tela()
+            tela.imprimir(f"seus glifos: {personagem.moedas['Glifos']}\n")
+            tela.imprimir("Quantos glifos deseja acrescentar: ")
+            quantidade = tela.obter_string()
+            if not quantidade.isnumeric():
+                break
+            if int(personagem.moedas["Glifos"]) >= int(quantidade):
+                item.receber_glifos(int(quantidade))
+                personagem.moedas["Glifos"] -= int(quantidade)
+                tela.imprimir(f"item: {item}")
+                sleep(3)
+            else:
+                tela.imprimir(f"você não tem {quantidade} de glifos.")
+                sleep(2)
+            equipamentos = [
+                equipamento
+                for equipamento in personagem.equipamentos.values()
+                if bool(equipamento)
+            ]
+            equipamentos += list(
+                filter(
+                    _retornar_itens_equipaveis,
+                    personagem.inventario,
+                )
+            )
+            item = self._obter_numero_equipamentos(
+                equipamentos,
+                "deseja acrescentar em qual item?: ",
+                personagem,
+            )
+
+    def _obter_numero_equipamentos(self, equipamentos, mensagem, personagem):
         """Método que organiza as páginas para o usuário e retorna um item."""
         itens = list(enumerate(equipamentos))
         itens_dict = {str(n): item for n, item in itens}
@@ -503,8 +632,28 @@ class Ferreiro(Npc):
             )
             n = numeros_paginas.get(numero, 1)
             for numero, item in itens[n - 1]:
-                mensagem = f"{numero} - {item}"
-                tela.imprimir(mensagem + "\n", "cyan")
-            tela.imprimir("deseja derreter qual item?: ")
+                mensagem2 = f"{numero} - {item}"
+                equipamento_equipado = map(
+                    lambda x: x is item, personagem.equipamentos.values()
+                )
+                if any(equipamento_equipado):
+                    tela.imprimir(mensagem2 + "\n", "amarelo")
+                else:
+                    tela.imprimir(mensagem2 + "\n", "cyan")
+            tela.imprimir(mensagem)
             numero = tela.obter_string()
         return itens_dict.get(numero)
+
+
+def _retornar_itens_equipaveis(item):
+    tipos = [
+        "Peitoral",
+        "Elmo",
+        "Calça",
+        "Botas",
+        "Luvas",
+        "Arma",
+        "Anel",
+        "Amuleto",
+    ]
+    return item.tipo in tipos

@@ -37,10 +37,10 @@ def gerar_fluxo():
         "passagem estreita",
         "área com pedregulhos",
         "lago subterraneo",
+        "área com estalagmites e estalactites",
     ]
     locais = [
         "local estreito e sem saída",
-        "mineiração",
         "local sem saída",
         "cachoeira interna",
     ]

@@ -49,7 +49,7 @@ def novo_jogo_saves(nomes: list[str]):
         str(x): y for x, y in enumerate(["novo jogo", "carregar jogo"], 1)
     }
     resposta = ""
-    while not resposta.isnumeric() and not resposta in mensagens:
+    while not resposta in mensagens:
         tela.limpar_tela()
         for numero, mensagem in mensagens.items():
             tela.imprimir(f"{numero} - {mensagem}\n", "cyan")
@@ -61,12 +61,7 @@ def novo_jogo_saves(nomes: list[str]):
         if bool(personagens):
             tela.imprimir("jogo carregado", "cyan")
             sleep(2)
-            bram = ComercianteItemQuest(
-                "Bram", [Draconica], [ItemQuest("Coração de Dragão")]
-            )
-            hagar = Ferreiro("Hagar")
             personagens_, nome_do_save = personagens
-            personagens_ += (bram, hagar)
             return (personagens_, nome_do_save)
         else:
             return False
@@ -78,10 +73,6 @@ def novo_jogo_saves(nomes: list[str]):
         quests = [quest(eivor.nome) for quest in quests_do_eivor]
         eivor.receber_quest(quests)
         tavon = Banqueiro("Tavon")
-        bram = ComercianteItemQuest(
-            "Bram", [Draconica], [ItemQuest("Coração de Dragão")]
-        )
-        hagar = Ferreiro("Hagar")
         personagem = novo_personagem()
         nome_jogo = ""
         arquivos = [arquivo.name for arquivo in Path().glob("*.pkl")]
@@ -96,7 +87,7 @@ def novo_jogo_saves(nomes: list[str]):
         npcs = [azura, eivor, tavon]
         nome_jogo += ".pkl"
         salvar_jogo(personagem, npcs, nome_jogo)
-        return ([personagem] + npcs + [bram, hagar], nome_jogo)
+        return ([personagem] + npcs, nome_jogo)
 
 
 def novo_personagem():
@@ -136,9 +127,13 @@ def main():
             ["Personagem", "Azura", "Eivor", "Tavon"]
         )
     personagens, nome_jogo = personagens_nome_jogo
-    personagem, azura, eivor, tavon, bram, hagar = personagens
+    personagem, azura, eivor, tavon = personagens
     itens = curas + roupas_draconicas
-    farkas = Comerciante("farkas", itens)
+    bram = ComercianteItemQuest(
+        "Bram", [Draconica], [ItemQuest("Coração de Dragão")]
+    )
+    hagar = Ferreiro("Hagar")
+    farkas = Comerciante("Farkas", itens)
     menu = Menu(personagem, nome_jogo)
     menu.obter_npcs([azura, farkas, tavon, eivor, bram, hagar])
     menu.ciclo()

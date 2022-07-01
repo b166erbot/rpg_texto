@@ -37,7 +37,7 @@ class Humano:
         level=1,
         status={},
         experiencia=0,
-        moedas={"Pratas": 1500, "Draconica": 0, "Glifos": 0},
+        moedas={},
         peitoral=SemItemEquipado("Peitoral", "Peitoral"),
         elmo=SemItemEquipado("Elmo", "Elmo"),
         calca=SemItemEquipado("Calça", "Calça"),
@@ -71,7 +71,7 @@ class Humano:
         self._status = copy(self.status)
         self.habilidades = {}
         self.inventario = []
-        self.moedas = moedas
+        self.moedas = moedas or {"Pratas": 1500, "Draconica": 0, "Glifos": 0}
         self.moedas["Pratas"] = Pratas(self.moedas["Pratas"])
         self.moedas["Draconica"] = Draconica(self.moedas["Draconica"])
         self.moedas["Glifos"] = Glifos(self.moedas["Glifos"])
@@ -211,16 +211,6 @@ class Humano:
         self.status["magia"] = 100
         self.status["stamina"] = 100
 
-    # é melhor deixar que a instância desequipe.
-    def vender(self, equipamento):
-        """Método que vende um item no inventário."""
-        if isinstance(equipamento.preco, Pratas):
-            self.moedas["Pratas"] += equipamento.preco
-        elif isinstance(equipamento.preco, Draconica):
-            self.moedas["Draconica"] += equipamento.preco
-        index = self.inventario.index(equipamento)
-        self.inventario.pop(index)
-
     def desequipar(self, equipamento):
         """Método que desequipa um item no inventário."""
         equipamento2 = self.equipamentos.get(equipamento.tipo_equipar)
@@ -267,6 +257,7 @@ class Humano:
         self._calcular_bonus.calcular(self.equipamentos.values())
 
     def atualizar_porcentagem(self):
+        """Método que atualiza as porcentagens."""
         self.porcentagem_armadura = arrumar_porcentagem(
             regra_3(self._porcentagem_total[self.level], 100, self._armadura)
         )
@@ -286,6 +277,7 @@ class Humano:
         )
 
     def e_possivel_guardar(self, item):
+        """Método que retorna se é possível guardar item."""
         itens = list(
             filter(lambda x: not isinstance(x, ItemQuest), self.inventario)
         )
