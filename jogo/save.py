@@ -17,7 +17,7 @@ def _carregar_jogo(nome_do_objeto, nome_do_arquivo: str):
     return save[nome_do_objeto]
 
 
-def carregar_jogo_tela(nomes: list[str]):
+def existe_saves() -> bool:
     arquivos = {
         str(x): y
         for x, y in enumerate(
@@ -25,11 +25,23 @@ def carregar_jogo_tela(nomes: list[str]):
         )
     }
     if len(arquivos) == 0:
-        tela.imprimir("Não há saves para carregar.", "cyan")
-        sleep(3)
-        return
+        return False
+    return True
+
+
+def saves() -> list[str]:
+    return [arquivo.name for arquivo in Path().glob("*.pkl")]
+
+
+def carregar_jogo_tela(nomes: list[str]):
+    arquivos = {
+        str(x): y
+        for x, y in enumerate(
+            [arquivo.name for arquivo in Path().glob("*.pkl")], 1
+        )
+    }
     resposta = ""
-    while not resposta.isnumeric() or resposta not in arquivos:
+    while resposta not in arquivos:
         tela.limpar_tela()
         for numero, arquivo in arquivos.items():
             tela.imprimir(f"{numero} - {arquivo[:-4]}\n", "cyan")

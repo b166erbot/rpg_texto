@@ -48,6 +48,7 @@ class Roupa:
 
     def remover_glifos(self):
         glifos = Glifos(self.glifos_level.valor_total())
+        self.glifos_level.resetar()
         self.level = self._valores_base["level"]
         self.vida = self._valores_base["vida"] * self.level
         self.resistencia = self._valores_base["resistencia"] * self.level
@@ -150,6 +151,7 @@ class Anel:
 
     def remover_glifos(self):
         glifos = Glifos(self.glifos_level.valor_total())
+        self.glifos_level.resetar()
         self.level = self._valores_base["level"]
         self.dano = self._valores_base["dano"] * self.level
         self.vida = self._valores_base["vida"] * self.level
@@ -208,6 +210,7 @@ class Amuleto:
 
     def remover_glifos(self):
         glifos = Glifos(self.glifos_level.valor_total())
+        self.glifos_level.resetar()
         self.level = self._valores_base["level"]
         self.dano = self._valores_base["dano"] * self.level
         self.vida = self._valores_base["vida"] * self.level
@@ -243,7 +246,7 @@ class RoupaDraconica:
         ]
         self.conjunto = "item Draconico"
         self.preco = Draconica((((vida // 2) + resistencia + armadura) * 8))
-        self.glifos = Glifos(200 * level)
+        self.glifos = Glifos(500 * level)
         self.level = level
         leveis = [100, 200, 300, 400, 500, 600, 700, 800]
         self.glifos_level = Acumulador(0, leveis, level)
@@ -264,6 +267,7 @@ class RoupaDraconica:
 
     def remover_glifos(self):
         glifos = Glifos(self.glifos_level.valor_total())
+        self.glifos_level.resetar()
         self.level = self._valores_base["level"]
         self.vida = self._valores_base["vida"] * self.level
         self.armadura = self._valores_base["armadura"] * self.level

@@ -300,20 +300,17 @@ class Humano:
             for equipamento in self.equipamentos.values()
             if bool(equipamento)
         ]
-        vestes = filter(
-            lambda x: x.tipo
-            in [
-                "Elmo",
-                "Peitoral",
-                "Calça",
-                "Luvas",
-                "Botas",
-                "Anel",
-                "Amuleto",
-                "Escudo",
-            ],
-            equipamentos,
-        )
+        tipos = [
+            "Elmo",
+            "Peitoral",
+            "Calça",
+            "Luvas",
+            "Botas",
+            "Anel",
+            "Amuleto",
+            "Escudo",
+        ]
+        vestes = filter(lambda x: x.tipo in tipos, equipamentos)
         armadura = self._status["armadura"] + sum(
             map(lambda x: x.armadura, vestes)
         )
@@ -327,20 +324,17 @@ class Humano:
             for equipamento in self.equipamentos.values()
             if bool(equipamento)
         ]
-        vestes = filter(
-            lambda x: x.tipo
-            in [
-                "Elmo",
-                "Peitoral",
-                "Calça",
-                "Luvas",
-                "Botas",
-                "Anel",
-                "Amuleto",
-                "Escudo",
-            ],
-            equipamentos,
-        )
+        tipos = [
+            "Elmo",
+            "Peitoral",
+            "Calça",
+            "Luvas",
+            "Botas",
+            "Anel",
+            "Amuleto",
+            "Escudo",
+        ]
+        vestes = filter(lambda x: x.tipo in tipos, equipamentos)
         resistencia = self._status["resistencia"] + sum(
             map(lambda x: x.resistencia, vestes)
         )

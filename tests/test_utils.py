@@ -60,3 +60,9 @@ class TestAcumulador(TestCase):
         self.acumulador = Acumulador(1, [1, 2, 3, 4, 5, 6], 8)
         self.acumulador.depositar_valor(10)
         self.assertEqual(self.acumulador.valor_total(), 21)
+
+    def test_valor_total_retorna_1_caso_level_seja_1_e_depositar_valor_receba_1(
+        self,
+    ):
+        self.acumulador.depositar_valor(1)
+        self.assertEqual(self.acumulador.valor_total(), 1)

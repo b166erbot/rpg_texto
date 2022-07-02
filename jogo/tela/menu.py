@@ -3,10 +3,8 @@ from pathlib import Path
 from time import sleep
 from unittest.mock import MagicMock
 
-from jogo.itens.vestes import tudo as roupas
 from jogo.locais.areas_abertas import Floresta
 from jogo.locais.habitaveis import Vilarejo
-from jogo.quests import ItemQuest
 from jogo.save import salvar_jogo
 from jogo.tela.imprimir import Imprimir, formas
 from jogo.utils import chunk
@@ -36,7 +34,6 @@ class Menu:
             "mostrar o status",
             "mostrar quests",
             "salvar jogo",
-            "deletar save",
             "sair",
         ]
         self._texto = texto + [
@@ -115,22 +112,6 @@ class Menu:
                     tela.imprimir("jogo salvo", "cyan")
                     sleep(3)
                 case 10:
-                    tela.limpar_tela()
-                    tela.imprimir(
-                        "Tem certeza que deseja deletar o save? "
-                        "[s/n/sim/não]: ",
-                        "cyan",
-                    )
-                    resposta = tela.obter_string()
-                    if resposta in ["s", "sim"]:
-                        arquivo = Path(self._nome_jogo)
-                        if arquivo.exists():
-                            arquivo.unlink()
-                            tela.imprimir("save deletado", "cyan")
-                        else:
-                            tela.imprimir("save não existente", "cyan")
-                        sleep(3)
-                case 11:
                     quit()
 
     def equipar_equipamentos(self):
@@ -412,11 +393,10 @@ class Menu:
 # TODO: botar um simbolo diferente nas moedas glifo e draconica.
 # TODO: fazer 10 poções ocuparem o mesmo espaço? (não sei se tem como)
 # TODO: implementar deletar save no inicio
-# TODO: implementar baús que dropam itens/draconica?
+# TODO: implementar baús que dropam itens?
 # TODO: ter um companheiro na campanha? (não sei se tem como implementar isso)
 # TODO: trols, cavaleiros negros, catatumbas[areas abertas, ala a direita, tunel]
 # TODO: eventos especiais acontecem de tempos em tempos
 # TODO: implementar pets. pets dão porcentagem de algum atributo.
 # TODO: implementar durabilidade nas armas?
 # TODO: sangramento por dano de armas ou mobs
-# TODO: mover o vender equipamentos para o comerciante.

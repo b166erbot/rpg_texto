@@ -55,6 +55,7 @@ class Arma:
 
     def remover_glifos(self):
         glifos = Glifos(self.glifos_level.valor_total())
+        self.glifos_level.resetar()
         self.level = self._valores_base["level"]
         self.dano = self._valores_base["dano"] * self.level
         self.critico = self._valores_base["critico"] * self.level
@@ -163,6 +164,7 @@ class AdornoDeArma:
 
     def remover_glifos(self):
         glifos = Glifos(self.glifos_level.valor_total())
+        self.glifos_level.resetar()
         self.level = self._valores_base["level"]
         self.critico = self._valores_base["critico"] * self.level
         self.aumento_critico = (

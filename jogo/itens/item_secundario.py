@@ -51,6 +51,7 @@ class ItemDeDefesa:
 
     def remover_glifos(self):
         glifos = Glifos(self.glifos_level.valor_total())
+        self.glifos_level.resetar()
         self.level = self._valores_base["level"]
         self.vida = self._valores_base["vida"] * self.level
         self.armadura = self._valores_base["armadura"] * self.level
@@ -107,6 +108,7 @@ class ItemDeDano:
 
     def remover_glifos(self):
         glifos = Glifos(self.glifos_level.valor_total())
+        self.glifos_level.resetar()
         self.level = self._valores_base["level"]
         self.dano = self._valores_base["dano"] * self.level
         self.critico = self._valores_base["critico"] * self.level

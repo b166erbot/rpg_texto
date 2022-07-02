@@ -507,6 +507,7 @@ class Ferreiro(Npc):
         self.salvar = False
 
     def interagir(self, personagem):
+        """Método que interage com o personagem."""
         textos = [
             "derreter arma",
             "acrescentar glifos",
@@ -523,11 +524,14 @@ class Ferreiro(Npc):
             tela.imprimir("O que deseja fazer?: ")
             numero = tela.obter_string()
             if numero == "1":
-                self.derreter_arma(personagem)
-            if numero == "2":
+                self.derreter_item(personagem)
+            elif numero == "2":
                 self.acrescentar_glifos(personagem)
+            elif numero == "3":
+                self.remover_glifos(personagem)
 
-    def derreter_arma(self, personagem):
+    def derreter_item(self, personagem):
+        """Método que escolhe itens e os derretem."""
         equipamentos = list(
             filter(
                 _retornar_itens_equipaveis,
@@ -562,6 +566,7 @@ class Ferreiro(Npc):
             )
 
     def acrescentar_glifos(self, personagem):
+        """Método que escolhe itens e os acrecentam glifos."""
         equipamentos = [
             equipamento
             for equipamento in personagem.equipamentos.values()
@@ -581,7 +586,7 @@ class Ferreiro(Npc):
             return
         item = self._obter_numero_equipamentos(
             equipamentos,
-            "deseja acrescentar em qual item?: ",
+            "deseja acrescentar em qual equipamento?: ",
             personagem,
         )
         while bool(item):
@@ -612,7 +617,74 @@ class Ferreiro(Npc):
             )
             item = self._obter_numero_equipamentos(
                 equipamentos,
-                "deseja acrescentar em qual item?: ",
+                "deseja acrescentar em qual equipamento?: ",
+                personagem,
+            )
+
+    def remover_glifos(self, personagem):
+        """Método que escolhe um item e remove os glifos dele."""
+        equipamentos = []
+        for equipamento in personagem.equipamentos.values():
+            if bool(equipamento) and equipamento.glifos_level.valor_total() > 0:
+                equipamentos.append(equipamento)
+        equipamentos_ = list(
+            filter(
+                _retornar_itens_equipaveis,
+                personagem.inventario,
+            )
+        )
+        equipamentos_ = filter(
+            lambda x: x.glifos_level.valor_total() > 0, equipamentos_
+        )
+        equipamentos += equipamentos_
+        if len(equipamentos) == 0:
+            tela.imprimir(
+                "você não tem itens no inventario e nem equipados.", "cyan"
+            )
+            sleep(3)
+            return
+        item = self._obter_numero_equipamentos(
+            equipamentos,
+            "deseja retirar em qual equipamento?: ",
+            personagem,
+        )
+        while bool(item):
+            tela.limpar_tela()
+            tela.imprimir(f"seus glifos: {personagem.moedas['Glifos']}\n")
+            valor = item.glifos_level.valor_total() * 0.30
+            tela.imprimir(
+                "tem certeza que deseja remover os glifos? "
+                f"Pratas {valor} [s/n]: "
+            )
+            resposta = tela.obter_string()
+            if resposta in ["s", "sim"]:
+                personagem.moedas["Pratas"] -= int(valor)
+                glifos = item.remover_glifos()
+                personagem.moedas["Glifos"] += glifos
+                tela.imprimir(f"item: {item}")
+                sleep(3)
+            equipamentos = []
+            for equipamento in personagem.equipamentos.values():
+                if (
+                    bool(equipamento)
+                    and equipamento.glifos_level.valor_total() > 0
+                ):
+                    equipamentos.append(equipamento)
+            equipamentos_ = list(
+                filter(
+                    _retornar_itens_equipaveis,
+                    personagem.inventario,
+                )
+            )
+            equipamentos_ = filter(
+                lambda x: x.glifos_level.valor_total() > 0, equipamentos_
+            )
+            equipamentos += equipamentos_
+            if len(equipamentos) == 0:
+                break
+            item = self._obter_numero_equipamentos(
+                equipamentos,
+                "deseja retirar em qual equipamento?: ",
                 personagem,
             )
 

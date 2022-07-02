@@ -66,6 +66,10 @@ class Acumulador:
         leveis += [float("inf")]
         self._leveis_dict = dict(enumerate(leveis, 1))
         self.level = level
+        self._valores_iniciais = {
+            "valor": valor,
+            "level": level,
+        }
         self.depositar_valor(valor)
 
     def __repr__(self):
@@ -97,4 +101,11 @@ class Acumulador:
     def valor_total(self):
         valor = self._leveis_dict.get(self.level - 1)
         valores = takewhile(lambda x: x <= valor, self._leveis)
-        return sum(valores) + self.valor
+        if self.level == 1:
+            return self.valor
+        else:
+            return sum(valores) + self.valor
+
+    def resetar(self):
+        self.valor = self._valores_iniciais["valor"]
+        self.level = self._valores_iniciais["level"]
