@@ -1,9 +1,3 @@
-# import sys
-# sys.path.append('.')
-
-import curses
-
-curses.initscr()
 from collections import Counter
 from unittest import TestCase, mock
 from unittest.mock import MagicMock
@@ -58,8 +52,7 @@ from jogo.personagens.classes import (
     Monge,
 )
 from jogo.personagens.monstros import Tartaruga
-
-curses.endwin()
+from jogo.itens.pocoes import PocaoDeVidaMedia
 
 
 # não necessita testar as outras classes pois esse método é da classe Humano
@@ -121,12 +114,12 @@ class TestCriticoArqueiro(TestCase):
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_tres_flechas(self, mocked):
         self.personagem.tres_flechas(self.personagem2)
-        self.assertEqual(self.personagem2.status["vida"], 80)
+        self.assertEqual(self.personagem2.status["vida"], 85)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_tres_flechas_como_bot(self, mocked):
         self.personagem2.tres_flechas(self.personagem)
-        self.assertEqual(self.personagem.status["vida"], 80)
+        self.assertEqual(self.personagem.status["vida"], 85)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=81)
     def test_critico_nao_funcionando_caso_valor_menor_que_80_tres_flechas(
@@ -147,14 +140,14 @@ class TestCriticoArqueiro(TestCase):
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_flecha_de_fogo(self, mocked):
         self.personagem.flecha_de_fogo(self.personagem2)
-        self.assertEqual(self.personagem2.status["vida"], 70)
+        self.assertEqual(self.personagem2.status["vida"], 75)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_flecha_de_fogo_como_bot(
         self, mocked
     ):
         self.personagem2.flecha_de_fogo(self.personagem)
-        self.assertEqual(self.personagem.status["vida"], 70)
+        self.assertEqual(self.personagem.status["vida"], 75)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=81)
     def test_critico_nao_funcionando_caso_valor_menor_que_80_flecha_de_fogo(
@@ -183,12 +176,12 @@ class TestCriticoGuerreiro(TestCase):
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_investida(self, mocked):
         self.personagem.investida(self.personagem2)
-        self.assertEqual(self.personagem2.status["vida"], 80)
+        self.assertEqual(self.personagem2.status["vida"], 85)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_investida_como_bot(self, mocked):
         self.personagem2.investida(self.personagem)
-        self.assertEqual(self.personagem.status["vida"], 80)
+        self.assertEqual(self.personagem.status["vida"], 85)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=81)
     def test_critico_nao_funcionando_caso_valor_menor_que_80_investida(
@@ -209,12 +202,12 @@ class TestCriticoGuerreiro(TestCase):
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_esmagar(self, mocked):
         self.personagem.esmagar(self.personagem2)
-        self.assertEqual(self.personagem2.status["vida"], 70)
+        self.assertEqual(self.personagem2.status["vida"], 75)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_esmagar_como_bot(self, mocked):
         self.personagem2.esmagar(self.personagem)
-        self.assertEqual(self.personagem.status["vida"], 70)
+        self.assertEqual(self.personagem.status["vida"], 75)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=81)
     def test_critico_nao_funcionando_caso_valor_menor_que_80_esmagar(
@@ -243,12 +236,12 @@ class TestCriticoMago(TestCase):
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_lanca_de_gelo(self, mocked):
         self.personagem.lanca_de_gelo(self.personagem2)
-        self.assertEqual(self.personagem2.status["vida"], 80)
+        self.assertEqual(self.personagem2.status["vida"], 85)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_lanca_de_gelo_como_bot(self, mocked):
         self.personagem2.lanca_de_gelo(self.personagem)
-        self.assertEqual(self.personagem.status["vida"], 80)
+        self.assertEqual(self.personagem.status["vida"], 85)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=81)
     def test_critico_nao_funcionando_caso_valor_menor_que_80_lanca_de_gelo(
@@ -269,12 +262,12 @@ class TestCriticoMago(TestCase):
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_bola_de_fogo(self, mocked):
         self.personagem.bola_de_fogo(self.personagem2)
-        self.assertEqual(self.personagem2.status["vida"], 70)
+        self.assertEqual(self.personagem2.status["vida"], 75)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_bola_de_fogo_como_bot(self, mocked):
         self.personagem2.bola_de_fogo(self.personagem)
-        self.assertEqual(self.personagem.status["vida"], 70)
+        self.assertEqual(self.personagem.status["vida"], 75)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=81)
     def test_critico_nao_funcionando_caso_valor_menor_que_80_bola_de_fogo(
@@ -303,12 +296,12 @@ class TestCriticoAssassino(TestCase):
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_lancar_faca(self, mocked):
         self.personagem.lancar_faca(self.personagem2)
-        self.assertEqual(self.personagem2.status["vida"], 80)
+        self.assertEqual(self.personagem2.status["vida"], 85)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_lancar_faca_como_bot(self, mocked):
         self.personagem2.lancar_faca(self.personagem)
-        self.assertEqual(self.personagem.status["vida"], 80)
+        self.assertEqual(self.personagem.status["vida"], 85)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=81)
     def test_critico_nao_funcionando_caso_valor_menor_que_80_lancar_faca(
@@ -329,14 +322,14 @@ class TestCriticoAssassino(TestCase):
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_ataque_furtivo(self, mocked):
         self.personagem.ataque_furtivo(self.personagem2)
-        self.assertEqual(self.personagem2.status["vida"], 70)
+        self.assertEqual(self.personagem2.status["vida"], 75)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_ataque_furtivo_como_bot(
         self, mocked
     ):
         self.personagem2.ataque_furtivo(self.personagem)
-        self.assertEqual(self.personagem.status["vida"], 70)
+        self.assertEqual(self.personagem.status["vida"], 75)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=81)
     def test_critico_nao_funcionando_caso_valor_menor_que_80_ataque_furtivo(
@@ -366,13 +359,13 @@ class TestCriticoClerigo(TestCase):
     def test_critico_dando_o_dobro_de_dano_curar(self, mocked):
         self.personagem.status["vida"] = 0
         self.personagem.curar(self.personagem2)
-        self.assertEqual(self.personagem.status["vida"], 50)
+        self.assertEqual(self.personagem.status["vida"], 25)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_curar_como_bot(self, mocked):
         self.personagem2.status["vida"] = 0
         self.personagem2.curar(self.personagem)
-        self.assertEqual(self.personagem2.status["vida"], 50)
+        self.assertEqual(self.personagem2.status["vida"], 25)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=81)
     def test_critico_nao_funcionando_caso_valor_menor_que_80_curar(
@@ -381,7 +374,7 @@ class TestCriticoClerigo(TestCase):
         self.personagem.status["vida"] = 0
         self.personagem.porcentagem_critico = 80
         self.personagem.curar(self.personagem2)
-        self.assertEqual(self.personagem.status["vida"], 25)
+        self.assertEqual(self.personagem.status["vida"], 15)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=81)
     def test_critico_nao_funcionando_caso_valor_menor_que_80_curar_como_bot(
@@ -390,17 +383,17 @@ class TestCriticoClerigo(TestCase):
         self.personagem2.status["vida"] = 0
         self.personagem2.porcentagem_critico = 80
         self.personagem2.curar(self.personagem)
-        self.assertEqual(self.personagem2.status["vida"], 25)
+        self.assertEqual(self.personagem2.status["vida"], 15)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_luz(self, mocked):
         self.personagem.luz(self.personagem2)
-        self.assertEqual(self.personagem2.status["vida"], 80)
+        self.assertEqual(self.personagem2.status["vida"], 85)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_luz_como_bot(self, mocked):
         self.personagem2.luz(self.personagem)
-        self.assertEqual(self.personagem.status["vida"], 80)
+        self.assertEqual(self.personagem.status["vida"], 85)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=81)
     def test_critico_nao_funcionando_caso_valor_menor_que_80_luz(self, mocked):
@@ -427,14 +420,14 @@ class TestCriticoMonge(TestCase):
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_multiplos_socos(self, mocked):
         self.personagem.multiplos_socos(self.personagem2)
-        self.assertEqual(self.personagem2.status["vida"], 80)
+        self.assertEqual(self.personagem2.status["vida"], 85)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_multiplos_socos_como_bot(
         self, mocked
     ):
         self.personagem2.multiplos_socos(self.personagem)
-        self.assertEqual(self.personagem.status["vida"], 80)
+        self.assertEqual(self.personagem.status["vida"], 85)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=81)
     def test_critico_nao_funcionando_caso_valor_menor_que_80_multiplos_socos(
@@ -455,14 +448,14 @@ class TestCriticoMonge(TestCase):
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_combo_de_chutes(self, mocked):
         self.personagem.combo_de_chutes(self.personagem2)
-        self.assertEqual(self.personagem2.status["vida"], 70)
+        self.assertEqual(self.personagem2.status["vida"], 75)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=100)
     def test_critico_dando_o_dobro_de_dano_combo_de_chutes_como_bot(
         self, mocked
     ):
         self.personagem2.combo_de_chutes(self.personagem)
-        self.assertEqual(self.personagem.status["vida"], 70)
+        self.assertEqual(self.personagem.status["vida"], 75)
 
     @mock.patch("jogo.personagens.classes.randint", return_value=81)
     def test_critico_nao_funcionando_caso_valor_menor_que_80_combo_de_chutes(
@@ -1782,7 +1775,7 @@ class TestPersonagemDaMaisDanoComAumentoDeCriticoArqueiro(TestCase):
     def test_dando_mais_dano_com_aumento_critico_tres_flechas(self, *_):
         self.personagem.tres_flechas(self.monstro)
         # esperado = valor do aumento critico * dano
-        esperado = (2 + (3 * 16) / 100) * 10
+        esperado = ((2 + (3 * 16) / 100) * 5) + 17
         # esperado = valor - valor da porcentagem da armadura do monstro
         esperado = esperado - int((esperado * 80) // 100)
         # esperado = vida do monstro - esperado
@@ -1792,7 +1785,7 @@ class TestPersonagemDaMaisDanoComAumentoDeCriticoArqueiro(TestCase):
     def test_dando_mais_dano_com_aumento_critico_flecha_de_fogo(self, *_):
         self.personagem.flecha_de_fogo(self.monstro)
         # esperado = valor do aumento critico * dano
-        esperado = (2 + (3 * 16) / 100) * 15
+        esperado = ((2 + (3 * 16) / 100) * 10) + 17
         # esperado = valor - valor da porcentagem da resistencia do monstro
         esperado = esperado - int((esperado * 80) // 100)
         # esperado = vida do monstro - esperado
@@ -1817,7 +1810,7 @@ class TestPersonagemDaMaisDanoComAumentoDeCriticoGuerreiro(TestCase):
     def test_dando_mais_dano_com_aumento_critico_investida(self, *_):
         self.personagem.investida(self.monstro)
         # esperado = valor do aumento critico * dano
-        esperado = (2 + (2 * 16) / 100) * 10
+        esperado = ((2 + (2 * 16) / 100) * 5) + 11
         # esperado = valor - valor da porcentagem da armadura do monstro
         esperado = esperado - int((esperado * 80) // 100)
         # esperado = vida do monstro - esperado
@@ -1827,7 +1820,7 @@ class TestPersonagemDaMaisDanoComAumentoDeCriticoGuerreiro(TestCase):
     def test_dando_mais_dano_com_aumento_critico_esmagar(self, *_):
         self.personagem.esmagar(self.monstro)
         # esperado = valor do aumento critico * dano
-        esperado = (2 + (2 * 16) / 100) * 15
+        esperado = ((2 + (2 * 16) / 100) * 10) + 11
         # esperado = valor - valor da porcentagem da armadura do monstro
         esperado = esperado - int((esperado * 80) // 100)
         # esperado = vida do monstro - esperado
@@ -1855,7 +1848,7 @@ class TestPersonagemDaMaisDanoComAumentoDeCriticoMago(TestCase):
     def test_dando_mais_dano_com_aumento_critico_lanca_de_gelo(self, *_):
         self.personagem.lanca_de_gelo(self.monstro)
         # esperado = valor do aumento critico * dano
-        esperado = (2 + (3 * 16) / 100) * 10
+        esperado = ((2 + (3 * 16) / 100) * 5) + 17
         # esperado = valor - valor da porcentagem da resistencia do monstro
         esperado = esperado - int((esperado * 80) // 100)
         # esperado = vida do monstro - esperado
@@ -1865,7 +1858,7 @@ class TestPersonagemDaMaisDanoComAumentoDeCriticoMago(TestCase):
     def test_dando_mais_dano_com_aumento_critico_bola_de_fogo(self, *_):
         self.personagem.bola_de_fogo(self.monstro)
         # esperado = valor do aumento critico * dano
-        esperado = (2 + (3 * 16) / 100) * 15
+        esperado = ((2 + (3 * 16) / 100) * 10) + 17
         # esperado = valor - valor da porcentagem da resistencia do monstro
         esperado = esperado - int((esperado * 80) // 100)
         # esperado = vida do monstro - esperado
@@ -1893,7 +1886,7 @@ class TestPersonagemDaMaisDanoComAumentoDeCriticoAssassino(TestCase):
     def test_dando_mais_dano_com_aumento_critico_lancar_faca(self, *_):
         self.personagem.lancar_faca(self.monstro)
         # esperado = valor do aumento critico * dano
-        esperado = (2 + (3 * 16) / 100) * 10
+        esperado = ((2 + (3 * 16) / 100) * 5) + 17
         # esperado = valor - valor da porcentagem da armadura do monstro
         esperado = esperado - int((esperado * 80) // 100)
         # esperado = vida do monstro - esperado
@@ -1903,7 +1896,7 @@ class TestPersonagemDaMaisDanoComAumentoDeCriticoAssassino(TestCase):
     def test_dando_mais_dano_com_aumento_critico_ataque_furtivo(self, *_):
         self.personagem.ataque_furtivo(self.monstro)
         # esperado = valor do aumento critico * dano
-        esperado = (2 + (3 * 16) / 100) * 15
+        esperado = ((2 + (3 * 16) / 100) * 10) + 17
         # esperado = valor - valor da porcentagem da armadura do monstro
         esperado = esperado - int((esperado * 80) // 100)
         # esperado = vida do monstro - esperado
@@ -1931,7 +1924,7 @@ class TestPersonagemDaMaisDanoComAumentoDeCriticoClerigo(TestCase):
     def test_dando_mais_dano_com_aumento_critico_luz(self, *_):
         self.personagem.luz(self.monstro)
         # esperado = valor do aumento critico * dano
-        esperado = (2 + (3 * 16) / 100) * 10
+        esperado = ((2 + (3 * 16) / 100) * 5) + 17
         # esperado = valor - valor da porcentagem da resistencia do monstro
         esperado = esperado - int((esperado * 80) // 100)
         # esperado = vida do monstro - esperado
@@ -1959,7 +1952,7 @@ class TestPersonagemDaMaisDanoComAumentoDeCriticoMonge(TestCase):
     def test_dando_mais_dano_com_aumento_critico_multiplos_socos(self, *_):
         self.personagem.multiplos_socos(self.monstro)
         # esperado = valor do aumento critico * dano
-        esperado = (2 + (3 * 16) / 100) * 10
+        esperado = ((2 + (3 * 16) / 100) * 5) + 17
         # esperado = valor - valor da porcentagem da armadura do monstro
         esperado = esperado - int((esperado * 80) // 100)
         # esperado = vida do monstro - esperado
@@ -1969,9 +1962,102 @@ class TestPersonagemDaMaisDanoComAumentoDeCriticoMonge(TestCase):
     def test_dando_mais_dano_com_aumento_critico_combo_de_chutes(self, *_):
         self.personagem.combo_de_chutes(self.monstro)
         # esperado = valor do aumento critico * dano
-        esperado = (2 + (3 * 16) / 100) * 15
+        esperado = ((2 + (3 * 16) / 100) * 10) + 17
         # esperado = valor - valor da porcentagem da resistencia do monstro
         esperado = esperado - int((esperado * 80) // 100)
         # esperado = vida do monstro - esperado
         esperado = 100 - esperado
         self.assertEqual(self.monstro.status["vida"], esperado)
+
+
+class TestPersonagemConsumindoPocoes(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro('nome', True)
+        self.personagem.inventario.append(PocaoDeVidaMedia())
+    
+    def test_personagem_nao_usando_pocoes_caso_vida_acima_de_30_porcento(self):
+        self.personagem.status['vida'] = 31
+        self.personagem.consumir_pocoes()
+        self.assertEqual(self.personagem.status['vida'], 31)
+    
+    def test_personagem_usando_pocoes_caso_vida_igual_30_porcento(self):
+        self.personagem.status['vida'] = 30
+        self.personagem.consumir_pocoes()
+        self.assertEqual(self.personagem.status['vida'], 90)
+    
+    def test_personagem_usando_pocoes_caso_vida_abaixo_de_30_porcento(self):
+        self.personagem.status['vida'] = 29
+        self.personagem.consumir_pocoes()
+        self.assertEqual(self.personagem.status['vida'], 89)
+
+
+class TestPersonagemConsumindoPocoesVida200(TestCase):
+    def setUp(self):
+        status = {
+            "vida": 200,
+            "dano": 5,
+            "resistencia": 0,
+            "velo-ataque": 1,
+            "criti": 0,
+            "armadura": 0,
+            "magia": 100,
+            "stamina": 100,
+            "velo-movi": 1,
+        }
+        self.personagem = Arqueiro('nome', True, status=status)
+        self.personagem.inventario.append(PocaoDeVidaMedia())
+    
+    # aqui precisa ser 62 e não 61 porque a porcentagem divide por inteiro
+    def test_personagem_nao_usando_pocoes_caso_vida_acima_de_30_porcento(self):
+        self.personagem.status['vida'] = 62
+        self.personagem.consumir_pocoes()
+        self.assertEqual(self.personagem.status['vida'], 62)
+    
+    def test_personagem_usando_pocoes_caso_vida_igual_30_porcento(self):
+        self.personagem.status['vida'] = 60
+        self.personagem.consumir_pocoes()
+        self.assertEqual(self.personagem.status['vida'], 120)
+    
+    def test_personagem_usando_pocoes_caso_vida_abaixo_de_30_porcento(self):
+        self.personagem.status['vida'] = 59
+        self.personagem.consumir_pocoes()
+        self.assertEqual(self.personagem.status['vida'], 119)
+
+
+# não precisa testar outras classes pois esse método é da classe Humano.
+class TestPersonagemConsumirMagiaStamina(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro('nome', True)
+    
+    def test_stamina_false_caso_consumido_toda_a_stamina(self):
+        self.personagem.consumir_magia_stamina()
+        self.personagem.consumir_magia_stamina()
+        self.personagem.consumir_magia_stamina()
+        self.personagem.consumir_magia_stamina()
+        self.personagem.consumir_magia_stamina()
+        self.assertEqual(
+            self.personagem.consumir_magia_stamina(),
+            False
+        )
+    
+    def test_stamina_true_caso_caso_consumido_80_da_stamina(self):
+        self.personagem.consumir_magia_stamina()
+        self.personagem.consumir_magia_stamina()
+        self.personagem.consumir_magia_stamina()
+        self.personagem.consumir_magia_stamina()
+        self.assertEqual(
+            self.personagem.consumir_magia_stamina(),
+            True
+        )
+    
+    def test_stamina_retorna_false_caso_consumido_toda_a_stamina2(self):
+        self.personagem.consumir_magia_stamina()
+        self.personagem.consumir_magia_stamina()
+        self.personagem.consumir_magia_stamina()
+        self.personagem.consumir_magia_stamina()
+        self.personagem.consumir_magia_stamina()
+        self.personagem.consumir_magia_stamina()
+        self.assertEqual(
+            self.personagem.consumir_magia_stamina(),
+            False
+        )

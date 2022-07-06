@@ -100,8 +100,6 @@ class Caverna:
             self.personagem.experiencia.depositar_valor(boss.experiencia)
             boss.sortear_drops(self.personagem)
         self.personagem.recuperar_magia_stamina_cem_porcento()
-        tela.limpar_tela()
-        tela.limpar_tela2()
 
     def sortear_inimigos(self):
         """Método que sorteia os inimigos para o personagem."""
@@ -117,14 +115,11 @@ class Caverna:
                     return True
                 self.personagem.experiencia.depositar_valor(inimigo.experiencia)
                 inimigo.sortear_drops(self.personagem)
-                self.personagem.recuperar_magia_stamina()
-            tela.limpar_tela2()
+                self.personagem.recuperar_magia_stamina_cem_porcento()
             return False
 
     def morto(self):
         """Método que ressucita o personagem e exibe na tela "morto"."""
         self.personagem.ressucitar()
-        tela.limpar_tela()
-        tela.limpar_tela2()
         tela.imprimir("você foi morto e foi ressucitado.")
         sleep(3)

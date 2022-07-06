@@ -26,8 +26,9 @@ class Caixa:
 class CaixaDraconica(Caixa):
     nome = "Caixa draconico"
 
-    def __init__(self):
-        item = choice(roupas_draconicas)
+    def __init__(self, level):
+        Item = choice(roupas_draconicas)
+        item = Item(vida=20, armadura=6, resistencia=6, level=level)
         super().__init__(item)
 
     def sorte_de_drop(self):

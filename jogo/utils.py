@@ -62,8 +62,8 @@ class Contador:
 class Acumulador:
     def __init__(self, valor: int, leveis: list, level: int = 1):
         self.valor = 0
-        self._leveis = leveis
         leveis += [float("inf")]
+        self._leveis = leveis
         self._leveis_dict = dict(enumerate(leveis, 1))
         self.level = level
         self._valores_iniciais = {
@@ -98,7 +98,7 @@ class Acumulador:
         if valor_requerido == float("inf"):
             self.valor = 0
 
-    def valor_total(self):
+    def valor_glifos(self):
         valor = self._leveis_dict.get(self.level - 1)
         valores = takewhile(lambda x: x <= valor, self._leveis)
         if self.level == 1:
@@ -106,6 +106,24 @@ class Acumulador:
         else:
             return sum(valores) + self.valor
 
+    def valor_total(self):
+        return sum(self._leveis[:-1])
+
+    def valor_faltando(self):
+        return self.valor_total() - self.valor_glifos()
+
     def resetar(self):
         self.valor = self._valores_iniciais["valor"]
         self.level = self._valores_iniciais["level"]
+
+
+def menor_numero(numero: int, lista: list[int]):
+    """
+    Função que retorna o menor número possível de uma
+    lista dependendo do numero recebido
+    """
+    menor_numero = lista[-1]
+    for numero_lista in lista[::-1]:
+        if numero <= numero_lista:
+            menor_numero = numero_lista
+    return menor_numero

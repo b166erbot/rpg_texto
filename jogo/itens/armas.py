@@ -40,7 +40,8 @@ class Arma:
     def __repr__(self):
         retorno = (
             f"{self.nome}(dan: {self.dano}, "
-            f"por_cri: {self.aumento_critico}, crit: {self.critico})"
+            f"por_cri: {self.aumento_critico}, crit: {self.critico}, "
+            f"lvl: {self.level})"
         )
         return retorno
 
@@ -54,7 +55,7 @@ class Arma:
         )
 
     def remover_glifos(self):
-        glifos = Glifos(self.glifos_level.valor_total())
+        glifos = Glifos(self.glifos_level.valor_glifos())
         self.glifos_level.resetar()
         self.level = self._valores_base["level"]
         self.dano = self._valores_base["dano"] * self.level
@@ -150,7 +151,8 @@ class AdornoDeArma:
     def __repr__(self):
         retorno = (
             f"{self.nome}("
-            f"aum_cri: {self.aumento_critico}, crit: {self.critico})"
+            f"aum_cri: {self.aumento_critico}, crit: {self.critico}, "
+            f"lvl: {self.level})"
         )
         return retorno
 
@@ -163,7 +165,7 @@ class AdornoDeArma:
         )
 
     def remover_glifos(self):
-        glifos = Glifos(self.glifos_level.valor_total())
+        glifos = Glifos(self.glifos_level.valor_glifos())
         self.glifos_level.resetar()
         self.level = self._valores_base["level"]
         self.critico = self._valores_base["critico"] * self.level

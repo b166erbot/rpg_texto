@@ -72,13 +72,13 @@ class Floresta:
                 caverna.explorar()
                 self.personagem.recuperar_magia_stamina_cem_porcento()
                 self.personagem.ressucitar()
-                tela.imprimir("saindo da caverna")
+                tela.imprimir("saindo da caverna\n")
                 sleep(2)
             tela.limpar_tela()
         elif str(caminho) == "boss":
             tela.limpar_tela()
             status = {
-                "vida": 150,
+                "vida": 300,
                 "dano": 5,
                 "resistencia": 15,
                 "velo-ataque": 1,
@@ -102,14 +102,16 @@ class Floresta:
                     boss.dar_experiencia(self.personagem)
                     boss.sortear_drops(self.personagem)
                     boss.sortear_drops_quest(self.personagem)
-                tela.limpar_tela2()
                 self.personagem.recuperar_magia_stamina_cem_porcento()
         morte = self.sortear_inimigos()
         if morte:
             self.morto()
             return "morto"
         self.sortear_drop_quest_mapa()
-        self._sortear_boss_dragao()
+        morte = self._sortear_boss_dragao()
+        if morte:
+            self.morto()
+            return 'morto'
 
     def sortear_inimigos(self):
         """Método que sorteia os inimigos para o personagem."""
@@ -119,7 +121,7 @@ class Floresta:
             tela.limpar_tela()
             for y in range(randint(1, 3)):
                 Inimigo = choice(monstros_comuns)
-                inimigo = Inimigo()
+                inimigo = Inimigo(level=self.level)
                 combate(self.personagem, inimigo)
                 if self.personagem.status["vida"] == 0:
                     return True
@@ -130,14 +132,11 @@ class Floresta:
                     inimigo.sortear_drops(self.personagem)
                     inimigo.sortear_drops_quest(self.personagem)
                 self.personagem.recuperar_magia_stamina_cem_porcento()
-            tela.limpar_tela2()
             return False
 
     def morto(self):
         """Método que ressucita o personagem e exibe na tela "morto"."""
         self.personagem.ressucitar()
-        tela.limpar_tela()
-        tela.limpar_tela2()
         tela.imprimir("você está morto e foi ressucitado.")
         sleep(3)
         tela.limpar_tela()
@@ -162,14 +161,14 @@ class Floresta:
                 else:
                     tela.imprimir(
                         "não foi possível adicionar item ao inventario, "
-                        "inventario cheio."
+                        "inventario cheio.\n"
                     )
                     sleep(3)
 
     def _sortear_boss_dragao(self):
         if randint(1, 25) == 25:
             status = {
-                "vida": 150,
+                "vida": 300,
                 "dano": 5,
                 "resistencia": 15,
                 "velo-ataque": 1,
@@ -190,9 +189,11 @@ class Floresta:
                     boss.sortear_drops(self.personagem)
                     boss.sortear_drops_quest(self.personagem)
             else:
-                tela.imprimir("Dragão foi embora.", "vermelho")
+                tela.imprimir("Dragão foi embora.\n", "vermelho")
                 sleep(2)
-            tela.limpar_tela()
+                tela.limpar_tela()
+            if self.personagem.status['vida'] == 0:
+                return 'morto'
 
     def _lutar_ou_fugir(self):
         # esse método não limpa a tela, favor manter.

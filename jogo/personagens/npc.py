@@ -53,13 +53,15 @@ class Comerciante(Npc):
 
     def interagir_vender(self, personagem):
         """Método que interage com o usuário e vende itens."""
+        itens = filter(_retornar_itens_equipaveis, personagem.inventario)
         itens = [
-            f"{numero} - {item}"
-            for numero, item in enumerate(personagem.inventario)
+            f"{numero} - {item} {item.preco}"
+            for numero, item in enumerate(itens)
         ]
         if len(itens) == 0:
             tela.imprimir("você não tem itens no inventario.")
             sleep(2)
+            return
         itens = chunk(itens, 16)
         numero = self._obter_numero(
             "deseja vender qual equipamento?: ",
@@ -181,9 +183,8 @@ class Comerciante(Npc):
             if item.tipo == "Poções":
                 self.itens_criados.append(item())
             elif item.tipo == "Roupa":
-                atributos = [20, 6, 6]
-                atributos = map(lambda x: x * level, atributos)
-                atributos_nomes = ["vida", "resistencia", "armadura"]
+                atributos = [20, 6, 6, level]
+                atributos_nomes = ["vida", "resistencia", "armadura", 'level']
                 atributos_dict = dict(zip(atributos_nomes, atributos))
                 self.itens_criados.append(item(**atributos_dict))
         return {
@@ -251,7 +252,7 @@ class Pessoa(Npc):
             sleep(3)
         else:
             tela.imprimir("complete a missão e depois volte aqui", "cyan")
-            sleep(2)
+            sleep(3)
 
     def interagir(self, personagem):
         """Método que dá a quest para o personagem."""
@@ -262,7 +263,7 @@ class Pessoa(Npc):
             tela.imprimir(f"{self.nome}: não tenho mais nada a pedir.", "cyan")
             if len(self._obter_quests_nao_iniciadas2(personagem.level)):
                 tela.imprimir(" volte quando tiver mais level\n", "cyan")
-            sleep(2)
+            sleep(3)
             return
         if self.quest_atual.iniciada and not self.quest_atual.finalizada:
             self.entregar_quest(personagem)
@@ -412,7 +413,7 @@ class Banqueiro(Npc):
         else:
             tela.imprimir(
                 "não foi possível adicionar item ao inventario, "
-                "inventario cheio."
+                "inventario cheio.\n"
             )
             sleep(3)
 
@@ -592,18 +593,28 @@ class Ferreiro(Npc):
         while bool(item):
             tela.limpar_tela()
             tela.imprimir(f"seus glifos: {personagem.moedas['Glifos']}\n")
-            tela.imprimir("Quantos glifos deseja acrescentar: ")
+            maximo_glifos_acrescentar = item.glifos_level.valor_faltando()
+            tela.imprimir(
+                "Quantos glifos deseja acrescentar "
+                f"[maximo {maximo_glifos_acrescentar}]: "
+            )
             quantidade = tela.obter_string()
             if not quantidade.isnumeric():
                 break
-            if int(personagem.moedas["Glifos"]) >= int(quantidade):
+            if int(personagem.moedas["Glifos"]) < int(quantidade):
+                tela.imprimir(f"você não tem {quantidade} glifo(s).")
+                sleep(3)
+            elif int(quantidade) > maximo_glifos_acrescentar:
+                tela.imprimir(
+                    "não é possível inserir mais que o máximo: "
+                    f"{maximo_glifos_acrescentar}"
+                )
+                sleep(3)
+            else:
                 item.receber_glifos(int(quantidade))
                 personagem.moedas["Glifos"] -= int(quantidade)
                 tela.imprimir(f"item: {item}")
                 sleep(3)
-            else:
-                tela.imprimir(f"você não tem {quantidade} de glifos.")
-                sleep(2)
             equipamentos = [
                 equipamento
                 for equipamento in personagem.equipamentos.values()
@@ -625,7 +636,7 @@ class Ferreiro(Npc):
         """Método que escolhe um item e remove os glifos dele."""
         equipamentos = []
         for equipamento in personagem.equipamentos.values():
-            if bool(equipamento) and equipamento.glifos_level.valor_total() > 0:
+            if bool(equipamento) and equipamento.glifos_level.valor_glifos() > 0:
                 equipamentos.append(equipamento)
         equipamentos_ = list(
             filter(
@@ -634,40 +645,49 @@ class Ferreiro(Npc):
             )
         )
         equipamentos_ = filter(
-            lambda x: x.glifos_level.valor_total() > 0, equipamentos_
+            lambda x: x.glifos_level.valor_glifos() > 0, equipamentos_
         )
         equipamentos += equipamentos_
         if len(equipamentos) == 0:
             tela.imprimir(
-                "você não tem itens no inventario e nem equipados.", "cyan"
+                "você não tem itens no inventario e nem equipados "
+                "que contenham glifos.",
+                "cyan"
             )
             sleep(3)
             return
         item = self._obter_numero_equipamentos(
             equipamentos,
-            "deseja retirar em qual equipamento?: ",
+            "deseja retirar de qual equipamento?: ",
             personagem,
         )
         while bool(item):
             tela.limpar_tela()
-            tela.imprimir(f"seus glifos: {personagem.moedas['Glifos']}\n")
-            valor = item.glifos_level.valor_total() * 0.30
+            tela.imprimir(
+                f"seus glifos: {personagem.moedas['Glifos']} "
+                f"suas pratas: {personagem.moedas['Pratas']}\n"
+            )
+            valor = int(item.glifos_level.valor_glifos() * 0.30)
             tela.imprimir(
                 "tem certeza que deseja remover os glifos? "
                 f"Pratas {valor} [s/n]: "
             )
             resposta = tela.obter_string()
             if resposta in ["s", "sim"]:
-                personagem.moedas["Pratas"] -= int(valor)
-                glifos = item.remover_glifos()
-                personagem.moedas["Glifos"] += glifos
-                tela.imprimir(f"item: {item}")
-                sleep(3)
+                if int(personagem.moedas['Pratas']) >= valor:
+                    personagem.moedas["Pratas"] -= valor
+                    glifos = item.remover_glifos()
+                    personagem.moedas["Glifos"] += glifos
+                    tela.imprimir(f"item: {item}")
+                    sleep(3)
+                else:
+                    tela.imprimir('você não tem dinheiro suficiente.')
+                    sleep(3)
             equipamentos = []
             for equipamento in personagem.equipamentos.values():
                 if (
                     bool(equipamento)
-                    and equipamento.glifos_level.valor_total() > 0
+                    and equipamento.glifos_level.valor_glifos() > 0
                 ):
                     equipamentos.append(equipamento)
             equipamentos_ = list(
@@ -677,7 +697,7 @@ class Ferreiro(Npc):
                 )
             )
             equipamentos_ = filter(
-                lambda x: x.glifos_level.valor_total() > 0, equipamentos_
+                lambda x: x.glifos_level.valor_glifos() > 0, equipamentos_
             )
             equipamentos += equipamentos_
             if len(equipamentos) == 0:
@@ -704,7 +724,7 @@ class Ferreiro(Npc):
             )
             n = numeros_paginas.get(numero, 1)
             for numero, item in itens[n - 1]:
-                mensagem2 = f"{numero} - {item}"
+                mensagem2 = f"{numero} - {item} level: {item.level}"
                 equipamento_equipado = map(
                     lambda x: x is item, personagem.equipamentos.values()
                 )
@@ -712,7 +732,7 @@ class Ferreiro(Npc):
                     tela.imprimir(mensagem2 + "\n", "amarelo")
                 else:
                     tela.imprimir(mensagem2 + "\n", "cyan")
-            tela.imprimir(mensagem)
+            tela.imprimir(mensagem, 'cyan')
             numero = tela.obter_string()
         return itens_dict.get(numero)
 
@@ -727,5 +747,7 @@ def _retornar_itens_equipaveis(item):
         "Arma",
         "Anel",
         "Amuleto",
+        "Adorno de arma",
+        "Escudo"
     ]
     return item.tipo in tipos

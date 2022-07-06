@@ -32,13 +32,15 @@ class ItemDeDefesa:
         self.bonus = []
         self.preco = Pratas(((vida // 2) + armadura + resistencia) * 8)
         self.conjunto = "item comum"
+        self.glifos = Glifos(12 * level)
+        self.level = level
         leveis = [100, 200, 300, 400, 500, 600, 700, 800]
         self.glifos_level = Acumulador(0, leveis, level)
 
     def __repr__(self):
         retorno = (
             f"{self.nome}(vid: {self.vida}, resis: {self.resistencia}"
-            f", arm: {self.armadura})"
+            f", arm: {self.armadura}, lvl: {self.level})"
         )
         return retorno
 
@@ -50,7 +52,7 @@ class ItemDeDefesa:
         self.resistencia = self._valores_base["resistencia"] * self.level
 
     def remover_glifos(self):
-        glifos = Glifos(self.glifos_level.valor_total())
+        glifos = Glifos(self.glifos_level.valor_glifos())
         self.glifos_level.resetar()
         self.level = self._valores_base["level"]
         self.vida = self._valores_base["vida"] * self.level
@@ -87,13 +89,15 @@ class ItemDeDano:
         self.bonus = []
         self.preco = Pratas((dano + critico + (aumento_critico // 2)) * 8)
         self.conjunto = "item comum"
+        self.level = level
+        self.glifos = Glifos(12 * level)
         leveis = [100, 200, 300, 400, 500, 600, 700, 800]
         self.glifos_level = Acumulador(0, leveis, level)
 
     def __repr__(self):
         retorno = (
             f"{self.nome}(dan: {self.dano}, crit: {self.critico}"
-            f", crit porc: {self.aumento_critico})"
+            f", crit porc: {self.aumento_critico}, lvl: {self.level})"
         )
         return retorno
 
@@ -107,7 +111,7 @@ class ItemDeDano:
         )
 
     def remover_glifos(self):
-        glifos = Glifos(self.glifos_level.valor_total())
+        glifos = Glifos(self.glifos_level.valor_glifos())
         self.glifos_level.resetar()
         self.level = self._valores_base["level"]
         self.dano = self._valores_base["dano"] * self.level
@@ -146,7 +150,7 @@ class Aljava(ItemDeDano):
 
 class Adaga(ItemDeDano):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Adaga", classe="Assassino", **kwargs)
+        super().__init__(*args, nome="Adaga sec.", classe="Assassino", **kwargs)
 
 
 tudo = [Escudo, BolaDeCristal, Livro, Buckler, Aljava, Adaga]

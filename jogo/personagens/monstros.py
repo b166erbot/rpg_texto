@@ -9,7 +9,12 @@ from jogo.itens.item_secundario import tudo as itens_secundarios
 from jogo.itens.quest import ItemQuest
 from jogo.itens.vestes import tudo as vestes
 from jogo.tela.imprimir import Imprimir, efeito_digitando, formatar_status
-from jogo.utils import Contador, arrumar_porcentagem, regra_3
+from jogo.utils import (
+    Contador,
+    arrumar_porcentagem,
+    regra_3,
+    menor_numero,
+)
 
 tela = Imprimir()
 
@@ -43,8 +48,9 @@ class Monstro:
         self.porcentagem_armadura = 0
         self.porcentagem_resistencia = 0
         self.porcentagem_critico = 0
-        self.atualizar_status()
         self._contador = Contador(4)
+        self._porcentagem_total_dano_lista = [5, 11, 17, 23, 29]
+        self.atualizar_status()
 
     async def atacar(self, other):
         """Método que ataca como bot o personagem."""
@@ -95,7 +101,7 @@ class Monstro:
                         randint(1, 6),
                         randint(1, 16),
                         randint(1, 6),
-                        self.level,
+                        personagem.level,
                     ]
                     status_nomes = [
                         "dano",
@@ -110,7 +116,7 @@ class Monstro:
                         randint(1, 6),
                         randint(3, 20),
                         randint(1, 6),
-                        self.level,
+                        personagem.level,
                     ]
                     status_nomes = ["armadura", "vida", "resistencia", "level"]
                     status_dict = dict(zip(status_nomes, status))
@@ -121,7 +127,7 @@ class Monstro:
                         randint(3, 20),
                         randint(1, 6),
                         randint(1, 6),
-                        self.level,
+                        personagem.level,
                     ]
                     status_nomes = [
                         "dano",
@@ -138,7 +144,7 @@ class Monstro:
                         randint(1, 6),
                         randint(1, 6),
                         randint(10, 80),
-                        self.level,
+                        personagem.level,
                     ]
                     status_nomes = [
                         "vida",
@@ -153,7 +159,7 @@ class Monstro:
                     status = [
                         randint(1, 6),
                         randint(1, 16),
-                        self.level,
+                        personagem.level,
                     ]
                     status_nomes = ["critico", "aumento_critico", "level"]
                     status_dict = dict(zip(status_nomes, status))
@@ -166,7 +172,7 @@ class Monstro:
             else:
                 tela.imprimir(
                     "Não foi possível adicionar item ao inventario. "
-                    "Inventario cheio."
+                    "Inventario cheio.\n"
                 )
                 sleep2(3)
 
@@ -241,6 +247,26 @@ class Monstro:
             if self.porcentagem_resistencia < 0:
                 self.porcentagem_resistencia = 0
 
+    def atualizar_porcentagem_por_dano(self, dano:int):
+        valor = menor_numero(dano, list(self._porcentagem_total_dano))
+        porcentagens = self._porcentagem_total_dano
+        aumentar_porcentagem = porcentagens[valor]
+        # divisão normal abaixo, favor manter.
+        valor_armadura_resistencia = (
+            (aumentar_porcentagem * self._porcentagem_total[self.level])
+            / 100
+        )
+        self.status['armadura'] = valor_armadura_resistencia
+        self.status['resistencia'] = valor_armadura_resistencia
+        self.atualizar_status()
+
+    @property
+    def _porcentagem_total_dano(self):
+        danos = [x * self.level for x in self._porcentagem_total_dano_lista]
+        porcentagens = [11, 28, 45, 61, 78]
+        return dict(zip(danos, porcentagens))
+
+
 
 class Boss(Monstro):
     def __init__(self, *args, **kwargs):
@@ -257,7 +283,7 @@ class Boss(Monstro):
                     randint(3, 6),
                     randint(8, 16),
                     randint(3, 6),
-                    self.level,
+                    personagem.level,
                 ]
                 status_nomes = ["dano", "aumento_critico", "critico", "level"]
                 status_dict = dict(zip(status_nomes, status))
@@ -267,7 +293,7 @@ class Boss(Monstro):
                     randint(3, 6),
                     randint(10, 20),
                     randint(3, 6),
-                    self.level,
+                    personagem.level,
                 ]
                 status_nomes = ["armadura", "vida", "resistencia", "level"]
                 status_dict = dict(zip(status_nomes, status))
@@ -278,7 +304,7 @@ class Boss(Monstro):
                     randint(10, 20),
                     randint(3, 6),
                     randint(3, 6),
-                    self.level,
+                    personagem.level,
                 ]
                 status_nomes = [
                     "dano",
@@ -295,7 +321,7 @@ class Boss(Monstro):
                     randint(3, 6),
                     randint(3, 6),
                     randint(40, 80),
-                    self.level,
+                    personagem.level,
                 ]
                 status_nomes = [
                     "vida",
@@ -310,20 +336,20 @@ class Boss(Monstro):
                 status = [
                     randint(3, 6),
                     randint(8, 16),
-                    self.level,
+                    personagem.level,
                 ]
                 status_nomes = ["critico", "aumento_critico", "level"]
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(**status_dict)
         personagem.moedas["Pratas"] += randint(
-            30 * 2 * self.level, 50 * 2 * self.level
+            300 * self.level, 500 * self.level
         )
         if personagem.e_possivel_guardar(item):
             personagem.guardar_item(item)
         else:
             tela.imprimir(
                 "não foi possível adicionar item ao inventario, "
-                "inventario cheio."
+                "inventario cheio.\n"
             )
             sleep2(3)
 
@@ -593,7 +619,7 @@ class Dragao(Boss):
     def sortear_drops(self, personagem):
         super().sortear_drops(personagem)
         personagem.inventario.append(ItemQuest("Coração de Dragão"))
-        personagem.inventario.append(CaixaDraconica())
+        personagem.inventario.append(CaixaDraconica(personagem.level))
 
 
 monstros_comuns = [Tartaruga, Camaleao, Tamandua, Sapo]

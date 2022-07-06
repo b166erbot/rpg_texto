@@ -35,7 +35,7 @@ class Roupa:
     def __repr__(self):
         retorno = (
             f"{self.nome}(vid: {self.vida}, resis: {self.resistencia}"
-            f", arm: {self.armadura})"
+            f", arm: {self.armadura}, lvl: {self.level})"
         )
         return retorno
 
@@ -47,7 +47,7 @@ class Roupa:
         self.armadura = self._valores_base["armadura"] * self.level
 
     def remover_glifos(self):
-        glifos = Glifos(self.glifos_level.valor_total())
+        glifos = Glifos(self.glifos_level.valor_glifos())
         self.glifos_level.resetar()
         self.level = self._valores_base["level"]
         self.vida = self._valores_base["vida"] * self.level
@@ -137,7 +137,7 @@ class Anel:
     def __repr__(self):
         retorno = (
             f"{self.nome}(vid: {self.vida}, resis: {self.resistencia}"
-            f", arm: {self.armadura}, dan: {self.dano})"
+            f", arm: {self.armadura}, dan: {self.dano}, lvl: {self.level})"
         )
         return retorno
 
@@ -150,7 +150,7 @@ class Anel:
         self.resistencia = self._valores_base["resistencia"] * self.level
 
     def remover_glifos(self):
-        glifos = Glifos(self.glifos_level.valor_total())
+        glifos = Glifos(self.glifos_level.valor_glifos())
         self.glifos_level.resetar()
         self.level = self._valores_base["level"]
         self.dano = self._valores_base["dano"] * self.level
@@ -196,7 +196,7 @@ class Amuleto:
     def __repr__(self):
         retorno = (
             f"{self.nome}(vid: {self.vida}, resis: {self.resistencia}"
-            f", arm: {self.armadura}, dan: {self.dano})"
+            f", arm: {self.armadura}, dan: {self.dano}, lvl: {self.level})"
         )
         return retorno
 
@@ -209,7 +209,7 @@ class Amuleto:
         self.resistencia = self._valores_base["resistencia"] * self.level
 
     def remover_glifos(self):
-        glifos = Glifos(self.glifos_level.valor_total())
+        glifos = Glifos(self.glifos_level.valor_glifos())
         self.glifos_level.resetar()
         self.level = self._valores_base["level"]
         self.dano = self._valores_base["dano"] * self.level
@@ -254,7 +254,7 @@ class RoupaDraconica:
     def __repr__(self):
         retorno = (
             f"{self.nome}(vid: {self.vida}, resis: {self.resistencia}"
-            f", arm: {self.armadura})"
+            f", arm: {self.armadura}, lvl: {self.level})"
         )
         return retorno
 
@@ -266,7 +266,7 @@ class RoupaDraconica:
         self.resistencia = self._valores_base["resistencia"] * self.level
 
     def remover_glifos(self):
-        glifos = Glifos(self.glifos_level.valor_total())
+        glifos = Glifos(self.glifos_level.valor_glifos())
         self.glifos_level.resetar()
         self.level = self._valores_base["level"]
         self.vida = self._valores_base["vida"] * self.level

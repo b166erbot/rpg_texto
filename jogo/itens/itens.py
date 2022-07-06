@@ -4,10 +4,10 @@ from jogo.utils import Artigo, arrumar_porcentagem
 
 
 class SemItemEquipado:
-    def __init__(self, nome_do_equipamento, tipo_equipar):
+    def __init__(self, nome_do_equipamento, tipo, tipo_equipar):
         # nome_do_equipamento precisa ser obrigatoriamente o tipo do item
         self.nome_do_equipamento = nome_do_equipamento
-        self.tipo = nome_do_equipamento
+        self.tipo = tipo
         self.tipo_equipar = tipo_equipar
         self.classe = "Nenhum"
         self.bonus = []

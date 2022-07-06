@@ -1,13 +1,14 @@
 import sys
-from pathlib import Path
 from time import sleep
 from unittest.mock import MagicMock
 
 from jogo.locais.areas_abertas import Floresta
 from jogo.locais.habitaveis import Vilarejo
+from jogo.pets import SemPet, Pet
 from jogo.save import salvar_jogo
 from jogo.tela.imprimir import Imprimir, formas
 from jogo.utils import chunk
+from jogo.itens.caixas import CaixaDraconica
 
 # Silenciar o pygame para não imprimir nada na tela
 sys.stdout = MagicMock()
@@ -33,6 +34,7 @@ class Menu:
             "abrir caixas",
             "mostrar o status",
             "mostrar quests",
+            "equipar pets",
             "salvar jogo",
             "sair",
         ]
@@ -40,11 +42,19 @@ class Menu:
             f"{numero} - {texto}" for numero, texto in enumerate(texto2, 1)
         ]
         self.personagem = personagem
+        for _ in range(6):
+            personagem.inventario.append(CaixaDraconica(personagem.level))
+        personagem.inventario.append(Pet(
+            nome='companheiro', atributo='vida', valor=5
+        ))
+        personagem.inventario.append(Pet(
+            nome='andarilho', atributo='armadura', valor=5
+        ))
 
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""
-        mixer.music.load("vilarejo.ogg")
-        mixer.music.play()
+        # mixer.music.load("vilarejo.ogg")
+        # mixer.music.play()
         forma = f"{formas[227]} {{}} {formas[228]}"
         while True:
             tela.limpar_tela()
@@ -107,11 +117,13 @@ class Menu:
                 case 8:
                     self._obter_numero_quests()
                 case 9:
+                    self.equipar_pets()
+                case 10:
                     npcs = filter(lambda x: x.salvar, self._npcs)
                     salvar_jogo(self.personagem, npcs, self._nome_jogo)
-                    tela.imprimir("jogo salvo", "cyan")
+                    tela.imprimir(f"jogo salvo {formas[959]}", "cyan")
                     sleep(3)
-                case 10:
+                case 11:
                     quit()
 
     def equipar_equipamentos(self):
@@ -287,28 +299,25 @@ class Menu:
                 return False
         return True
 
-    def _obter_numero_caixa(self):
-        caixas = list(
-            filter(lambda x: x.tipo == "Caixa", self.personagem.inventario)
-        )
-        caixas_enumeradas = list(enumerate(caixas))
-        caixas_dict = {str(n): item for n, item in caixas_enumeradas}
-        caixas_enumeradas = chunk(caixas_enumeradas, 17)
+    def _obter_numero(self, itens, mensagem):
+        itens_enumeradas = list(enumerate(itens))
+        caixas_dict = {str(n): item for n, item in itens_enumeradas}
+        itens_enumeradas = chunk(itens_enumeradas, 17)
         numeros_paginas = {
-            f":{n}": n for n in range(1, len(caixas_enumeradas) + 1)
+            f":{n}": n for n in range(1, len(itens_enumeradas) + 1)
         }
         numero = ":1"
         while bool(numero) and not numero.isnumeric():
             tela.limpar_tela()
             tela.imprimir(
-                f"páginas: {len(caixas_enumeradas)}"
+                f"páginas: {len(itens_enumeradas)}"
                 " - Para passar de página digite :numero exemplo-> :2\n",
                 "cyan",
             )
             n = numeros_paginas.get(numero, 1)
-            for numero, item in caixas_enumeradas[n - 1]:
+            for numero, item in itens_enumeradas[n - 1]:
                 tela.imprimir(f"{numero} - {item}\n")
-            tela.imprimir("aperte enter para retornar ao menu: ", "cyan")
+            tela.imprimir(mensagem, "cyan")
             numero = tela.obter_string()
         return caixas_dict.get(numero)
 
@@ -321,24 +330,49 @@ class Menu:
             tela.imprimir("você não tem caixas no inventario para abrir")
             sleep(3)
             return
-        caixa = self._obter_numero_caixa()
+        caixa = self._obter_numero(caixas, "deseja escolher qual caixa: ")
         while len(caixas) > 0 and bool(caixa):
-            tela.limpar_tela()
-            caixas = list(
-                filter(lambda x: x.tipo == "Caixa", self.personagem.inventario)
-            )
             tela.limpar_tela()
             tela.imprimir(f"caixa: {caixa.nome}, deseja abrir? [sim/não]: ")
             resposta = tela.obter_string().lower()
             if resposta in ["s", "sim"]:
                 item = caixa.consumir()
-                tela.imprimir(f"item adquirido: {item}")
+                tela.imprimir(f"item adquirido: {item}\n")
                 sleep(3)
                 if item.nome == "Draconica":
                     self.personagem.moedas["Draconica"] += item
                 else:
                     self.personagem.inventario.append(item)
-            caixa = self._obter_numero_caixa()
+                index = self.personagem.inventario.index(caixa)
+                self.personagem.inventario.pop(index)
+            caixas = list(
+                filter(lambda x: x.tipo == "Caixa", self.personagem.inventario)
+            )
+            if len(caixas) == 0:
+                tela.imprimir('você não tem mais caixas\n')
+                sleep(3)
+                return
+            caixa = self._obter_numero(caixas, "deseja escolher qual caixa: ")
+    
+    def equipar_pets(self):
+        tela.limpar_tela()
+        pets = [item for item in self.personagem.inventario if item.tipo == 'Pet']
+        if len(pets) == 0:
+            tela.imprimir('você não tem pets no inventario.\n')
+            sleep(3)
+            return
+        pet = self._obter_numero(pets, "deseja escolher qual pet: ")
+        if bool(pet):
+            self.personagem.pet_equipado = pet
+            self.personagem.atualizar_status()
+            tela.imprimir(f"Pet equipado: {pet}")
+            sleep(3)
+        else:
+            self.personagem.pet_equipado = SemPet()
+            self.personagem.atualizar_status()
+            tela.imprimir("Pet desequipado.")
+            sleep(3)
+
 
     def _arrumar_status(self, personagem):
         p = personagem
@@ -392,7 +426,6 @@ class Menu:
 # TODO: fazer quests onde o personagem precise interagir com 2 ou mais npcs.
 # TODO: botar um simbolo diferente nas moedas glifo e draconica.
 # TODO: fazer 10 poções ocuparem o mesmo espaço? (não sei se tem como)
-# TODO: implementar deletar save no inicio
 # TODO: implementar baús que dropam itens?
 # TODO: ter um companheiro na campanha? (não sei se tem como implementar isso)
 # TODO: trols, cavaleiros negros, catatumbas[areas abertas, ala a direita, tunel]

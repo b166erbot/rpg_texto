@@ -18,12 +18,7 @@ def _carregar_jogo(nome_do_objeto, nome_do_arquivo: str):
 
 
 def existe_saves() -> bool:
-    arquivos = {
-        str(x): y
-        for x, y in enumerate(
-            [arquivo.name for arquivo in Path().glob("*.pkl")], 1
-        )
-    }
+    arquivos = [arquivo.name for arquivo in Path().glob("*.pkl")]
     if len(arquivos) == 0:
         return False
     return True

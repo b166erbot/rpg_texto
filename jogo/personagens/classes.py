@@ -10,6 +10,7 @@ from jogo.itens.pocoes import curas
 from jogo.itens.quest import ItemQuest
 from jogo.tela.imprimir import Imprimir, formatar_status
 from jogo.utils import Acumulador, Contador, arrumar_porcentagem, regra_3
+from jogo.pets import SemPet
 
 tela = Imprimir()
 
@@ -38,21 +39,25 @@ class Humano:
         status={},
         experiencia=0,
         moedas={},
-        peitoral=SemItemEquipado("Peitoral", "Peitoral"),
-        elmo=SemItemEquipado("Elmo", "Elmo"),
-        calca=SemItemEquipado("Calça", "Calça"),
-        botas=SemItemEquipado("Botas", "Botas"),
-        luvas=SemItemEquipado("Luvas", "Luvas"),
-        arma=SemItemEquipado("Arma", "Arma"),
-        anel=SemItemEquipado("Anel", "Anel"),
-        amuleto=SemItemEquipado("Amuleto", "Amuleto"),
-        item_secundario=SemItemEquipado("Item secundário", "Item secundário"),
-        adorno_de_arma=SemItemEquipado("Adorno de arma", "Adorno de arma"),
+        peitoral=SemItemEquipado("Peitoral", "Peitoral", "Peitoral"),
+        elmo=SemItemEquipado("Elmo", "Elmo", "Elmo"),
+        calca=SemItemEquipado("Calça", "Calça", "Calça"),
+        botas=SemItemEquipado("Botas", "Botas", "Botas"),
+        luvas=SemItemEquipado("Luvas", "Luvas", "Luvas"),
+        arma=SemItemEquipado("Arma", "Arma", "Arma"),
+        anel=SemItemEquipado("Anel", "Anel", "Anel"),
+        amuleto=SemItemEquipado("Amuleto", "Amuleto", "Amuleto"),
+        item_secundario=SemItemEquipado(
+            "Item secundário", "Item secundário", "Item secundário"
+        ),
+        adorno_de_arma=SemItemEquipado(
+            "Adorno de arma", "Adorno de arma", "Adorno de arma"
+        ),
     ):
         self.nome = nome.split()[0][:20]
         self.nome_completo = nome
         self.level = level
-        leveis = [499, 999, 1999, 3499, 5499, 7999, 10999, 14499]
+        leveis = [4999, 9999, 14999, 19999, 24999, 29999, 34999, 39999]
         self.experiencia = Acumulador(experiencia, leveis, level)
         self.status = Counter(
             status
@@ -97,8 +102,9 @@ class Humano:
         self.aumento_dano_critico = 2.0
         self.valor_de_bloqueio = 0
         self._calcular_bonus = CalcularBonus(self)
-        self.atualizar_status()
         self._contador = Contador(4)
+        self.pet_equipado = SemPet()
+        self.atualizar_status()
 
     @property
     def vida_maxima(self):
@@ -138,9 +144,7 @@ class Humano:
                     habilidade(other)
                     self._contador.resetar()
             else:
-                dano = self.status["dano"]
-                subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
-                other.status["vida"] -= dano - subtrair_dano
+                self._dar_dano_padrao(other)
                 other.arrumar_vida()
                 self._contador.acrescentar()
             if self._contador.usar:
@@ -157,17 +161,15 @@ class Humano:
             caracter = tela.obter_caracter()
             if caracter != -1:
                 caracter = chr(caracter)
-                if caracter in ["1", "2"]:
+                if caracter in ["1", "2"] and self.consumir_magia_stamina():
                     habilidade = self.habilidades[caracter]
-                    if self.consumir_magia_stamina():
-                        habilidade(other)
-                        self._contador.resetar()
+                    habilidade(other)
+                    self._contador.resetar()
                 else:
+                    self._dar_dano_padrao(other)
                     self._contador.acrescentar()
             else:
-                dano = self.status["dano"]
-                subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
-                other.status["vida"] -= dano - subtrair_dano
+                self._dar_dano_padrao(other)
                 self._contador.acrescentar()
             if self._contador.usar:
                 self._recuperar_magia_stamina()
@@ -176,6 +178,12 @@ class Humano:
             await sleep(0.5)
         tela.imprimir_combate(formatar_status(self), 1)
         await sleep(0.5)
+    
+    def _dar_dano_padrao(self, other):
+        """Método que dá o dano padrão."""
+        dano = self.status["dano"]
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        other.status["vida"] -= dano - subtrair_dano
 
     def arrumar_vida(self):
         """Método que arruma a vida para não sair do limite permitido."""
@@ -190,7 +198,8 @@ class Humano:
 
     def consumir_pocoes(self):
         """Método que consome a poção caso você tenha."""
-        if self.status["vida"] <= 30:
+        porcentagem = (self.status['vida'] * 100) // self.vida_maxima
+        if porcentagem <= 30:
             pocao = self._dropar_pocoes()
             if bool(pocao):
                 self.status["vida"] += pocao.consumir(self.vida_maxima)
@@ -218,13 +227,15 @@ class Humano:
             if self.e_possivel_guardar(equipamento):
                 self.guardar_item(equipamento)
                 self.equipamentos[equipamento.tipo_equipar] = SemItemEquipado(
-                    equipamento.tipo, equipamento.tipo_equipar
+                    equipamento.nome,
+                    equipamento.tipo,
+                    equipamento.tipo_equipar,
                 )
                 self.atualizar_status()
             else:
                 tela.imprimir(
                     "não foi possível adicionar item ao inventario, "
-                    "inventario cheio."
+                    "inventario cheio.\n"
                 )
                 sleep2(3)
 
@@ -254,6 +265,8 @@ class Humano:
         self.aumento_dano_critico = self._aumento_critico
         self.valor_de_bloqueio = self._bloqueio
         self.atualizar_porcentagem()
+        # bonus do pet precisa ser antes do bonus do set.
+        self.pet_equipado.calcular_bonus(self)
         self._calcular_bonus.calcular(self.equipamentos.values())
 
     def atualizar_porcentagem(self):
@@ -409,18 +422,32 @@ class Arqueiro(Humano):
     def tres_flechas(self, other):
         """Método que ataca o oponente."""
         if randint(1, 100) <= self.porcentagem_critico:
-            dano = 10 * self.aumento_dano_critico
+            dano = (
+                (
+                    5
+                    * self.aumento_dano_critico
+                    * self.level
+                )
+                + self.status['dano']
+            )
         else:
-            dano = 10
+            dano = 5 * self.level + self.status['dano']
         subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
         other.status["vida"] -= dano - subtrair_dano
 
     def flecha_de_fogo(self, other):
         """Método que ataca o oponente."""
         if randint(1, 100) <= self.porcentagem_critico:
-            dano = 15 * self.aumento_dano_critico
+            dano = (
+                (
+                    10
+                    * self.aumento_dano_critico
+                    * self.level
+                )
+                + self.status['dano']
+            )
         else:
-            dano = 15
+            dano = 10 * self.level + self.status['dano']
         subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
         other.status["vida"] -= dano - subtrair_dano
 
@@ -455,18 +482,32 @@ class Guerreiro(Humano):
     def investida(self, other):
         """Método que ataca o oponente."""
         if randint(1, 100) <= self.porcentagem_critico:
-            dano = 10 * self.aumento_dano_critico
+            dano = (
+                (
+                    5
+                    * self.aumento_dano_critico
+                    * self.level
+                )
+                + self.status['dano']
+            )
         else:
-            dano = 10
+            dano = 5 * self.level + self.status['dano']
         subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
         other.status["vida"] -= dano - subtrair_dano
 
     def esmagar(self, other):
         """Método que ataca o oponente."""
         if randint(1, 100) <= self.porcentagem_critico:
-            dano = 15 * self.aumento_dano_critico
+            dano = (
+                (
+                    10
+                    * self.aumento_dano_critico
+                    * self.level
+                )
+                + self.status['dano']
+            )
         else:
-            dano = 15
+            dano = 10 * self.level + self.status['dano']
         subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
         other.status["vida"] -= dano - subtrair_dano
 
@@ -501,18 +542,32 @@ class Mago(Humano):
     def lanca_de_gelo(self, other):
         """Método que ataca o oponente."""
         if randint(1, 100) <= self.porcentagem_critico:
-            dano = 10 * self.aumento_dano_critico
+            dano = (
+                (
+                    5
+                    * self.aumento_dano_critico
+                    * self.level
+                )
+                + self.status['dano']
+            )
         else:
-            dano = 10
+            dano = 5 * self.level + self.status['dano']
         subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
         other.status["vida"] -= dano - subtrair_dano
 
     def bola_de_fogo(self, other):
         """Método que ataca o oponente."""
         if randint(1, 100) <= self.porcentagem_critico:
-            dano = 15 * self.aumento_dano_critico
+            dano = (
+                (
+                    10
+                    * self.aumento_dano_critico
+                    * self.level
+                )
+                + self.status['dano']
+            )
         else:
-            dano = 15
+            dano = 10 * self.level + self.status['dano']
         subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
         other.status["vida"] -= dano - subtrair_dano
 
@@ -547,18 +602,32 @@ class Assassino(Humano):
     def lancar_faca(self, other):
         """Método que ataca o oponente."""
         if randint(1, 100) <= self.porcentagem_critico:
-            dano = 10 * self.aumento_dano_critico
+            dano = (
+                (
+                    5
+                    * self.aumento_dano_critico
+                    * self.level
+                )
+                + self.status['dano']
+            )
         else:
-            dano = 10
+            dano = 5 * self.level + self.status['dano']
         subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
         other.status["vida"] -= dano - subtrair_dano
 
     def ataque_furtivo(self, other):
         """Método que ataca o oponente."""
         if randint(1, 100) <= self.porcentagem_critico:
-            dano = 15 * self.aumento_dano_critico
+            dano = (
+                (
+                    10
+                    * self.aumento_dano_critico
+                    * self.level
+                )
+                + self.status['dano']
+            )
         else:
-            dano = 15
+            dano = 10 * self.level + self.status['dano']
         subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
         other.status["vida"] -= dano - subtrair_dano
 
@@ -593,19 +662,32 @@ class Clerigo(Humano):
     def curar(self, other):
         """Método que cura o personagem."""
         if randint(1, 100) <= self.porcentagem_critico:
-            vida = 25 * self.aumento_dano_critico
+            vida = (
+                (
+                    10
+                    * self.aumento_dano_critico
+                    * self.level
+                )
+                + self.status['dano']
+            )
         else:
-            vida = 25
+            vida = 10 * self.level + self.status['dano']
         self.status["vida"] += vida
-        if self.status["vida"] >= self.vida_maxima:
-            self.status["vida"] = self.vida_maxima
+        self.arrumar_vida()
 
     def luz(self, other):
         """Método que ataca o oponente."""
         if randint(1, 100) <= self.porcentagem_critico:
-            dano = 10 * self.aumento_dano_critico
+            dano = (
+                (
+                    5
+                    * self.aumento_dano_critico
+                    * self.level
+                )
+                + self.status['dano']
+            )
         else:
-            dano = 10
+            dano = 5 * self.level + self.status['dano']
         subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
         other.status["vida"] -= dano - subtrair_dano
 
@@ -640,18 +722,32 @@ class Monge(Humano):
     def multiplos_socos(self, other):
         """Método que ataca o oponente."""
         if randint(1, 100) <= self.porcentagem_critico:
-            dano = 10 * self.aumento_dano_critico
+            dano = (
+                (
+                    5
+                    * self.aumento_dano_critico
+                    * self.level
+                )
+                + self.status['dano']
+            )
         else:
-            dano = 10
+            dano = 5 * self.level + self.status['dano']
         subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
         other.status["vida"] -= dano - subtrair_dano
 
     def combo_de_chutes(self, other):
         """Método que ataca o oponente."""
         if randint(1, 100) <= self.porcentagem_critico:
-            dano = 15 * self.aumento_dano_critico
+            dano = (
+                (
+                    10
+                    * self.aumento_dano_critico
+                    * self.level
+                )
+                + self.status['dano']
+            )
         else:
-            dano = 15
+            dano = 10 * self.level + self.status['dano']
         subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
         other.status["vida"] -= dano - subtrair_dano
 
