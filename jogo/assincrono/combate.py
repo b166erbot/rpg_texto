@@ -1,8 +1,8 @@
 from asyncio import get_event_loop, wait
 from itertools import permutations
 
-from jogo.tela.imprimir import Imprimir
 from jogo.personagens.monstros import Monstro
+from jogo.tela.imprimir import Imprimir
 
 tela = Imprimir()
 
@@ -13,9 +13,9 @@ def combate(personagem1, personagem2):
     personagens = list(permutations([personagem1, personagem2], 2))
     # aumentar a porcentagem de armadura/resistencia com base no dano para balancear.
     if isinstance(personagem1, Monstro):
-        personagem1.atualizar_porcentagem_por_dano(personagem2.status['dano'])
+        personagem1.atualizar_porcentagem_por_dano(personagem2.status["dano"])
     elif isinstance(personagem2, Monstro):
-        personagem2.atualizar_porcentagem_por_dano(personagem1.status['dano'])
+        personagem2.atualizar_porcentagem_por_dano(personagem1.status["dano"])
     # reduzir a porcentagem de armadura/resistencia com base no lvl do inimigo
     personagem1.atualizar_porcentagem_por_level(personagem2.level)
     personagem2.atualizar_porcentagem_por_level(personagem1.level)

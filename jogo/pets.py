@@ -3,9 +3,9 @@ class Pet:
         self.nome = nome
         self.atributo = atributo
         self.valor = valor
-        self.classe = 'Pet'
+        self.classe = "Pet"
         self.tipo = "Pet"
-    
+
     def __repr__(self):
         retorno = (
             f"pet({self.nome}, atributo: {self.atributo}, "
@@ -22,7 +22,7 @@ class Pet:
 class SemPet:
     def __init__(self):
         self.nome = "Sem pet"
-        self.classe = 'Pet'
+        self.classe = "Pet"
         self.tipo = "Pet"
 
     def __repr__(self):

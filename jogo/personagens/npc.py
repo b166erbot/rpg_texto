@@ -184,7 +184,7 @@ class Comerciante(Npc):
                 self.itens_criados.append(item())
             elif item.tipo == "Roupa":
                 atributos = [20, 6, 6, level]
-                atributos_nomes = ["vida", "resistencia", "armadura", 'level']
+                atributos_nomes = ["vida", "resistencia", "armadura", "level"]
                 atributos_dict = dict(zip(atributos_nomes, atributos))
                 self.itens_criados.append(item(**atributos_dict))
         return {
@@ -234,6 +234,7 @@ class Pessoa(Npc):
         if len(itens) == quest.numero_de_itens_requeridos:
             quest.pagar(personagem)
             quest.depositar_xp(personagem)
+            quest.depositar_item(personagem)
             personagem.atualizar_status()
             quests = filter(lambda q: q == quest, personagem.quests)
             for q in quests:
@@ -636,7 +637,10 @@ class Ferreiro(Npc):
         """Método que escolhe um item e remove os glifos dele."""
         equipamentos = []
         for equipamento in personagem.equipamentos.values():
-            if bool(equipamento) and equipamento.glifos_level.valor_glifos() > 0:
+            if (
+                bool(equipamento)
+                and equipamento.glifos_level.valor_glifos() > 0
+            ):
                 equipamentos.append(equipamento)
         equipamentos_ = list(
             filter(
@@ -652,7 +656,7 @@ class Ferreiro(Npc):
             tela.imprimir(
                 "você não tem itens no inventario e nem equipados "
                 "que contenham glifos.",
-                "cyan"
+                "cyan",
             )
             sleep(3)
             return
@@ -674,14 +678,14 @@ class Ferreiro(Npc):
             )
             resposta = tela.obter_string()
             if resposta in ["s", "sim"]:
-                if int(personagem.moedas['Pratas']) >= valor:
+                if int(personagem.moedas["Pratas"]) >= valor:
                     personagem.moedas["Pratas"] -= valor
                     glifos = item.remover_glifos()
                     personagem.moedas["Glifos"] += glifos
                     tela.imprimir(f"item: {item}")
                     sleep(3)
                 else:
-                    tela.imprimir('você não tem dinheiro suficiente.')
+                    tela.imprimir("você não tem dinheiro suficiente.")
                     sleep(3)
             equipamentos = []
             for equipamento in personagem.equipamentos.values():
@@ -732,7 +736,7 @@ class Ferreiro(Npc):
                     tela.imprimir(mensagem2 + "\n", "amarelo")
                 else:
                     tela.imprimir(mensagem2 + "\n", "cyan")
-            tela.imprimir(mensagem, 'cyan')
+            tela.imprimir(mensagem, "cyan")
             numero = tela.obter_string()
         return itens_dict.get(numero)
 
@@ -748,6 +752,6 @@ def _retornar_itens_equipaveis(item):
         "Anel",
         "Amuleto",
         "Adorno de arma",
-        "Escudo"
+        "Escudo",
     ]
     return item.tipo in tipos

@@ -82,7 +82,7 @@ class JogoController:
         else:
             tela.imprimir("Não há saves para carregar.", "cyan")
             sleep(3)
-        
+
     def novo_jogo(self):
         azura = Pessoa("Azura")
         quests = [quest(azura.nome) for quest in quests_da_lorena]
@@ -100,9 +100,7 @@ class JogoController:
             tela.imprimir("Qual é o nome do seu save?: ", "cyan")
             nome_jogo = tela.obter_string()
             if nome_jogo + ".pkl" in arquivos:
-                tela.imprimir(
-                    "Erro: nome do arquivo existente", "vermelho"
-                )
+                tela.imprimir("Erro: nome do arquivo existente", "vermelho")
                 sleep(3)
         npcs = [azura, eivor, tavon]
         nome_jogo += ".pkl"
@@ -111,26 +109,21 @@ class JogoController:
         self.npcs = npcs
         self.nome_do_jogo = nome_jogo
         self.finalizado = True
-    
+
     def deletar_jogo(self):
         if existe_saves():
             nomes_saves = saves()
-            nomes_dict = {
-                str(x): y for x, y in enumerate(nomes_saves, 1)
-            }
+            nomes_dict = {str(x): y for x, y in enumerate(nomes_saves, 1)}
             qual_jogo_deletar = ""
             while not qual_jogo_deletar in nomes_dict:
                 tela.limpar_tela()
                 for numero, arquivo in nomes_dict.items():
-                    tela.imprimir(
-                        f"{numero} - {arquivo[:-4]}\n", "cyan"
-                    )
+                    tela.imprimir(f"{numero} - {arquivo[:-4]}\n", "cyan")
                 tela.imprimir(f"Deseja deletar qual jogo?: ", "cyan")
                 qual_jogo_deletar = tela.obter_string()
             tela.limpar_tela()
             tela.imprimir(
-                "Tem certeza que deseja deletar o save? "
-                "[s/n/sim/não]: ",
+                "Tem certeza que deseja deletar o save? " "[s/n/sim/não]: ",
                 "cyan",
             )
             tem_certeza = tela.obter_string()

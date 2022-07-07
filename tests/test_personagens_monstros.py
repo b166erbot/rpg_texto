@@ -1355,43 +1355,59 @@ class TestBloqueioArmaduraResistenciaDandoMenosDanoDragao(TestCase):
 class TestAtualizarPorcentagemPorDano(TestCase):
     def setUp(self):
         self.monstro = Monstro()
-    
-    def test_porcentagem_da_armadura_resistencia_11_caso_dano_seja_igual_4(self):
+
+    def test_porcentagem_da_armadura_resistencia_11_caso_dano_seja_igual_4(
+        self,
+    ):
         self.monstro.atualizar_porcentagem_por_dano(4)
         self.assertEqual(self.monstro.porcentagem_armadura, 11)
         self.assertEqual(self.monstro.porcentagem_resistencia, 11)
 
-    def test_porcentagem_da_armadura_resistencia_11_caso_dano_seja_igual_5(self):
+    def test_porcentagem_da_armadura_resistencia_11_caso_dano_seja_igual_5(
+        self,
+    ):
         self.monstro.atualizar_porcentagem_por_dano(5)
         self.assertEqual(self.monstro.porcentagem_armadura, 11)
         self.assertEqual(self.monstro.porcentagem_resistencia, 11)
-    
-    def test_porcentagem_da_armadura_resistencia_26_caso_dano_seja_igual_6(self):
+
+    def test_porcentagem_da_armadura_resistencia_26_caso_dano_seja_igual_6(
+        self,
+    ):
         self.monstro.atualizar_porcentagem_por_dano(6)
         self.assertEqual(self.monstro.porcentagem_armadura, 28)
         self.assertEqual(self.monstro.porcentagem_resistencia, 28)
-    
-    def test_porcentagem_da_armadura_resistencia_26_caso_dano_seja_igual_11(self):
+
+    def test_porcentagem_da_armadura_resistencia_26_caso_dano_seja_igual_11(
+        self,
+    ):
         self.monstro.atualizar_porcentagem_por_dano(11)
         self.assertEqual(self.monstro.porcentagem_armadura, 28)
         self.assertEqual(self.monstro.porcentagem_resistencia, 28)
-    
-    def test_porcentagem_da_armadura_resistencia_57_caso_dano_seja_igual_12(self):
+
+    def test_porcentagem_da_armadura_resistencia_57_caso_dano_seja_igual_12(
+        self,
+    ):
         self.monstro.atualizar_porcentagem_por_dano(12)
         self.assertEqual(self.monstro.porcentagem_armadura, 44)
         self.assertEqual(self.monstro.porcentagem_resistencia, 44)
 
-    def test_porcentagem_da_armadura_resistencia_57_caso_dano_seja_igual_17(self):
+    def test_porcentagem_da_armadura_resistencia_57_caso_dano_seja_igual_17(
+        self,
+    ):
         self.monstro.atualizar_porcentagem_por_dano(17)
         self.assertEqual(self.monstro.porcentagem_armadura, 44)
         self.assertEqual(self.monstro.porcentagem_resistencia, 44)
-    
-    def test_porcentagem_da_armadura_resistencia_78_caso_dano_seja_igual_23(self):
+
+    def test_porcentagem_da_armadura_resistencia_78_caso_dano_seja_igual_23(
+        self,
+    ):
         self.monstro.atualizar_porcentagem_por_dano(23)
         self.assertEqual(self.monstro.porcentagem_armadura, 61)
         self.assertEqual(self.monstro.porcentagem_resistencia, 61)
-    
-    def test_porcentagem_da_armadura_resistencia_78_caso_dano_seja_igual_a_29(self):
+
+    def test_porcentagem_da_armadura_resistencia_78_caso_dano_seja_igual_a_29(
+        self,
+    ):
         self.monstro.atualizar_porcentagem_por_dano(29)
         self.assertEqual(self.monstro.porcentagem_armadura, 78)
         self.assertEqual(self.monstro.porcentagem_resistencia, 78)
@@ -1400,43 +1416,59 @@ class TestAtualizarPorcentagemPorDano(TestCase):
 class TestAtualizarPorcentagemPorDanoMonstroLevel8(TestCase):
     def setUp(self):
         self.monstro = Monstro(level=8)
-    
-    def test_porcentagem_da_armadura_resistencia_11_caso_dano_seja_igual_40(self):
+
+    def test_porcentagem_da_armadura_resistencia_11_caso_dano_seja_igual_40(
+        self,
+    ):
         self.monstro.atualizar_porcentagem_por_dano(39)
         self.assertEqual(self.monstro.porcentagem_armadura, 11)
         self.assertEqual(self.monstro.porcentagem_resistencia, 11)
 
-    def test_porcentagem_da_armadura_resistencia_11_caso_dano_seja_igual_40(self):
+    def test_porcentagem_da_armadura_resistencia_11_caso_dano_seja_igual_40(
+        self,
+    ):
         self.monstro.atualizar_porcentagem_por_dano(40)
         self.assertEqual(self.monstro.porcentagem_armadura, 11)
         self.assertEqual(self.monstro.porcentagem_resistencia, 11)
-    
-    def test_porcentagem_da_armadura_resistencia_28_caso_dano_seja_igual_41(self):
+
+    def test_porcentagem_da_armadura_resistencia_28_caso_dano_seja_igual_41(
+        self,
+    ):
         self.monstro.atualizar_porcentagem_por_dano(41)
         self.assertEqual(self.monstro.porcentagem_armadura, 28)
         self.assertEqual(self.monstro.porcentagem_resistencia, 28)
-    
-    def test_porcentagem_da_armadura_resistencia_28_caso_dano_seja_igual_11(self):
+
+    def test_porcentagem_da_armadura_resistencia_28_caso_dano_seja_igual_11(
+        self,
+    ):
         self.monstro.atualizar_porcentagem_por_dano(88)
         self.assertEqual(self.monstro.porcentagem_armadura, 28)
         self.assertEqual(self.monstro.porcentagem_resistencia, 28)
-    
-    def test_porcentagem_da_armadura_resistencia_45_caso_dano_seja_igual_89(self):
+
+    def test_porcentagem_da_armadura_resistencia_45_caso_dano_seja_igual_89(
+        self,
+    ):
         self.monstro.atualizar_porcentagem_por_dano(89)
         self.assertEqual(self.monstro.porcentagem_armadura, 44)
         self.assertEqual(self.monstro.porcentagem_resistencia, 44)
 
-    def test_porcentagem_da_armadura_resistencia_45_caso_dano_seja_igual_136(self):
+    def test_porcentagem_da_armadura_resistencia_45_caso_dano_seja_igual_136(
+        self,
+    ):
         self.monstro.atualizar_porcentagem_por_dano(136)
         self.assertEqual(self.monstro.porcentagem_armadura, 44)
         self.assertEqual(self.monstro.porcentagem_resistencia, 44)
-    
-    def test_porcentagem_da_armadura_resistencia_61_caso_dano_seja_igual_184(self):
+
+    def test_porcentagem_da_armadura_resistencia_61_caso_dano_seja_igual_184(
+        self,
+    ):
         self.monstro.atualizar_porcentagem_por_dano(184)
         self.assertEqual(self.monstro.porcentagem_armadura, 61)
         self.assertEqual(self.monstro.porcentagem_resistencia, 61)
-    
-    def test_porcentagem_da_armadura_resistencia_78_caso_dano_seja_igual_232(self):
+
+    def test_porcentagem_da_armadura_resistencia_78_caso_dano_seja_igual_232(
+        self,
+    ):
         self.monstro.atualizar_porcentagem_por_dano(232)
         self.assertEqual(self.monstro.porcentagem_armadura, 78)
         self.assertEqual(self.monstro.porcentagem_resistencia, 78)

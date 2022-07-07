@@ -111,7 +111,7 @@ class Floresta:
         morte = self._sortear_boss_dragao()
         if morte:
             self.morto()
-            return 'morto'
+            return "morto"
 
     def sortear_inimigos(self):
         """Método que sorteia os inimigos para o personagem."""
@@ -192,8 +192,8 @@ class Floresta:
                 tela.imprimir("Dragão foi embora.\n", "vermelho")
                 sleep(2)
                 tela.limpar_tela()
-            if self.personagem.status['vida'] == 0:
-                return 'morto'
+            if self.personagem.status["vida"] == 0:
+                return "morto"
 
     def _lutar_ou_fugir(self):
         # esse método não limpa a tela, favor manter.

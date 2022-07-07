@@ -1,6 +1,7 @@
 from random import randint
 
 from jogo.itens.quest import ItemQuest
+from jogo.pets import Pet
 from jogo.tela.imprimir import Imprimir
 
 tela = Imprimir()
@@ -16,6 +17,7 @@ class Quest:
         numero_de_itens_requeridos,
         level,
         tipo,
+        item_depositar=False,
         monstro_drop=False,
     ):
         # coloque uma descrição pequena
@@ -23,10 +25,11 @@ class Quest:
         self.valor = valor
         self.xp = xp
         self.item = item
+        self.item_depositar = item_depositar
         self.numero_de_itens_requeridos = numero_de_itens_requeridos
         self.level = level
         self.tipo = tipo
-        self.monstro = monstro_drop
+        self.monstro_drop = monstro_drop or []
         self.iniciada = False
         self.finalizada = False
 
@@ -37,6 +40,10 @@ class Quest:
     def depositar_xp(self, personagem):
         """Método que dá o xp para o personagem."""
         personagem.experiencia.depositar_valor(self.xp)
+
+    def depositar_item(self, personagem):
+        if bool(self.item_depositar):
+            personagem.inventario.append(self.item_depositar)
 
     def historia(self):
         raise NotImplementedError("Método não implementado.")
@@ -70,7 +77,7 @@ class Quest:
                 == other.numero_de_itens_requeridos
             ),
             self.tipo == other.tipo,
-            self.monstro == other.monstro,
+            self.monstro_drop == other.monstro_drop,
             self.iniciada == other.iniciada,
             self.finalizada == other.finalizada,
         ]
@@ -84,7 +91,17 @@ class QuestGato(Quest):
     def __init__(self, nome_do_npc: str):
         self.nome_do_npc = nome_do_npc
         item = ItemQuest("gatinho")
-        super().__init__("pegar o gatinho", 150, 250, item, 1, 1, "mapa")
+        item_depositar = (False,)
+        monstro_drop = (False,)
+        super().__init__(
+            descricao="pegar o gatinho",
+            valor=150,
+            xp=250,
+            item=item,
+            numero_de_itens_requeridos=1,
+            level=1,
+            tipo="mapa",
+        )
 
     def historia(self):
         tela.limpar_tela()
@@ -104,7 +121,15 @@ class QuestLenha(Quest):
     def __init__(self, nome_do_npc: str):
         self.nome_do_npc = nome_do_npc
         item = ItemQuest("galho")
-        super().__init__("pegar lenha", 150, 250, item, 5, 1, "mapa")
+        super().__init__(
+            descricao="pegar lenha",
+            valor=150,
+            xp=250,
+            item=item,
+            numero_de_itens_requeridos=5,
+            level=1,
+            tipo="mapa",
+        )
 
     def historia(self):
         tela.limpar_tela()
@@ -124,7 +149,14 @@ class QuestUnhas(Quest):
         self.nome_do_npc = nome_do_npc
         item = ItemQuest("Unha de Tamandua")
         super().__init__(
-            "unha de tamandua", 150, 500, item, 3, 2, "monstro", "Tamandua"
+            descricao="unha de tamandua",
+            valor=150,
+            xp=500,
+            item=item,
+            numero_de_itens_requeridos=3,
+            level=2,
+            tipo="monstro",
+            monstro_drop=["Tamandua"],
         )
 
     def historia(self):
@@ -140,6 +172,37 @@ class QuestUnhas(Quest):
         return randint(1, 3) == 1
 
 
+class QuestPet(Quest):
+    def __init__(self, nome_do_npc: str):
+        self.nome_do_npc = nome_do_npc
+        item = ItemQuest("Ossos de bichos")
+        super().__init__(
+            descricao="ossos de bichos",
+            valor=150,
+            xp=500,
+            item=item,
+            numero_de_itens_requeridos=30,
+            level=2,
+            tipo="monstro",
+            item_depositar=Pet("Cachorro de ossos", "vida", 5),
+            monstro_drop=["Tartaruga", "Camaleao", "Tamandua", "Sapo"],
+        )
+
+    def historia(self):
+        tela.limpar_tela()
+        tela.imprimir(
+            f"{self.nome_do_npc}: Está procurando por um pet? Eu posso "
+            "te dar um cachorro digamos... um pouco diferente caso você "
+            "me touxer alguns ossos. Eu preciso fazer um remédio com eles "
+            "e se me trouxer, eu te dou um cachorro. "
+            f"${self.valor} xp={self.xp}\n",
+            "cyan",
+        )
+
+    def sorte_de_drop(self):
+        return randint(1, 5) == 1
+
+
 quests_da_lorena = [QuestGato, QuestLenha]
 
-quests_do_eivor = [QuestUnhas]
+quests_do_eivor = [QuestUnhas, QuestPet]

@@ -4,11 +4,10 @@ from unittest.mock import MagicMock
 
 from jogo.locais.areas_abertas import Floresta
 from jogo.locais.habitaveis import Vilarejo
-from jogo.pets import SemPet, Pet
+from jogo.pets import SemPet
 from jogo.save import salvar_jogo
 from jogo.tela.imprimir import Imprimir, formas
 from jogo.utils import chunk
-from jogo.itens.caixas import CaixaDraconica
 
 # Silenciar o pygame para não imprimir nada na tela
 sys.stdout = MagicMock()
@@ -42,19 +41,11 @@ class Menu:
             f"{numero} - {texto}" for numero, texto in enumerate(texto2, 1)
         ]
         self.personagem = personagem
-        for _ in range(6):
-            personagem.inventario.append(CaixaDraconica(personagem.level))
-        personagem.inventario.append(Pet(
-            nome='companheiro', atributo='vida', valor=5
-        ))
-        personagem.inventario.append(Pet(
-            nome='andarilho', atributo='armadura', valor=5
-        ))
 
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""
-        # mixer.music.load("vilarejo.ogg")
-        # mixer.music.play()
+        mixer.music.load("vilarejo.ogg")
+        mixer.music.play()
         forma = f"{formas[227]} {{}} {formas[228]}"
         while True:
             tela.limpar_tela()
@@ -349,16 +340,18 @@ class Menu:
                 filter(lambda x: x.tipo == "Caixa", self.personagem.inventario)
             )
             if len(caixas) == 0:
-                tela.imprimir('você não tem mais caixas\n')
+                tela.imprimir("você não tem mais caixas\n")
                 sleep(3)
                 return
             caixa = self._obter_numero(caixas, "deseja escolher qual caixa: ")
-    
+
     def equipar_pets(self):
         tela.limpar_tela()
-        pets = [item for item in self.personagem.inventario if item.tipo == 'Pet']
+        pets = [
+            item for item in self.personagem.inventario if item.tipo == "Pet"
+        ]
         if len(pets) == 0:
-            tela.imprimir('você não tem pets no inventario.\n')
+            tela.imprimir("você não tem pets no inventario.\n")
             sleep(3)
             return
         pet = self._obter_numero(pets, "deseja escolher qual pet: ")
@@ -373,7 +366,6 @@ class Menu:
             tela.imprimir("Pet desequipado.")
             sleep(3)
 
-
     def _arrumar_status(self, personagem):
         p = personagem
         armadura = f"armadura - {p.status['armadura']}"
@@ -384,7 +376,8 @@ class Menu:
         pratas = f"{str(p.moedas['Pratas'])}"
         por_cri = f"porcentagem de dano critico - {p.porcentagem_critico}"
         critico = f"critico - {p.status['critico']}"
-        aum_cri = f"aumento de dano critico % - {p.aumento_dano_critico}%\n"
+        aum_cri = f"aumento de dano critico % - {p.aumento_dano_critico}%"
+        pet = f"pet: {p.pet_equipado}"
         tamanhos = (
             len(x)
             for x in (
@@ -394,9 +387,10 @@ class Menu:
                 pratas,
                 critico,
                 aum_cri,
+                pet,
             )
         )
-        len_max = max(tamanhos)
+        len_max = max(tamanhos) + 2
         textos = [
             f"{p.nome_completo[:67]} [{p.classe}]:",
             f"vida - {p.status['vida']}",
@@ -404,10 +398,11 @@ class Menu:
             f"{resistencia: <{len_max}}{resi_porc}",
             f"dano - {p.status['dano']}",
             f"{critico: <{len_max}}{por_cri}%",
-            f"aumento de dano critico - {p.aumento_dano_critico}\n"
+            aum_cri,
             f"{pratas: <{len_max}}{str(p.moedas['Draconica'])}",
             f"{p.moedas['Glifos']}",
             f"{experiencia: <{len_max}}level - {p.level}",
+            pet,
         ]
         return "\n".join(textos) + "\n"
 

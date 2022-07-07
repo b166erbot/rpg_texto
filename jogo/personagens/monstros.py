@@ -9,12 +9,7 @@ from jogo.itens.item_secundario import tudo as itens_secundarios
 from jogo.itens.quest import ItemQuest
 from jogo.itens.vestes import tudo as vestes
 from jogo.tela.imprimir import Imprimir, efeito_digitando, formatar_status
-from jogo.utils import (
-    Contador,
-    arrumar_porcentagem,
-    regra_3,
-    menor_numero,
-)
+from jogo.utils import Contador, arrumar_porcentagem, menor_numero, regra_3
 
 tela = Imprimir()
 
@@ -101,7 +96,7 @@ class Monstro:
                         randint(1, 6),
                         randint(1, 16),
                         randint(1, 6),
-                        personagem.level,
+                        self.level,
                     ]
                     status_nomes = [
                         "dano",
@@ -116,7 +111,7 @@ class Monstro:
                         randint(1, 6),
                         randint(3, 20),
                         randint(1, 6),
-                        personagem.level,
+                        self.level,
                     ]
                     status_nomes = ["armadura", "vida", "resistencia", "level"]
                     status_dict = dict(zip(status_nomes, status))
@@ -127,7 +122,7 @@ class Monstro:
                         randint(3, 20),
                         randint(1, 6),
                         randint(1, 6),
-                        personagem.level,
+                        self.level,
                     ]
                     status_nomes = [
                         "dano",
@@ -144,7 +139,7 @@ class Monstro:
                         randint(1, 6),
                         randint(1, 6),
                         randint(10, 80),
-                        personagem.level,
+                        self.level,
                     ]
                     status_nomes = [
                         "vida",
@@ -159,7 +154,7 @@ class Monstro:
                     status = [
                         randint(1, 6),
                         randint(1, 16),
-                        personagem.level,
+                        self.level,
                     ]
                     status_nomes = ["critico", "aumento_critico", "level"]
                     status_dict = dict(zip(status_nomes, status))
@@ -188,11 +183,11 @@ class Monstro:
                     personagem.inventario.count(quest.item)
                     < quest.numero_de_itens_requeridos
                 ),
-                quest.monstro == self.nome,
+                self.nome in quest.monstro_drop,
             ]
             if all(condicoes):
                 tela.imprimir(f"Item {quest.item.nome} adiquirido\n")
-                if personagem.e_possivel_gardar(quest.item):
+                if personagem.e_possivel_guardar(quest.item):
                     personagem.guardar_item(quest.item)
 
     def __str__(self):
@@ -247,17 +242,16 @@ class Monstro:
             if self.porcentagem_resistencia < 0:
                 self.porcentagem_resistencia = 0
 
-    def atualizar_porcentagem_por_dano(self, dano:int):
+    def atualizar_porcentagem_por_dano(self, dano: int):
         valor = menor_numero(dano, list(self._porcentagem_total_dano))
         porcentagens = self._porcentagem_total_dano
         aumentar_porcentagem = porcentagens[valor]
         # divisão normal abaixo, favor manter.
         valor_armadura_resistencia = (
-            (aumentar_porcentagem * self._porcentagem_total[self.level])
-            / 100
-        )
-        self.status['armadura'] = valor_armadura_resistencia
-        self.status['resistencia'] = valor_armadura_resistencia
+            aumentar_porcentagem * self._porcentagem_total[self.level]
+        ) / 100
+        self.status["armadura"] = valor_armadura_resistencia
+        self.status["resistencia"] = valor_armadura_resistencia
         self.atualizar_status()
 
     @property
@@ -265,7 +259,6 @@ class Monstro:
         danos = [x * self.level for x in self._porcentagem_total_dano_lista]
         porcentagens = [11, 28, 45, 61, 78]
         return dict(zip(danos, porcentagens))
-
 
 
 class Boss(Monstro):
@@ -283,7 +276,7 @@ class Boss(Monstro):
                     randint(3, 6),
                     randint(8, 16),
                     randint(3, 6),
-                    personagem.level,
+                    self.level,
                 ]
                 status_nomes = ["dano", "aumento_critico", "critico", "level"]
                 status_dict = dict(zip(status_nomes, status))
@@ -293,7 +286,7 @@ class Boss(Monstro):
                     randint(3, 6),
                     randint(10, 20),
                     randint(3, 6),
-                    personagem.level,
+                    self.level,
                 ]
                 status_nomes = ["armadura", "vida", "resistencia", "level"]
                 status_dict = dict(zip(status_nomes, status))
@@ -304,7 +297,7 @@ class Boss(Monstro):
                     randint(10, 20),
                     randint(3, 6),
                     randint(3, 6),
-                    personagem.level,
+                    self.level,
                 ]
                 status_nomes = [
                     "dano",
@@ -321,7 +314,7 @@ class Boss(Monstro):
                     randint(3, 6),
                     randint(3, 6),
                     randint(40, 80),
-                    personagem.level,
+                    self.level,
                 ]
                 status_nomes = [
                     "vida",
@@ -336,7 +329,7 @@ class Boss(Monstro):
                 status = [
                     randint(3, 6),
                     randint(8, 16),
-                    personagem.level,
+                    self.level,
                 ]
                 status_nomes = ["critico", "aumento_critico", "level"]
                 status_dict = dict(zip(status_nomes, status))
@@ -617,7 +610,7 @@ class Dragao(Boss):
         other.status["vida"] -= dano - subtrair_dano2
 
     def sortear_drops(self, personagem):
-        super().sortear_drops(personagem)
+        # super().sortear_drops(personagem)
         personagem.inventario.append(ItemQuest("Coração de Dragão"))
         personagem.inventario.append(CaixaDraconica(personagem.level))
 

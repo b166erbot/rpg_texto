@@ -28,6 +28,7 @@ from jogo.itens.pocoes import (
     ElixirDeVidaFraca,
     ElixirDeVidaGrande,
     ElixirDeVidaMedia,
+    PocaoDeVidaMedia,
 )
 from jogo.itens.vestes import (
     Amuleto,
@@ -52,7 +53,6 @@ from jogo.personagens.classes import (
     Monge,
 )
 from jogo.personagens.monstros import Tartaruga
-from jogo.itens.pocoes import PocaoDeVidaMedia
 
 
 # não necessita testar as outras classes pois esse método é da classe Humano
@@ -1972,23 +1972,23 @@ class TestPersonagemDaMaisDanoComAumentoDeCriticoMonge(TestCase):
 
 class TestPersonagemConsumindoPocoes(TestCase):
     def setUp(self):
-        self.personagem = Arqueiro('nome', True)
+        self.personagem = Arqueiro("nome", True)
         self.personagem.inventario.append(PocaoDeVidaMedia())
-    
+
     def test_personagem_nao_usando_pocoes_caso_vida_acima_de_30_porcento(self):
-        self.personagem.status['vida'] = 31
+        self.personagem.status["vida"] = 31
         self.personagem.consumir_pocoes()
-        self.assertEqual(self.personagem.status['vida'], 31)
-    
+        self.assertEqual(self.personagem.status["vida"], 31)
+
     def test_personagem_usando_pocoes_caso_vida_igual_30_porcento(self):
-        self.personagem.status['vida'] = 30
+        self.personagem.status["vida"] = 30
         self.personagem.consumir_pocoes()
-        self.assertEqual(self.personagem.status['vida'], 90)
-    
+        self.assertEqual(self.personagem.status["vida"], 90)
+
     def test_personagem_usando_pocoes_caso_vida_abaixo_de_30_porcento(self):
-        self.personagem.status['vida'] = 29
+        self.personagem.status["vida"] = 29
         self.personagem.consumir_pocoes()
-        self.assertEqual(self.personagem.status['vida'], 89)
+        self.assertEqual(self.personagem.status["vida"], 89)
 
 
 class TestPersonagemConsumindoPocoesVida200(TestCase):
@@ -2004,52 +2004,46 @@ class TestPersonagemConsumindoPocoesVida200(TestCase):
             "stamina": 100,
             "velo-movi": 1,
         }
-        self.personagem = Arqueiro('nome', True, status=status)
+        self.personagem = Arqueiro("nome", True, status=status)
         self.personagem.inventario.append(PocaoDeVidaMedia())
-    
+
     # aqui precisa ser 62 e não 61 porque a porcentagem divide por inteiro
     def test_personagem_nao_usando_pocoes_caso_vida_acima_de_30_porcento(self):
-        self.personagem.status['vida'] = 62
+        self.personagem.status["vida"] = 62
         self.personagem.consumir_pocoes()
-        self.assertEqual(self.personagem.status['vida'], 62)
-    
+        self.assertEqual(self.personagem.status["vida"], 62)
+
     def test_personagem_usando_pocoes_caso_vida_igual_30_porcento(self):
-        self.personagem.status['vida'] = 60
+        self.personagem.status["vida"] = 60
         self.personagem.consumir_pocoes()
-        self.assertEqual(self.personagem.status['vida'], 120)
-    
+        self.assertEqual(self.personagem.status["vida"], 120)
+
     def test_personagem_usando_pocoes_caso_vida_abaixo_de_30_porcento(self):
-        self.personagem.status['vida'] = 59
+        self.personagem.status["vida"] = 59
         self.personagem.consumir_pocoes()
-        self.assertEqual(self.personagem.status['vida'], 119)
+        self.assertEqual(self.personagem.status["vida"], 119)
 
 
 # não precisa testar outras classes pois esse método é da classe Humano.
 class TestPersonagemConsumirMagiaStamina(TestCase):
     def setUp(self):
-        self.personagem = Arqueiro('nome', True)
-    
+        self.personagem = Arqueiro("nome", True)
+
     def test_stamina_false_caso_consumido_toda_a_stamina(self):
         self.personagem.consumir_magia_stamina()
         self.personagem.consumir_magia_stamina()
         self.personagem.consumir_magia_stamina()
         self.personagem.consumir_magia_stamina()
         self.personagem.consumir_magia_stamina()
-        self.assertEqual(
-            self.personagem.consumir_magia_stamina(),
-            False
-        )
-    
+        self.assertEqual(self.personagem.consumir_magia_stamina(), False)
+
     def test_stamina_true_caso_caso_consumido_80_da_stamina(self):
         self.personagem.consumir_magia_stamina()
         self.personagem.consumir_magia_stamina()
         self.personagem.consumir_magia_stamina()
         self.personagem.consumir_magia_stamina()
-        self.assertEqual(
-            self.personagem.consumir_magia_stamina(),
-            True
-        )
-    
+        self.assertEqual(self.personagem.consumir_magia_stamina(), True)
+
     def test_stamina_retorna_false_caso_consumido_toda_a_stamina2(self):
         self.personagem.consumir_magia_stamina()
         self.personagem.consumir_magia_stamina()
@@ -2057,7 +2051,4 @@ class TestPersonagemConsumirMagiaStamina(TestCase):
         self.personagem.consumir_magia_stamina()
         self.personagem.consumir_magia_stamina()
         self.personagem.consumir_magia_stamina()
-        self.assertEqual(
-            self.personagem.consumir_magia_stamina(),
-            False
-        )
+        self.assertEqual(self.personagem.consumir_magia_stamina(), False)
