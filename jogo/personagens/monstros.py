@@ -90,8 +90,27 @@ class Monstro:
         if randint(0, 2) == 1:
             efeito_digitando("Loot encontrado.")
             Item = choice(vestes + armas + itens_secundarios)
-            match Item.tipo:
-                case "Arma":
+            match (Item.tipo, Item.classe):
+                case ("Arma", "Monge"):
+                    status = [
+                        randint(1, 6),
+                        randint(1, 16),
+                        randint(1, 6),
+                        randint(1, 6),
+                        randint(1, 6),
+                        self.level,
+                    ]
+                    status_nomes = [
+                        "dano",
+                        "aumento_critico",
+                        "critico",
+                        "armadura",
+                        "resistencia",
+                        "level",
+                    ]
+                    status_dict = dict(zip(status_nomes, status))
+                    item = Item(**status_dict)
+                case ("Arma", _):
                     status = [
                         randint(1, 6),
                         randint(1, 16),
@@ -106,7 +125,7 @@ class Monstro:
                     ]
                     status_dict = dict(zip(status_nomes, status))
                     item = Item(**status_dict)
-                case "Roupa":  # a classe tem tipo -> Roupa
+                case ("Roupa", _):  # a classe tem tipo -> Roupa
                     status = [
                         randint(1, 6),
                         randint(3, 20),
@@ -116,7 +135,7 @@ class Monstro:
                     status_nomes = ["armadura", "vida", "resistencia", "level"]
                     status_dict = dict(zip(status_nomes, status))
                     item = Item(**status_dict)
-                case "Anel" | "Amuleto":
+                case ("Anel" | "Amuleto", _):
                     status = [
                         randint(1, 6),
                         randint(3, 20),
@@ -133,7 +152,7 @@ class Monstro:
                     ]
                     status_dict = dict(zip(status_nomes, status))
                     item = Item(**status_dict)
-                case "Escudo":
+                case ("Escudo", _):
                     status = [
                         randint(3, 20),
                         randint(1, 6),
@@ -150,7 +169,7 @@ class Monstro:
                     ]
                     status_dict = dict(zip(status_nomes, status))
                     item = Item(**status_dict)
-                case "Adorno de arma":
+                case ("Adorno de arma", _):
                     status = [
                         randint(1, 6),
                         randint(1, 16),
@@ -270,8 +289,27 @@ class Boss(Monstro):
         """Método que dá item e pratas ao personagem."""
         efeito_digitando("Loot encontrado.")
         Item = choice(vestes + armas)
-        match Item.tipo:
-            case "Arma":
+        match (Item.tipo, Item.classe):
+            case ("Arma", "Monge"):
+                status = [
+                    randint(3, 6),
+                    randint(8, 16),
+                    randint(3, 6),
+                    randint(3, 6),
+                    randint(3, 6),
+                    self.level,
+                ]
+                status_nomes = [
+                    "dano",
+                    "aumento_critico",
+                    "critico",
+                    "armadura",
+                    "resistencia",
+                    "level",
+                ]
+                status_dict = dict(zip(status_nomes, status))
+                item = Item(**status_dict)
+            case ("Arma", _):
                 status = [
                     randint(3, 6),
                     randint(8, 16),
@@ -281,7 +319,7 @@ class Boss(Monstro):
                 status_nomes = ["dano", "aumento_critico", "critico", "level"]
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(**status_dict)
-            case "Roupa":  # a classe tem tipo -> Roupa
+            case ("Roupa", _):  # a classe tem tipo -> Roupa
                 status = [
                     randint(3, 6),
                     randint(10, 20),
@@ -291,7 +329,7 @@ class Boss(Monstro):
                 status_nomes = ["armadura", "vida", "resistencia", "level"]
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(**status_dict)
-            case "Anel" | "Amuleto":
+            case ("Anel" | "Amuleto", _):
                 status = [
                     randint(3, 6),
                     randint(10, 20),
@@ -308,7 +346,7 @@ class Boss(Monstro):
                 ]
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(**status_dict)
-            case "Escudo":
+            case ("Escudo", _):
                 status = [
                     randint(10, 20),
                     randint(3, 6),
@@ -325,7 +363,7 @@ class Boss(Monstro):
                 ]
                 status_dict = dict(zip(status_nomes, status))
                 item = Item(**status_dict)
-            case "Adorno de arma":
+            case ("Adorno de arma", _):
                 status = [
                     randint(3, 6),
                     randint(8, 16),

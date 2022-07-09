@@ -2,6 +2,7 @@ from jogo.itens.moedas import Glifos, Pratas
 from jogo.utils import Acumulador
 
 
+# a classe precisa ficar em cima pois na hora de dropar o item do monstro ele faz a verificação.
 class ItemDeDefesa:
     # tipo precisa ficar aqui em cima
     tipo = "Escudo"
@@ -13,7 +14,6 @@ class ItemDeDefesa:
         armadura: int,
         resistencia: int,
         bloqueio: int,
-        classe: str,
         level: int = 1,
     ):
         self.nome = nome
@@ -27,7 +27,6 @@ class ItemDeDefesa:
             "resistencia": resistencia,
             "level": level,
         }
-        self.classe = classe
         self.tipo_equipar = "Item secundário"
         self.bonus = []
         self.preco = Pratas(((vida // 2) + armadura + resistencia) * 8)
@@ -71,7 +70,6 @@ class ItemDeDano:
         dano: int,
         critico: int,
         aumento_critico: int,
-        classe: str,
         level: int = 1,
     ):
         self.nome = nome
@@ -84,7 +82,6 @@ class ItemDeDano:
             "aumento_critico": aumento_critico,
             "level": level,
         }
-        self.classe = classe
         self.tipo_equipar = "Item secundário"
         self.bonus = []
         self.preco = Pratas((dano + critico + (aumento_critico // 2)) * 8)
@@ -123,34 +120,46 @@ class ItemDeDano:
 
 
 class Escudo(ItemDeDefesa):
+    classe = "Guerreiro"
+
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Escudo", classe="Guerreiro", **kwargs)
+        super().__init__(*args, nome="Escudo", **kwargs)
 
 
 class BolaDeCristal(ItemDeDefesa):
+    classe = "Mago"
+
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Bola de cristal", classe="Mago", **kwargs)
+        super().__init__(*args, nome="Bola de cristal", **kwargs)
 
 
 class Livro(ItemDeDano):
+    classe = "Mago"
+
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Livro", classe="Mago", **kwargs)
+        super().__init__(*args, nome="Livro", **kwargs)
 
 
 # buckler: um pequeno escudo redondo segurado por uma alça ou usado no antebraço.
 class Buckler(ItemDeDefesa):
+    classe = "Arqueiro"
+
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Buckler", classe="Arqueiro", **kwargs)
+        super().__init__(*args, nome="Buckler", **kwargs)
 
 
 class Aljava(ItemDeDano):
+    classe = "Arqueiro"
+
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Aljava", classe="Arqueiro", **kwargs)
+        super().__init__(*args, nome="Aljava", **kwargs)
 
 
 class Adaga(ItemDeDano):
+    classe = "Assassino"
+
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Adaga sec.", classe="Assassino", **kwargs)
+        super().__init__(*args, nome="Adaga sec.", **kwargs)
 
 
 tudo = [Escudo, BolaDeCristal, Livro, Buckler, Aljava, Adaga]

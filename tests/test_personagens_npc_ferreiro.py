@@ -3,7 +3,6 @@ import curses
 curses.initscr()
 
 from unittest import TestCase, mock
-from unittest.mock import MagicMock
 
 from jogo.itens.vestes import Peitoral
 from jogo.personagens.classes import Arqueiro

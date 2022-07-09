@@ -6,19 +6,36 @@ class PocaoDeCura:
 
     def __init__(self, pontos_cura: int):
         self.pontos_cura = pontos_cura
-        self.consumida = False
         self.classe = "Poções"
+        self.numero_maximo_pocoes = 10
+        self.numero_de_pocoes = 1
 
     def __repr__(self):
-        return f"{self.nome.capitalize()} - " f"Cura: {self.pontos_cura}"
+        retorno = (
+            f"{self.nome.capitalize()} - "
+            f"Cura: {self.pontos_cura}, "
+            f"unidade: {self.numero_de_pocoes}"
+        )
+        return retorno
 
     def consumir(self, vida_maxima):
         """Método que consome a poção."""
         # a variável vida_maxima neste método não tem propósito mas é necessária, favor não remover.
-        if not self.consumida:
-            self.consumida = True
+        if self.numero_de_pocoes > 0:
+            self.numero_de_pocoes -= 1
             return self.pontos_cura
         return 0
+
+    def juntar(self, personagem, pocao):
+        condicoes = [
+            isinstance(pocao, self.__class__),
+            self.numero_de_pocoes < self.numero_maximo_pocoes,
+        ]
+        if all(condicoes):
+            self.numero_de_pocoes += 1
+            index = personagem.inventario.index(pocao)
+            personagem.inventario.pop(index)
+        return self
 
 
 class PocaoDeVidaFraca(PocaoDeCura):
@@ -62,18 +79,35 @@ class Elixir:
 
     def __init__(self, porcentagem: int):
         self.porcentagem = porcentagem
-        self.consumida = False
         self.classe = "Poções"
+        self.numero_maximo_pocoes = 10
+        self.numero_de_pocoes = 1
 
     def __repr__(self):
-        return f"{self.nome.capitalize()} - " f"Cura: {self.porcentagem}%"
+        retorno = (
+            f"{self.nome.capitalize()} - "
+            f"Cura: {self.porcentagem}%, "
+            f"unidade: {self.numero_de_pocoes}"
+        )
+        return retorno
 
     def consumir(self, vida_maxima):
         """Método que consome a poção."""
-        if not self.consumida:
-            self.consumida = True
+        if self.numero_de_pocoes > 0:
+            self.numero_de_pocoes -= 1
             return (self.porcentagem * vida_maxima) // 100
         return 0
+
+    def juntar(self, personagem, pocao):
+        condicoes = [
+            isinstance(pocao, self.__class__),
+            self.numero_de_pocoes < self.numero_maximo_pocoes,
+        ]
+        if all(condicoes):
+            self.numero_de_pocoes += 1
+            index = personagem.inventario.index(pocao)
+            personagem.inventario.pop(index)
+        return self
 
 
 class ElixirDeVidaFraca(Elixir):

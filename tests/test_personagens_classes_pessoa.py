@@ -720,7 +720,13 @@ class TestEquipandoEquipamentosOuNaoEmArqueiroArmas(TestCase):
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
 
     def test_nao_equipando_botas_de_ferro(self):
-        item = Botas_de_ferro(dano=5, critico=5, aumento_critico=5)
+        item = Botas_de_ferro(
+            dano=5,
+            critico=5,
+            aumento_critico=5,
+            armadura=5,
+            resistencia=5,
+        )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
@@ -750,7 +756,13 @@ class TestEquipandoEquipamentosOuNaoEmArqueiroArmas(TestCase):
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
 
     def test_nao_equipando_luvas_de_ferro(self):
-        item = Luvas_de_ferro(dano=5, critico=5, aumento_critico=5)
+        item = Luvas_de_ferro(
+            dano=5,
+            critico=5,
+            aumento_critico=5,
+            armadura=5,
+            resistencia=5,
+        )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
@@ -897,7 +909,13 @@ class TestEquipandoEquipamentosOuNaoEmGuerreiroArmas(TestCase):
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
 
     def test_nao_equipando_botas_de_ferro(self):
-        item = Botas_de_ferro(dano=5, critico=5, aumento_critico=5)
+        item = Botas_de_ferro(
+            dano=5,
+            critico=5,
+            aumento_critico=5,
+            armadura=5,
+            resistencia=5,
+        )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
@@ -927,7 +945,13 @@ class TestEquipandoEquipamentosOuNaoEmGuerreiroArmas(TestCase):
         self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
 
     def test_nao_equipando_luvas_de_ferro(self):
-        item = Luvas_de_ferro(dano=5, critico=5, aumento_critico=5)
+        item = Luvas_de_ferro(
+            dano=5,
+            critico=5,
+            aumento_critico=5,
+            armadura=5,
+            resistencia=5,
+        )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
@@ -1074,7 +1098,13 @@ class TestEquipandoEquipamentosOuNaoEmMagoArmas(TestCase):
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
 
     def test_nao_equipando_botas_de_ferro(self):
-        item = Botas_de_ferro(dano=5, critico=5, aumento_critico=5)
+        item = Botas_de_ferro(
+            dano=5,
+            critico=5,
+            aumento_critico=5,
+            armadura=5,
+            resistencia=5,
+        )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
@@ -1104,7 +1134,13 @@ class TestEquipandoEquipamentosOuNaoEmMagoArmas(TestCase):
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
 
     def test_nao_equipando_luvas_de_ferro(self):
-        item = Luvas_de_ferro(dano=5, critico=5, aumento_critico=5)
+        item = Luvas_de_ferro(
+            dano=5,
+            critico=5,
+            aumento_critico=5,
+            armadura=5,
+            resistencia=5,
+        )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
@@ -1251,7 +1287,13 @@ class TestEquipandoEquipamentosOuNaoEmAssassinoArmas(TestCase):
         self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
 
     def test_nao_equipando_botas_de_ferro(self):
-        item = Botas_de_ferro(dano=5, critico=5, aumento_critico=5)
+        item = Botas_de_ferro(
+            dano=5,
+            critico=5,
+            aumento_critico=5,
+            armadura=5,
+            resistencia=5,
+        )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
@@ -1281,7 +1323,13 @@ class TestEquipandoEquipamentosOuNaoEmAssassinoArmas(TestCase):
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
 
     def test_nao_equipando_luvas_de_ferro(self):
-        item = Luvas_de_ferro(dano=5, critico=5, aumento_critico=5)
+        item = Luvas_de_ferro(
+            dano=5,
+            critico=5,
+            aumento_critico=5,
+            armadura=5,
+            resistencia=5,
+        )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
@@ -1428,7 +1476,13 @@ class TestEquipandoEquipamentosOuNaoEmClerigoArmas(TestCase):
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
 
     def test_nao_equipando_botas_de_ferro(self):
-        item = Botas_de_ferro(dano=5, critico=5, aumento_critico=5)
+        item = Botas_de_ferro(
+            dano=5,
+            critico=5,
+            aumento_critico=5,
+            armadura=5,
+            resistencia=5,
+        )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
@@ -1458,7 +1512,13 @@ class TestEquipandoEquipamentosOuNaoEmClerigoArmas(TestCase):
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
 
     def test_nao_equipando_luvas_de_ferro(self):
-        item = Luvas_de_ferro(dano=5, critico=5, aumento_critico=5)
+        item = Luvas_de_ferro(
+            dano=5,
+            critico=5,
+            aumento_critico=5,
+            armadura=5,
+            resistencia=5,
+        )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
@@ -1606,7 +1666,13 @@ class TestEquipandoEquipamentosOuNaoEmMongeArmas(TestCase):
 
     # esse teste tem que ser alterado pois equipamento não equipa no tipo_equipar
     def test_equipando_botas_de_ferro(self):
-        item = Botas_de_ferro(dano=5, critico=5, aumento_critico=5)
+        item = Botas_de_ferro(
+            dano=5,
+            critico=5,
+            aumento_critico=5,
+            armadura=6,
+            resistencia=6,
+        )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIs(self.personagem.equipamentos["Botas"], item)
@@ -1637,7 +1703,13 @@ class TestEquipandoEquipamentosOuNaoEmMongeArmas(TestCase):
 
     # esse teste tem que ser alterado pois equipamento não equipa no tipo_equipar
     def test_equipando_luvas_de_ferro(self):
-        item = Luvas_de_ferro(dano=5, critico=5, aumento_critico=5)
+        item = Luvas_de_ferro(
+            dano=5,
+            critico=5,
+            aumento_critico=5,
+            armadura=6,
+            resistencia=6,
+        )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIs(self.personagem.equipamentos["Luvas"], item)
@@ -1938,9 +2010,21 @@ class TestPersonagemDaMaisDanoComAumentoDeCriticoMonge(TestCase):
         self.personagem = Monge("nome", True)
         item = AdornoDeArma(critico=6, aumento_critico=16)
         self.personagem.inventario.append(item)
-        item2 = Luvas_de_ferro(dano=6, critico=6, aumento_critico=16)
+        item2 = Luvas_de_ferro(
+            dano=6,
+            critico=6,
+            aumento_critico=16,
+            armadura=6,
+            resistencia=6,
+        )
         self.personagem.inventario.append(item2)
-        item3 = Botas_de_ferro(dano=6, critico=6, aumento_critico=16)
+        item3 = Botas_de_ferro(
+            dano=6,
+            critico=6,
+            aumento_critico=16,
+            armadura=6,
+            resistencia=6,
+        )
         self.personagem.inventario.append(item3)
         self.monstro = Tartaruga()
         self.monstro.porcentagem_armadura = 80
@@ -1951,7 +2035,7 @@ class TestPersonagemDaMaisDanoComAumentoDeCriticoMonge(TestCase):
 
     def test_dando_mais_dano_com_aumento_critico_multiplos_socos(self, *_):
         self.personagem.multiplos_socos(self.monstro)
-        # esperado = valor do aumento critico * dano
+        # esperado = valor do aumento critico * dano da skill + dano do personagem
         esperado = ((2 + (3 * 16) / 100) * 5) + 17
         # esperado = valor - valor da porcentagem da armadura do monstro
         esperado = esperado - int((esperado * 80) // 100)
@@ -1961,7 +2045,7 @@ class TestPersonagemDaMaisDanoComAumentoDeCriticoMonge(TestCase):
 
     def test_dando_mais_dano_com_aumento_critico_combo_de_chutes(self, *_):
         self.personagem.combo_de_chutes(self.monstro)
-        # esperado = valor do aumento critico * dano
+        # esperado = valor do aumento critico * dano da skill + dano do personagem
         esperado = ((2 + (3 * 16) / 100) * 10) + 17
         # esperado = valor - valor da porcentagem da resistencia do monstro
         esperado = esperado - int((esperado * 80) // 100)
@@ -2022,6 +2106,140 @@ class TestPersonagemConsumindoPocoesVida200(TestCase):
         self.personagem.status["vida"] = 59
         self.personagem.consumir_pocoes()
         self.assertEqual(self.personagem.status["vida"], 119)
+
+
+class TestPersonagemConsumindoPocoes2(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro("nome", True)
+        for _ in range(10):
+            self.personagem.inventario.append(PocaoDeVidaMedia())
+        for _ in range(10):
+            self.personagem.inventario.append(ElixirDeVidaMedia())
+        self.personagem.juntar_pocoes()
+
+    def test_inventario_do_personagem_contendo_somente_uma_pocao_e_um_elixir(
+        self,
+    ):
+        self.assertEqual(len(self.personagem.inventario), 2)
+        self.assertIsInstance(self.personagem.inventario[0], PocaoDeVidaMedia)
+        self.assertIsInstance(self.personagem.inventario[1], ElixirDeVidaMedia)
+
+    def test_consumindo_pocoes_retorna_numero_de_pocoes_igual_a_6(self):
+        pocao = self.personagem.inventario[0]
+        pocao.consumir(self.personagem.vida_maxima)
+        pocao.consumir(self.personagem.vida_maxima)
+        pocao.consumir(self.personagem.vida_maxima)
+        pocao.consumir(self.personagem.vida_maxima)
+        self.assertEqual(pocao.numero_de_pocoes, 6)
+
+    def test_consumir_remove_pocao_do_inventario(self):
+        pocao = self.personagem.inventario[0]
+        self.personagem.status["vida"] = 30
+        self.personagem.consumir_pocoes()
+        self.personagem.status["vida"] = 30
+        self.personagem.consumir_pocoes()
+        self.personagem.status["vida"] = 30
+        self.personagem.consumir_pocoes()
+        self.personagem.status["vida"] = 30
+        self.personagem.consumir_pocoes()
+        self.personagem.status["vida"] = 30
+        self.personagem.consumir_pocoes()
+        self.personagem.status["vida"] = 30
+        self.personagem.consumir_pocoes()
+        self.personagem.status["vida"] = 30
+        self.personagem.consumir_pocoes()
+        self.personagem.status["vida"] = 30
+        self.personagem.consumir_pocoes()
+        self.personagem.status["vida"] = 30
+        self.personagem.consumir_pocoes()
+        self.personagem.status["vida"] = 30
+        self.personagem.consumir_pocoes()
+        self.assertNotIn(pocao, self.personagem.inventario)
+
+    def test_consumir_remove_elixir_do_inventario(self):
+        self.personagem.inventario.pop(0)
+        pocao = self.personagem.inventario[0]
+        self.personagem.status["vida"] = 30
+        self.personagem.consumir_pocoes()
+        self.personagem.status["vida"] = 30
+        self.personagem.consumir_pocoes()
+        self.personagem.status["vida"] = 30
+        self.personagem.consumir_pocoes()
+        self.personagem.status["vida"] = 30
+        self.personagem.consumir_pocoes()
+        self.personagem.status["vida"] = 30
+        self.personagem.consumir_pocoes()
+        self.personagem.status["vida"] = 30
+        self.personagem.consumir_pocoes()
+        self.personagem.status["vida"] = 30
+        self.personagem.consumir_pocoes()
+        self.personagem.status["vida"] = 30
+        self.personagem.consumir_pocoes()
+        self.personagem.status["vida"] = 30
+        self.personagem.consumir_pocoes()
+        self.personagem.status["vida"] = 30
+        self.personagem.consumir_pocoes()
+        self.assertNotIn(pocao, self.personagem.inventario)
+
+    def test_juntar_pocoes_retorna_duas_pocoes_caso_pocoes_tenha_10_juntas_e_uma_solta(
+        self,
+    ):
+        self.personagem.inventario.append(PocaoDeVidaMedia())
+        self.personagem.juntar_pocoes()
+        pocao = self.personagem.inventario[0]
+        self.assertEqual(pocao.numero_de_pocoes, 10)
+        pocao = self.personagem.inventario[2]
+        self.assertEqual(pocao.numero_de_pocoes, 1)
+
+    def test_juntar_pocoes_retorna_duas_pocoes_caso_pocoes_tenha_10_juntas_e_6_solta(
+        self,
+    ):
+        for _ in range(6):
+            self.personagem.inventario.append(PocaoDeVidaMedia())
+        self.personagem.juntar_pocoes()
+        pocao = self.personagem.inventario[0]
+        self.assertEqual(pocao.numero_de_pocoes, 10)
+        pocao = self.personagem.inventario[2]
+        self.assertEqual(pocao.numero_de_pocoes, 6)
+
+    def test_juntar_pocoes_retorna_duas_pocoes_caso_pocoes_tenha_10_juntas_e_9_solta(
+        self,
+    ):
+        for _ in range(9):
+            self.personagem.inventario.append(PocaoDeVidaMedia())
+        self.personagem.juntar_pocoes()
+        pocao = self.personagem.inventario[0]
+        self.assertEqual(pocao.numero_de_pocoes, 10)
+        pocao = self.personagem.inventario[2]
+        self.assertEqual(pocao.numero_de_pocoes, 9)
+
+    def test_juntar_pocoes_retorna_3_pocoes_caso_pocoes_tenha_10_juntas_e_16_soltas(
+        self,
+    ):
+        for _ in range(16):
+            self.personagem.inventario.append(PocaoDeVidaMedia())
+        self.personagem.juntar_pocoes()
+        pocao = self.personagem.inventario[0]
+        self.assertEqual(pocao.numero_de_pocoes, 10)
+        pocao = self.personagem.inventario[2]
+        self.assertEqual(pocao.numero_de_pocoes, 10)
+        pocao = self.personagem.inventario[3]
+        self.assertEqual(pocao.numero_de_pocoes, 6)
+
+    def test_juntar_pocoes_retorna_1_pocao_caso_pocoes_tenha_9_soltas(self):
+        self.personagem.inventario = []
+        for _ in range(9):
+            self.personagem.inventario.append(PocaoDeVidaMedia())
+        self.personagem.juntar_pocoes()
+        pocao = self.personagem.inventario[0]
+        self.assertEqual(pocao.numero_de_pocoes, 9)
+
+    def test_juntar_pocoes_nao_gera_um_erro_caso_nao_tenha_pocoes_no_inventario(
+        self,
+    ):
+        self.personagem.inventario = []
+        self.personagem.juntar_pocoes()
+        self.assertEqual(self.personagem.inventario, [])
 
 
 # não precisa testar outras classes pois esse método é da classe Humano.

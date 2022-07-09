@@ -3,6 +3,7 @@ from time import sleep
 
 from jogo.itens.moedas import Draconica
 from jogo.itens.quest import ItemQuest
+from jogo.pets import SemPet
 from jogo.tela.imprimir import Imprimir
 from jogo.utils import Artigo, chunk
 
@@ -38,12 +39,11 @@ class Comerciante(Npc):
         ]
         textos_enumerados = list(enumerate(textos, 1))
         numeros_texto = [str(n) for n, texto in textos_enumerados]
-        numero = ":1"
-        numeros_pagina = [":1", ":2"]
-        while numero in numeros_pagina + numeros_texto:
+        numero = "1"
+        while numero in numeros_texto:
             tela.limpar_tela()
-            for numero, texto in textos_enumerados:
-                tela.imprimir(f"{numero} - {texto}\n")
+            for numero_, texto in textos_enumerados:
+                tela.imprimir(f"{numero_} - {texto}\n")
             tela.imprimir("O que deseja fazer?: ")
             numero = tela.obter_string()
             if numero == "1":
@@ -116,6 +116,7 @@ class Comerciante(Npc):
                 personagem,
                 self.tabela_cortada,
             )
+        personagem.juntar_pocoes()
         tela.limpar_tela()
         tela.imprimir("volte sempre!", "cyan")
         sleep(1)
@@ -400,6 +401,8 @@ class Banqueiro(Npc):
     def guardar_item(self, item, personagem):
         """Método que guarda um item no inventario do banqueiro."""
         # guardar o item no banqueiro
+        if item.tipo == "Pet":
+            personagem.pet_equipado = SemPet()
         self.inventario.append(item)
         # remover o item no inventario
         index = personagem.inventario.index(item)
@@ -421,11 +424,17 @@ class Banqueiro(Npc):
     def interagir(self, personagem):
         """Método que interage com o personagem."""
         tela.limpar_tela()
-        tela.imprimir("1 -> guardar, 2 -> retirar\n")
-        tela.imprimir("deseja guardar ou retirar um item?: ")
+        textos = [
+            "guardar",
+            "retirar",
+        ]
+        textos_enumerados = list(enumerate(textos, 1))
+        for numero, texto in textos_enumerados:
+            tela.imprimir(f"{numero} - {texto}\n")
+        tela.imprimir("deseja guardar ou retirar um item? [1/2]: ")
         numero = tela.obter_string()
-        while numero.isnumeric():
-            if numero == "1":  # gardar
+        while numero in ["1", "2"]:
+            if numero == "1":  # guardar
                 item = self._obter_equipamentos_personagem(
                     "deseja guardar qual item?: ", personagem
                 )
@@ -442,8 +451,9 @@ class Banqueiro(Npc):
                 if bool(item):
                     self.retirar(item, personagem)
             tela.limpar_tela()
-            tela.imprimir("1 -> guardar, 2 -> adquirir\n")
-            tela.imprimir("deseja guardar ou adquirir um item?: ")
+            for numero, texto in textos_enumerados:
+                tela.imprimir(f"{numero} - {texto}\n")
+            tela.imprimir("deseja guardar ou adquirir um item? [1/2]: ")
             numero = tela.obter_string()
 
     def _obter_equipamentos_personagem(self, mensagem: str, personagem):

@@ -1,4 +1,6 @@
 import sys
+from pathlib import Path
+from random import choice
 from time import sleep
 from unittest.mock import MagicMock
 
@@ -30,10 +32,10 @@ class Menu:
             "equipar equipamentos",
             "desequipar equipamentos",
             "mostrar equipamentos equipados",
+            "equipar pets",
             "abrir caixas",
             "mostrar o status",
             "mostrar quests",
-            "equipar pets",
             "salvar jogo",
             "sair",
         ]
@@ -44,7 +46,9 @@ class Menu:
 
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""
-        mixer.music.load("vilarejo.ogg")
+        musicas = ["musicas/musica1.ogg", "musicas/musica2.mp3"]
+        musicas = [str(Path(item)) for item in musicas]
+        mixer.music.load(choice(musicas))
         mixer.music.play()
         forma = f"{formas[227]} {{}} {formas[228]}"
         while True:
@@ -62,7 +66,7 @@ class Menu:
                     continuar = self._primeira_vez()
                     if continuar:
                         self.floresta()
-                    mixer.music.load("vilarejo.ogg")
+                    mixer.music.load(choice(musicas))
                     mixer.music.play()
                 case 2:
                     try:
@@ -94,8 +98,10 @@ class Menu:
                     )
                     tela.obter_string()
                 case 6:
-                    self.abrir_caixas()
+                    self.equipar_pets()
                 case 7:
+                    self.abrir_caixas()
+                case 8:
                     tela.limpar_tela()
                     tela.imprimir(
                         self._arrumar_status(self.personagem),
@@ -105,10 +111,8 @@ class Menu:
                         "aperte enter para retornar ao menu principal: ", "cyan"
                     )
                     tela.obter_string()
-                case 8:
-                    self._obter_numero_quests()
                 case 9:
-                    self.equipar_pets()
+                    self._obter_numero_quests()
                 case 10:
                     npcs = filter(lambda x: x.salvar, self._npcs)
                     salvar_jogo(self.personagem, npcs, self._nome_jogo)
@@ -178,7 +182,8 @@ class Menu:
         tela.imprimir(": ")
         numero = tela.obter_string()
         if numero.isnumeric() and int(numero) in nomes_florestas_dict:
-            mixer.music.load("som_da_floresta.ogg")
+            path = Path("musicas/som_da_floresta.ogg")
+            mixer.music.load(str(path))
             mixer.music.play()
             numero = int(numero)
             floresta = nomes_florestas_dict[int(numero)]
@@ -318,7 +323,9 @@ class Menu:
             filter(lambda x: x.tipo == "Caixa", self.personagem.inventario)
         )
         if len(caixas) == 0:
-            tela.imprimir("você não tem caixas no inventario para abrir")
+            tela.imprimir(
+                "você não tem caixas no inventario para abrir", "cyan"
+            )
             sleep(3)
             return
         caixa = self._obter_numero(caixas, "deseja escolher qual caixa: ")
@@ -351,7 +358,7 @@ class Menu:
             item for item in self.personagem.inventario if item.tipo == "Pet"
         ]
         if len(pets) == 0:
-            tela.imprimir("você não tem pets no inventario.\n")
+            tela.imprimir("você não tem pets no inventario.\n", "cyan")
             sleep(3)
             return
         pet = self._obter_numero(pets, "deseja escolher qual pet: ")
@@ -420,11 +427,9 @@ class Menu:
 # TODO: interagir com cenários e destruílos?
 # TODO: fazer quests onde o personagem precise interagir com 2 ou mais npcs.
 # TODO: botar um simbolo diferente nas moedas glifo e draconica.
-# TODO: fazer 10 poções ocuparem o mesmo espaço? (não sei se tem como)
 # TODO: implementar baús que dropam itens?
 # TODO: ter um companheiro na campanha? (não sei se tem como implementar isso)
 # TODO: trols, cavaleiros negros, catatumbas[areas abertas, ala a direita, tunel]
 # TODO: eventos especiais acontecem de tempos em tempos
-# TODO: implementar pets. pets dão porcentagem de algum atributo.
 # TODO: implementar durabilidade nas armas?
 # TODO: sangramento por dano de armas ou mobs

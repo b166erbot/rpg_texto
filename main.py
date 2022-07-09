@@ -123,7 +123,7 @@ class JogoController:
                 qual_jogo_deletar = tela.obter_string()
             tela.limpar_tela()
             tela.imprimir(
-                "Tem certeza que deseja deletar o save? " "[s/n/sim/não]: ",
+                "Tem certeza que deseja deletar o save? [s/n/sim/não]: ",
                 "cyan",
             )
             tem_certeza = tela.obter_string()
@@ -152,7 +152,6 @@ class JogoController:
             "Monge",
         ]
         classes_dict = dict(zip(classes_nomes, classes))
-        # transformar os números do enumerate em string
         classes_dict2 = {str(x): y for x, y in enumerate(classes_nomes)}
         numero_personagem = ""
         while numero_personagem not in classes_dict2:

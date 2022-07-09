@@ -85,7 +85,7 @@ class TestMonstroDropandoItensCorretamenteItensSecundarios(TestCase):
 @mock.patch("jogo.personagens.monstros.efeito_digitando")
 @mock.patch("jogo.personagens.monstros.choice", return_value=MagicMock())
 @mock.patch("jogo.personagens.monstros.randint", return_value=1)
-class TestMonstroDropandoItensCorretamenteItensPrincipais(TestCase):
+class TestMonstroDropandoItensCorretamenteArmasPrincipais(TestCase):
     def setUp(self):
         self.monstro = Tartaruga()
         self.personagem = Arqueiro("nome", True)
@@ -700,7 +700,7 @@ class TestDragaoDropandoItens(TestCase):
     def test_monstro_dopando_caixa_draconica(self, randint, choice, *_):
         choice.return_value = MagicMock(tipo="Arma")
         self.monstro.sortear_drops(self.personagem)
-        self.assertIsInstance(self.personagem.inventario[2], CaixaDraconica)
+        self.assertIsInstance(self.personagem.inventario[1], CaixaDraconica)
 
 
 class TestPorcentagemArmaduraResistenciaTartaruga(TestCase):

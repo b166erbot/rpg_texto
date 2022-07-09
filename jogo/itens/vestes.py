@@ -3,6 +3,7 @@ from jogo.itens.moedas import Draconica, Glifos, Pratas
 from jogo.utils import Acumulador
 
 
+# a classe precisa ficar em cima pois na hora de dropar o item do monstro ele faz a verificação.
 class Roupa:
     # precisa colocar o tipo aqui.
     tipo: str = "Roupa"
@@ -248,7 +249,7 @@ class RoupaDraconica:
         self.preco = Draconica((((vida // 2) + resistencia + armadura) * 8))
         self.glifos = Glifos(500 * level)
         self.level = level
-        leveis = [100, 200, 300, 400, 500, 600, 700, 800]
+        leveis = [300, 400, 500, 600, 700, 800, 900, 1000]
         self.glifos_level = Acumulador(0, leveis, level)
 
     def __repr__(self):

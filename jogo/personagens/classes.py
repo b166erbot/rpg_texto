@@ -1,6 +1,8 @@
 from asyncio import sleep
 from collections import Counter
 from copy import copy
+from functools import reduce
+from itertools import groupby
 from random import randint
 from time import sleep as sleep2
 
@@ -10,7 +12,7 @@ from jogo.itens.pocoes import curas
 from jogo.itens.quest import ItemQuest
 from jogo.pets import SemPet
 from jogo.tela.imprimir import Imprimir, formatar_status
-from jogo.utils import Acumulador, Contador, arrumar_porcentagem, regra_3
+from jogo.utils import Acumulador, Contador, arrumar_porcentagem, chunk, regra_3
 
 tela = Imprimir()
 
@@ -204,16 +206,27 @@ class Humano:
             if bool(pocao):
                 self.status["vida"] += pocao.consumir(self.vida_maxima)
                 self.arrumar_vida()
+                if pocao.numero_de_pocoes == 0:
+                    index = self.inventario.index(pocao)
+                    self.inventario.pop(index)
 
     def _dropar_pocoes(self) -> list:
         """Método que retorna uma poção caso você tenha."""
         nome_pocoes = list(map(lambda x: x.nome, curas))
         poções = [x for x in self.inventario if x.nome in nome_pocoes]
         if bool(poções):
-            index = self.inventario.index(poções[0])
-            poção = self.inventario.pop(index)
+            poção = self.inventario[0]
             return poção
         return False
+
+    def juntar_pocoes(self):
+        # daqui pra baixo eu não sei como funciona, mas funciona. que bruxaria é essa?
+        pocoes = [pocao for pocao in self.inventario if pocao.tipo == "Poções"]
+        grupos = groupby(pocoes, key=lambda x: x.nome)
+        for key, grupo in grupos:
+            pocoes_ = chunk(list(grupo), 10)
+            for container in pocoes_:
+                pocao = reduce(lambda x, y: x.juntar(self, y), container)
 
     def recuperar_magia_stamina_cem_porcento(self):
         """Método que recupera a magia e stamina para máximo."""
@@ -700,7 +713,7 @@ class Monge(Humano):
 
     def equipar(self, equipamento):
         """Método que equipa um equipamento."""
-        if equipamento.classe == "Todos":
+        if equipamento.classe in ["Todos", "Monge"]:
             # tira o equipamento do inventario
             index = self.inventario.index(equipamento)
             self.inventario.pop(index)
@@ -711,22 +724,6 @@ class Monge(Humano):
                 )
             # equipa o equipamento
             self.equipamentos[equipamento.tipo_equipar] = equipamento
-        if equipamento.nome == "Luvas de ferro":
-            # tira o equipamento do inventario
-            index = self.inventario.index(equipamento)
-            self.inventario.pop(index)
-            # desequipa o item
-            self.desequipar(self.equipamentos["Luvas"])
-            # equipa o item
-            self.equipamentos["Luvas"] = equipamento
-        elif equipamento.nome == "Botas de ferro":
-            # tira o equipamento do inventario
-            index = self.inventario.index(equipamento)
-            self.inventario.pop(index)
-            # desequipa o item
-            self.desequipar(self.equipamentos["Botas"])
-            # equipa o item
-            self.equipamentos["Botas"] = equipamento
         self.atualizar_status()
 
 

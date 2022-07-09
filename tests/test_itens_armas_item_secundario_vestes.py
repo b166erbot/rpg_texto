@@ -84,8 +84,14 @@ class TestVenderArmasDaoPratas(TestCase):
 
     def test_vendendo_botas_de_ferro_e_recebendo_dinheiro(self, tela, *_):
         tela.obter_string.side_effect = ["2", "0", ""]
-        esperado = (5 + 5 + 5) * 8
-        botas_de_ferro = Botas_de_ferro(dano=5, critico=5, aumento_critico=5)
+        esperado = (5 + 5 + 5 + 5 + 5) * 8
+        botas_de_ferro = Botas_de_ferro(
+            dano=5,
+            critico=5,
+            aumento_critico=5,
+            armadura=5,
+            resistencia=5,
+        )
         self.personagem.inventario.append(botas_de_ferro)
         self.comerciante.interagir(self.personagem)
         self.assertEqual(int(self.personagem.moedas["Pratas"]), 1500 + esperado)
@@ -124,8 +130,14 @@ class TestVenderArmasDaoPratas(TestCase):
 
     def test_vendendo_luvas_de_ferro_e_recebendo_dinheiro(self, tela, *_):
         tela.obter_string.side_effect = ["2", "0", ""]
-        esperado = (5 + 5 + 5) * 8
-        luvas_de_ferro = Luvas_de_ferro(dano=5, critico=5, aumento_critico=5)
+        esperado = (5 + 5 + 5 + 5 + 5) * 8
+        luvas_de_ferro = Luvas_de_ferro(
+            dano=5,
+            critico=5,
+            aumento_critico=5,
+            armadura=5,
+            resistencia=5,
+        )
         self.personagem.inventario.append(luvas_de_ferro)
         self.comerciante.interagir(self.personagem)
         self.assertEqual(int(self.personagem.moedas["Pratas"]), 1500 + esperado)
