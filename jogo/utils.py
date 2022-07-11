@@ -59,6 +59,30 @@ class Contador:
         return True if self._contagem > self._contagem_maxima else False
 
 
+class Contador2:
+    def __init__(self, intervalo):
+        self._intervalo = intervalo
+        self._contagem = 0
+        self._contagem2 = 5
+
+    def acrescentar(self):
+        if self._contagem % self._intervalo == 0 and self._contagem2 <= 4:
+            self._contagem2 += 1
+        elif self._contagem2 == 5:
+            self._contagem += 1
+            self._contagem2 = 0
+        else:
+            self._contagem += 1
+
+    @property
+    def usar(self):
+        condicoes = [self._contagem % self._intervalo == 0, self._contagem2 < 5]
+        if all(condicoes):
+            return True
+        else:
+            return False
+
+
 class Acumulador:
     def __init__(self, valor: int, leveis: list, level: int = 1):
         self.valor = 0
@@ -98,7 +122,7 @@ class Acumulador:
         if valor_requerido == float("inf"):
             self.valor = 0
 
-    def valor_glifos(self):
+    def valor_atual(self):
         valor = self._leveis_dict.get(self.level - 1)
         valores = takewhile(lambda x: x <= valor, self._leveis)
         if self.level == 1:
@@ -110,7 +134,7 @@ class Acumulador:
         return sum(self._leveis[:-1])
 
     def valor_faltando(self):
-        return self.valor_total() - self.valor_glifos()
+        return self.valor_total() - self.valor_atual()
 
     def resetar(self):
         self.valor = self._valores_iniciais["valor"]

@@ -77,7 +77,17 @@ class Comerciante(Npc):
                 break
             equipamento = inventario.get(numero)
             if equipamento is not None:
-                if not isinstance(equipamento, ItemQuest):
+                condicoes = [
+                    equipamento.glifos_level.level > 1,
+                    equipamento.glifos_level.valor > 0,
+                ]
+                if any(condicoes):
+                    tela.limpar_tela()
+                    tela.imprimir("remova os glifos primeiro")
+                    sleep(2)
+                elif isinstance(equipamento, ItemQuest):
+                    pass
+                else:
                     self.vender(personagem, equipamento, equipamento.preco.nome)
                     tela.imprimir(
                         f"item {equipamento} vendido. {equipamento.preco}"
@@ -560,9 +570,14 @@ class Ferreiro(Npc):
             personagem,
         )
         while bool(item):
-            personagem.moedas["Glifos"] += item.glifos
-            index = personagem.inventario.index(item)
-            personagem.inventario.pop(index)
+            if item.glifos_level.level > 1 or item.glifos_level.valor > 0:
+                tela.limpar_tela()
+                tela.imprimir("remova os glifos primeiro")
+                sleep(2)
+            else:
+                personagem.moedas["Glifos"] += item.glifos
+                index = personagem.inventario.index(item)
+                personagem.inventario.pop(index)
             equipamentos = list(
                 filter(
                     _retornar_itens_equipaveis,

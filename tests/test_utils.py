@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from jogo.utils import Acumulador, menor_numero
+from jogo.utils import Acumulador, Contador2, menor_numero
 
 
 class TestAcumulador(TestCase):
@@ -27,45 +27,45 @@ class TestAcumulador(TestCase):
         self.assertEqual(self.acumulador.level, 7)
         self.assertEqual(int(self.acumulador), 0)
 
-    def test_valor_glifos_retorna_10_caso_level_seja_4(self):
+    def test_valor_atual_retorna_10_caso_level_seja_4(self):
         self.acumulador = Acumulador(0, [1, 2, 3, 4, 5, 6], 4)
         # 1 + 2 + 3 == 6
-        self.assertEqual(self.acumulador.valor_glifos(), 6)
+        self.assertEqual(self.acumulador.valor_atual(), 6)
 
-    def test_valor_glifos_retorna_21_caso_level_seja_7(self):
+    def test_valor_atual_retorna_21_caso_level_seja_7(self):
         self.acumulador = Acumulador(0, [1, 2, 3, 4, 5, 6], 7)
-        self.assertEqual(self.acumulador.valor_glifos(), 21)
+        self.assertEqual(self.acumulador.valor_atual(), 21)
 
     def test_valor_retorna_0_caso_level_seja_7_e_valor_seja_1(self):
         self.acumulador = Acumulador(1, [1, 2, 3, 4, 5, 6], 7)
-        self.assertEqual(self.acumulador.valor_glifos(), 21)
+        self.assertEqual(self.acumulador.valor_atual(), 21)
         self.assertEqual(int(self.acumulador), 0)
 
-    def test_valor_glifos_retorna_21_caso_level_ultrapasse_o_limite_8(self):
+    def test_valor_atual_retorna_21_caso_level_ultrapasse_o_limite_8(self):
         self.acumulador = Acumulador(1, [1, 2, 3, 4, 5, 6], 8)
-        self.assertEqual(self.acumulador.valor_glifos(), 21)
+        self.assertEqual(self.acumulador.valor_atual(), 21)
         self.assertEqual(int(self.acumulador), 0)
 
-    def test_valor_glifos_retorna_10_caso_depositar_valor_receba_10(self):
+    def test_valor_atual_retorna_10_caso_depositar_valor_receba_10(self):
         self.acumulador.depositar_valor(10)
-        self.assertEqual(self.acumulador.valor_glifos(), 10)
+        self.assertEqual(self.acumulador.valor_atual(), 10)
 
-    def test_valor_glifos_retorna_11_caso_depositar_valor_receba_11(self):
+    def test_valor_atual_retorna_11_caso_depositar_valor_receba_11(self):
         self.acumulador.depositar_valor(11)
-        self.assertEqual(self.acumulador.valor_glifos(), 11)
+        self.assertEqual(self.acumulador.valor_atual(), 11)
 
-    def test_valor_glifos_retorna_0_caso_acumular_level_8_e_depositar_valor_receba_10(
+    def test_valor_atual_retorna_0_caso_acumular_level_8_e_depositar_valor_receba_10(
         self,
     ):
         self.acumulador = Acumulador(1, [1, 2, 3, 4, 5, 6], 8)
         self.acumulador.depositar_valor(10)
-        self.assertEqual(self.acumulador.valor_glifos(), 21)
+        self.assertEqual(self.acumulador.valor_atual(), 21)
 
-    def test_valor_glifos_retorna_1_caso_level_seja_1_e_depositar_valor_receba_1(
+    def test_valor_atual_retorna_1_caso_level_seja_1_e_depositar_valor_receba_1(
         self,
     ):
         self.acumulador.depositar_valor(1)
-        self.assertEqual(self.acumulador.valor_glifos(), 1)
+        self.assertEqual(self.acumulador.valor_atual(), 1)
 
     def test_valor_faltando_retorna_0_caso_depositar_valor_receba_maximo_de_glifos(
         self,
@@ -140,3 +140,41 @@ class TestMenorNumero(TestCase):
     ):
         resultado = menor_numero(30, self.lista)
         self.assertEqual(29, resultado)
+
+
+class TestContador2(TestCase):
+    def setUp(self):
+        self.contador = Contador2(4)
+
+    def test_contador_nao_acrescentando_e_usar_indisponivel(self):
+        self.assertFalse(self.contador.usar)
+
+    def test_contador_acrescentando_3_e_usar_indisponivel(self):
+        for _ in range(3):
+            self.contador.acrescentar()
+        self.assertFalse(self.contador.usar)
+
+    def test_contador_acrescentando_4_e_usar_disponivel(self):
+        for _ in range(4):
+            self.contador.acrescentar()
+        self.assertTrue(self.contador.usar)
+
+    def test_contador_acrescentando_8_e_usar_disponivel(self):
+        for _ in range(8):
+            self.contador.acrescentar()
+        self.assertTrue(self.contador.usar)
+
+    def test_contador_acrescentando_9_e_usar_indisponivel(self):
+        for _ in range(9):
+            self.contador.acrescentar()
+        self.assertFalse(self.contador.usar)
+
+    def test_contador_acrescentando_12_e_usar_indisponivel(self):
+        for _ in range(12):
+            self.contador.acrescentar()
+        self.assertFalse(self.contador.usar)
+
+    def test_contador_acrescentando_13_e_usar_disponivel(self):
+        for _ in range(13):
+            self.contador.acrescentar()
+        self.assertTrue(self.contador.usar)

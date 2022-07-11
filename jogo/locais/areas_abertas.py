@@ -3,10 +3,14 @@ from time import sleep
 from typing import Union
 
 from jogo.assincrono.combate import combate
-from jogo.personagens.monstros import Dragao, bosses_comuns, monstros_comuns
+from jogo.personagens.monstros import (
+    Dragao,
+    bosses_da_floresta,
+    monstros_da_floresta,
+)
 from jogo.tela.imprimir import Imprimir, efeito_digitando
 
-from .cavernas import Caverna, Local
+from .areas_fechadas import Caverna, Local
 
 local_str = Union[Local, str]
 
@@ -88,7 +92,7 @@ class Floresta:
                 "stamina": 100,
                 "velo-movi": 1,
             }
-            Boss = choice(bosses_comuns)
+            Boss = choice(bosses_da_floresta)
             boss = Boss(self.level, status)
             tela.imprimir("Boss encontrado.\n")
             tela.imprimir(str(boss) + "\n")
@@ -120,7 +124,7 @@ class Floresta:
             sleep(1)
             tela.limpar_tela()
             for y in range(randint(1, 3)):
-                Inimigo = choice(monstros_comuns)
+                Inimigo = choice(monstros_da_floresta)
                 inimigo = Inimigo(level=self.level)
                 combate(self.personagem, inimigo)
                 if self.personagem.status["vida"] == 0:

@@ -1,5 +1,7 @@
-from jogo.itens.moedas import Glifos, Pratas
+from jogo.itens.moedas import Draconica, Glifos, Pratas
 from jogo.utils import Acumulador
+
+from .itens import Atributo
 
 
 # a classe precisa ficar em cima pois na hora de dropar o item do monstro ele faz a verificação.
@@ -274,7 +276,204 @@ class AdornoDeArma:
         return glifos
 
 
-tudo = [
+class ArmaArauto:
+    # tipo precisa ficar aqui em cima
+    tipo = "Arma"
+
+    def __init__(
+        self,
+        nome: str,
+        dano: int,
+        critico: int,
+        aumento_critico: int,
+        level: int = 1,
+    ):
+        self.nome = nome
+        self.dano = dano * level
+        self.critico = critico * level
+        self.aumento_critico = aumento_critico * level
+        self._valores_base = {
+            "dano": dano,
+            "critico": critico,
+            "aumento_critico": aumento_critico,
+            "level": level,
+        }
+        self.tipo_equipar = "Arma"
+        self.bonus = [Atributo("dano", 10, "porcentagem", 1)]
+        self.conjunto = "item do Submundo"
+        self.preco = Draconica(
+            (self.dano + self.aumento_critico + self.critico) * 8
+        )
+        self.glifos = Glifos(500 * level)
+        self.level = level
+        leveis = [300, 400, 500, 600, 700, 800, 900, 1000]
+        self.glifos_level = Acumulador(0, leveis, level)
+
+    def __repr__(self):
+        retorno = (
+            f"{self.nome}(dan: {self.dano}, "
+            f"por_cri: {self.aumento_critico}, crit: {self.critico}, "
+            f"lvl: {self.level})"
+        )
+        return retorno
+
+    def receber_glifos(self, glifos):
+        self.glifos_level.depositar_valor(int(glifos))
+        self.level = self.glifos_level.level
+        self.dano = self._valores_base["dano"] * self.level
+        self.critico = self._valores_base["critico"] * self.level
+        self.aumento_critico = (
+            self._valores_base["aumento_critico"] * self.level
+        )
+
+    def remover_glifos(self):
+        glifos = Glifos(self.glifos_level.valor_glifos())
+        self.glifos_level.resetar()
+        self.level = self._valores_base["level"]
+        self.dano = self._valores_base["dano"] * self.level
+        self.critico = self._valores_base["critico"] * self.level
+        self.aumento_critico = (
+            self._valores_base["aumento_critico"] * self.level
+        )
+        return glifos
+
+
+class ArmaArautoMonge:
+    # tipo precisa ficar aqui em cima
+    tipo = "Arma"
+
+    def __init__(
+        self,
+        nome: str,
+        dano: int,
+        critico: int,
+        aumento_critico: int,
+        armadura: int,
+        resistencia: int,
+        tipo_equipar: str,
+        level: int = 1,
+    ):
+        self.nome = nome
+        self.dano = dano * level
+        self.critico = critico * level
+        self.aumento_critico = aumento_critico * level
+        self.armadura = armadura * level
+        self.resistencia = resistencia * level
+        self._valores_base = {
+            "dano": dano,
+            "critico": critico,
+            "aumento_critico": aumento_critico,
+            "armadura": armadura,
+            "resistencia": resistencia,
+            "level": level,
+        }
+        self.tipo_equipar = tipo_equipar
+        self.bonus = [Atributo("dano", 10, "porcentagem", 1)]
+        self.conjunto = "item do Submundo"
+        self.preco = Draconica(
+            (self.dano + self.aumento_critico + self.critico) * 8
+        )
+        self.glifos = Glifos(500 * level)
+        self.level = level
+        leveis = [300, 400, 500, 600, 700, 800, 900, 1000]
+        self.glifos_level = Acumulador(0, leveis, level)
+
+    def __repr__(self):
+        retorno = (
+            f"{self.nome}(dan: {self.dano}, "
+            f"por_cri: {self.aumento_critico}, crit: {self.critico}, "
+            f"lvl: {self.level})"
+        )
+        return retorno
+
+    def receber_glifos(self, glifos):
+        self.glifos_level.depositar_valor(int(glifos))
+        self.level = self.glifos_level.level
+        self.dano = self._valores_base["dano"] * self.level
+        self.critico = self._valores_base["critico"] * self.level
+        self.aumento_critico = (
+            self._valores_base["aumento_critico"] * self.level
+        )
+        self.armadura = self._valores_base["armadura"] * self.level
+        self.resistencia = self._valores_base["resistencia"] * self.level
+
+    def remover_glifos(self):
+        glifos = Glifos(self.glifos_level.valor_glifos())
+        self.glifos_level.resetar()
+        self.level = self._valores_base["level"]
+        self.dano = self._valores_base["dano"] * self.level
+        self.critico = self._valores_base["critico"] * self.level
+        self.aumento_critico = (
+            self._valores_base["aumento_critico"] * self.level
+        )
+        self.armadura = self._valores_base["armadura"] * self.level
+        self.resistencia = self._valores_base["resistencia"] * self.level
+        return glifos
+
+
+class MachadoArauto(ArmaArauto):
+    classe = "Guerreiro"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, nome="Machado Arauto", **kwargs)
+        self.tipo = "Arma"
+        self.tipo_equipar = "Arma"
+
+
+class CajadoArauto(ArmaArauto):
+    classe = "Mago"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, nome="Cajado Arauto", **kwargs)
+        self.tipo = "Arma"
+        self.tipo_equipar = "Arma"
+
+
+class ArcoArauto(ArmaArauto):
+    classe = "Arqueiro"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, nome="Arco Arauto", **kwargs)
+        self.tipo = "Arma"
+        self.tipo_equipar = "Arma"
+
+
+class AdagaArauto(ArmaArauto):
+    classe = "Assassino"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, nome="Adaga Arauto", **kwargs)
+        self.tipo = "Arma"
+        self.tipo_equipar = "Arma"
+
+
+class LuvasArauto(ArmaArautoMonge):
+    classe = "Monge"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(
+            *args,
+            nome="Luvas Arauto",
+            tipo_equipar="Luvas",
+            **kwargs,
+        )
+        self.tipo = "Arma"
+
+
+class BotasArauto(ArmaArautoMonge):
+    classe = "Monge"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(
+            *args,
+            nome="Botas Arauto",
+            tipo_equipar="Botas",
+            **kwargs,
+        )
+        self.tipo = "Arma"
+
+
+armas_comuns = [
     Espada_longa,
     Machado,
     Espada_curta,
@@ -286,4 +485,13 @@ tudo = [
     Luvas_de_ferro,
     Botas_de_ferro,
     AdornoDeArma,
+]
+
+armas_arauto = [
+    MachadoArauto,
+    CajadoArauto,
+    ArcoArauto,
+    AdagaArauto,
+    LuvasArauto,
+    BotasArauto,
 ]

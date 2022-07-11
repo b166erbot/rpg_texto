@@ -162,4 +162,4 @@ class Adaga(ItemDeDano):
         super().__init__(*args, nome="Adaga sec.", **kwargs)
 
 
-tudo = [Escudo, BolaDeCristal, Livro, Buckler, Aljava, Adaga]
+itens_comuns = [Escudo, BolaDeCristal, Livro, Buckler, Aljava, Adaga]

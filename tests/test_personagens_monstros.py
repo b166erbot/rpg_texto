@@ -3,16 +3,22 @@ from unittest.mock import MagicMock
 
 from jogo.itens.armas import (
     Adaga,
+    AdagaArauto,
     AdornoDeArma,
     Arco_curto,
     Arco_longo,
+    ArcoArauto,
     Botas_de_ferro,
+    BotasArauto,
     Cajado,
     Cajado_negro,
+    CajadoArauto,
     Espada_curta,
     Espada_longa,
     Luvas_de_ferro,
+    LuvasArauto,
     Machado,
+    MachadoArauto,
 )
 from jogo.itens.caixas import CaixaDraconica
 from jogo.itens.item_secundario import Adaga as AdagaSecundaria
@@ -27,9 +33,12 @@ from jogo.itens.quest import ItemQuest
 from jogo.itens.vestes import Amuleto, Anel, Botas, Calca, Elmo, Luvas, Peitoral
 from jogo.personagens.classes import Arqueiro
 from jogo.personagens.monstros import (
+    Arauto,
     ArvoreDeku,
     Camaleao,
+    DemonioDoCovil,
     Dragao,
+    FilhoDoArauto,
     Mico,
     Monstro,
     Sapo,
@@ -346,6 +355,64 @@ class TestCriticoSapo(TestCase):
         self.assertEqual(self.personagem.status["vida"], 94)
 
 
+class TestCriticoDemonioDoCovil(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro("nome", True)
+        self.monstro = DemonioDoCovil()
+        self.monstro.porcentagem_critico = 100
+
+    @mock.patch("jogo.personagens.monstros.randint", return_value=100)
+    def test_critico_em_personagem_cuspir_fogo(self, mocked):
+        self.monstro.cuspir_fogo(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], 92)
+
+    @mock.patch("jogo.personagens.monstros.randint", return_value=100)
+    def test_critico_em_personagem_garras_afiadas(self, mocked):
+        self.monstro.garras_afiadas(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], 88)
+
+    @mock.patch("jogo.personagens.monstros.randint", return_value=100)
+    def test_sem_critico_em_personagem_cuspir_fogo(self, mocked):
+        self.monstro.porcentagem_critico = 0
+        self.monstro.cuspir_fogo(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], 96)
+
+    @mock.patch("jogo.personagens.monstros.randint", return_value=100)
+    def test_sem_critico_em_personagem_garras_afiadas(self, mocked):
+        self.monstro.porcentagem_critico = 0
+        self.monstro.garras_afiadas(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], 94)
+
+
+class TestCriticoFilhoDoArauto(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro("nome", True)
+        self.monstro = FilhoDoArauto()
+        self.monstro.porcentagem_critico = 100
+
+    @mock.patch("jogo.personagens.monstros.randint", return_value=100)
+    def test_critico_em_personagem_jato_de_fogo(self, mocked):
+        self.monstro.jato_de_fogo(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], 92)
+
+    @mock.patch("jogo.personagens.monstros.randint", return_value=100)
+    def test_critico_em_personagem_explosao(self, mocked):
+        self.monstro.explosao(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], 88)
+
+    @mock.patch("jogo.personagens.monstros.randint", return_value=100)
+    def test_sem_critico_em_personagem_jato_de_fogo(self, mocked):
+        self.monstro.porcentagem_critico = 0
+        self.monstro.jato_de_fogo(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], 96)
+
+    @mock.patch("jogo.personagens.monstros.randint", return_value=100)
+    def test_sem_critico_em_personagem_explosao(self, mocked):
+        self.monstro.porcentagem_critico = 0
+        self.monstro.explosao(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], 94)
+
+
 # só precisa de um monstro boss para testar o método da classe Boss
 @mock.patch("jogo.personagens.monstros.tela")
 @mock.patch("jogo.personagens.monstros.efeito_digitando")
@@ -450,6 +517,46 @@ class TestBossDropandoItensCorretamenteItensPrincipais(TestCase):
         choice.return_value = AdornoDeArma
         self.monstro.sortear_drops(self.personagem)
         self.assertIsInstance(self.personagem.inventario[0], AdornoDeArma)
+
+
+@mock.patch("jogo.personagens.monstros.tela")
+@mock.patch("jogo.personagens.monstros.efeito_digitando")
+@mock.patch("jogo.personagens.monstros.choice", return_value=MagicMock())
+@mock.patch("jogo.personagens.monstros.randint", return_value=1)
+class TestBossDropandoItensCorretamenteItensPrincipaisArauto(TestCase):
+    def setUp(self):
+        self.monstro = Arauto()
+        self.personagem = Arqueiro("nome", True)
+
+    def test_sortear_drops_retorna_adaga(self, randint, choice, *_):
+        choice.return_value = MachadoArauto
+        self.monstro.sortear_drops(self.personagem)
+        self.assertIsInstance(self.personagem.inventario[0], MachadoArauto)
+
+    def test_sortear_drops_retorna_arco_curto(self, randint, choice, *_):
+        choice.return_value = CajadoArauto
+        self.monstro.sortear_drops(self.personagem)
+        self.assertIsInstance(self.personagem.inventario[0], CajadoArauto)
+
+    def test_sortear_drops_retorna_arco_longo(self, randint, choice, *_):
+        choice.return_value = ArcoArauto
+        self.monstro.sortear_drops(self.personagem)
+        self.assertIsInstance(self.personagem.inventario[0], ArcoArauto)
+
+    def test_sortear_drops_retorna_botas_de_ferro(self, randint, choice, *_):
+        choice.return_value = AdagaArauto
+        self.monstro.sortear_drops(self.personagem)
+        self.assertIsInstance(self.personagem.inventario[0], AdagaArauto)
+
+    def test_sortear_drops_retorna_cajado(self, randint, choice, *_):
+        choice.return_value = LuvasArauto
+        self.monstro.sortear_drops(self.personagem)
+        self.assertIsInstance(self.personagem.inventario[0], LuvasArauto)
+
+    def test_sortear_drops_retorna_cajado_negro(self, randint, choice, *_):
+        choice.return_value = BotasArauto
+        self.monstro.sortear_drops(self.personagem)
+        self.assertIsInstance(self.personagem.inventario[0], BotasArauto)
 
 
 @mock.patch("jogo.personagens.monstros.tela")
@@ -681,6 +788,35 @@ class TestCriticoDragao(TestCase):
         self.assertEqual(self.personagem.status["vida"], 85)
 
 
+class TestCriticoArauto(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro("nome", True)
+        self.monstro = Arauto()
+        self.monstro.porcentagem_critico = 100
+
+    @mock.patch("jogo.personagens.monstros.randint", return_value=100)
+    def test_critico_em_personagem_esmagar(self, mocked):
+        self.monstro.esmagar(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], 80)
+
+    @mock.patch("jogo.personagens.monstros.randint", return_value=100)
+    def test_critico_em_personagem_explosao(self, mocked):
+        self.monstro.explosao(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], 70)
+
+    @mock.patch("jogo.personagens.monstros.randint", return_value=100)
+    def test_sem_critico_em_personagem_esmagar(self, mocked):
+        self.monstro.porcentagem_critico = 0
+        self.monstro.esmagar(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], 90)
+
+    @mock.patch("jogo.personagens.monstros.randint", return_value=100)
+    def test_sem_critico_em_personagem_explosao(self, mocked):
+        self.monstro.porcentagem_critico = 0
+        self.monstro.explosao(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], 85)
+
+
 @mock.patch("jogo.personagens.monstros.tela")
 @mock.patch("jogo.personagens.monstros.sleep2")
 @mock.patch("jogo.personagens.monstros.efeito_digitando")
@@ -879,7 +1015,7 @@ class TestBloqueioDandoMenosDanoTartaruga(TestCase):
         self, *_
     ):
         dano = 4
-        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        # vida do personagem - (dano do monstro - porcentagem do bloqueio)
         esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
         self.monstro.investida(self.personagem)
         self.assertEqual(self.personagem.status["vida"], esperado)
@@ -907,7 +1043,7 @@ class TestBloqueioDandoMenosDanoCamaleao(TestCase):
         self, *_
     ):
         dano = 4
-        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        # vida do personagem - (dano do monstro - porcentagem do bloqueio)
         esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
         self.monstro.trapasseiro(self.personagem)
         self.assertEqual(self.personagem.status["vida"], esperado)
@@ -931,7 +1067,7 @@ class TestBloqueioDandoMenosDanoTamandua(TestCase):
 
     def test_personagem_deve_receber_menos_dano_com_bloqueio_linguada(self, *_):
         dano = 4
-        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        # vida do personagem - (dano do monstro - porcentagem do bloqueio)
         esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
         self.monstro.linguada(self.personagem)
         self.assertEqual(self.personagem.status["vida"], esperado)
@@ -955,7 +1091,7 @@ class TestBloqueioDandoMenosDanoSapo(TestCase):
 
     def test_personagem_deve_receber_menos_dano_com_bloqueio_linguada(self, *_):
         dano = 4
-        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        # vida do personagem - (dano do monstro - porcentagem do bloqueio)
         esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
         self.monstro.linguada(self.personagem)
         self.assertEqual(self.personagem.status["vida"], esperado)
@@ -964,6 +1100,60 @@ class TestBloqueioDandoMenosDanoSapo(TestCase):
         dano = 6
         esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
         self.monstro.salto(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], esperado)
+
+
+@mock.patch("jogo.personagens.monstros.randint", return_value=100)
+class TestBloqueioDandoMenosDanoDemonioDoCovil(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro("nome", True)
+        self.monstro = DemonioDoCovil()
+        self.personagem.porcentagem_armadura = 0
+        self.personagem.porcentagem_resistencia = 0
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_cuspir_fogo(
+        self, *_
+    ):
+        dano = 4
+        # vida do personagem - (dano do monstro - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.cuspir_fogo(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], esperado)
+
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_garras_afiadas(
+        self, *_
+    ):
+        dano = 6
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.garras_afiadas(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], esperado)
+
+
+@mock.patch("jogo.personagens.monstros.randint", return_value=100)
+class TestBloqueioDandoMenosDanoFilhoDoArauto(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro("nome", True)
+        self.monstro = FilhoDoArauto()
+        self.personagem.porcentagem_armadura = 0
+        self.personagem.porcentagem_resistencia = 0
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_jato_de_fogo(
+        self, *_
+    ):
+        dano = 4
+        # vida do personagem - (dano do monstro - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.jato_de_fogo(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], esperado)
+
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_explosao(self, *_):
+        dano = 6
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.explosao(self.personagem)
         self.assertEqual(self.personagem.status["vida"], esperado)
 
 
@@ -1092,6 +1282,30 @@ class TestBloqueioDandoMenosDanoDragao(TestCase):
         dano = 15
         esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
         self.monstro.fogo(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], esperado)
+
+
+@mock.patch("jogo.personagens.monstros.randint", return_value=100)
+class TestBloqueioDandoMenosDanoArauto(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro("nome", True)
+        self.monstro = Arauto()
+        self.personagem.porcentagem_armadura = 0
+        self.personagem.porcentagem_resistencia = 0
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_esmagar(self, *_):
+        dano = 10
+        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.esmagar(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], esperado)
+
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_explosao(self, *_):
+        dano = 15
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.explosao(self.personagem)
         self.assertEqual(self.personagem.status["vida"], esperado)
 
 

@@ -4,16 +4,22 @@ from unittest.mock import MagicMock
 
 from jogo.itens.armas import (
     Adaga,
+    AdagaArauto,
     AdornoDeArma,
     Arco_curto,
     Arco_longo,
+    ArcoArauto,
     Botas_de_ferro,
+    BotasArauto,
     Cajado,
     Cajado_negro,
+    CajadoArauto,
     Espada_curta,
     Espada_longa,
     Luvas_de_ferro,
+    LuvasArauto,
     Machado,
+    MachadoArauto,
 )
 from jogo.itens.item_secundario import Adaga as AdagaSecundaria
 from jogo.itens.item_secundario import (
@@ -773,6 +779,12 @@ class TestEquipandoEquipamentosOuNaoEmArqueiroArmas(TestCase):
         self.personagem.equipar(item)
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
 
+    def test_equipando_arco_arauto(self):
+        item = ArcoArauto(dano=5, critico=5, aumento_critico=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
+
 
 class TestEquipandoEquipamentosOuNaoEmArqueiroItemSecundario(TestCase):
     def setUp(self):
@@ -958,6 +970,12 @@ class TestEquipandoEquipamentosOuNaoEmGuerreiroArmas(TestCase):
 
     def test_equipando_machado(self):
         item = Machado(dano=5, critico=5, aumento_critico=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_equipando_machado_arauto(self):
+        item = MachadoArauto(dano=5, critico=5, aumento_critico=5)
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
@@ -1151,6 +1169,12 @@ class TestEquipandoEquipamentosOuNaoEmMagoArmas(TestCase):
         self.personagem.equipar(item)
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
 
+    def test_equipando_cajado_arauto(self):
+        item = CajadoArauto(dano=5, critico=5, aumento_critico=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
+
 
 class TestEquipandoEquipamentosOuNaoEmMagoItemSecundario(TestCase):
     def setUp(self):
@@ -1340,6 +1364,12 @@ class TestEquipandoEquipamentosOuNaoEmAssassinoArmas(TestCase):
         self.personagem.equipar(item)
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
 
+    def test_equipando_adaga_arauto(self):
+        item = AdagaArauto(dano=5, critico=5, aumento_critico=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
+
 
 class TestEquipandoEquipamentosOuNaoEmAssassinoItemSecundario(TestCase):
     def setUp(self):
@@ -1528,6 +1558,12 @@ class TestEquipandoEquipamentosOuNaoEmClerigoArmas(TestCase):
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_equipando_cajado_arauto(self):
+        item = CajadoArauto(dano=5, critico=5, aumento_critico=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
 
 
 class TestEquipandoEquipamentosOuNaoEmClerigoItemSecundario(TestCase):
@@ -1719,6 +1755,30 @@ class TestEquipandoEquipamentosOuNaoEmMongeArmas(TestCase):
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_equipando_luvas_arauto(self):
+        item = LuvasArauto(
+            dano=5,
+            critico=5,
+            aumento_critico=5,
+            armadura=5,
+            resistencia=5,
+        )
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIs(self.personagem.equipamentos["Luvas"], item)
+
+    def test_equipando_botas_arauto(self):
+        item = BotasArauto(
+            dano=5,
+            critico=5,
+            aumento_critico=5,
+            armadura=5,
+            resistencia=5,
+        )
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIs(self.personagem.equipamentos["Botas"], item)
 
 
 class TestEquipandoEquipamentosOuNaoEmMongeItemSecundario(TestCase):

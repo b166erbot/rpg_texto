@@ -303,5 +303,5 @@ class CalcaDraconica(RoupaDraconica):
         self.tipo_equipar = "Calça"
 
 
-tudo = [Peitoral, Elmo, Calca, Botas, Luvas, Anel, Amuleto]
+roupas_comuns = [Peitoral, Elmo, Calca, Botas, Luvas, Anel, Amuleto]
 roupas_draconicas = [PeitoralDraconico, ElmoDraconico, CalcaDraconica]

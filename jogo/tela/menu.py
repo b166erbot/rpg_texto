@@ -1,15 +1,15 @@
 import sys
-from pathlib import Path
 from random import choice
 from time import sleep
 from unittest.mock import MagicMock
 
 from jogo.locais.areas_abertas import Floresta
+from jogo.locais.areas_fechadas import CovilDoArauto
 from jogo.locais.habitaveis import Vilarejo
 from jogo.pets import SemPet
 from jogo.save import salvar_jogo
 from jogo.tela.imprimir import Imprimir, formas
-from jogo.utils import chunk
+from jogo.utils import Artigo, Contador2, chunk
 
 # Silenciar o pygame para não imprimir nada na tela
 sys.stdout = MagicMock()
@@ -36,25 +36,35 @@ class Menu:
             "abrir caixas",
             "mostrar o status",
             "mostrar quests",
+            "eventos especiais",
             "salvar jogo",
             "sair",
         ]
         self._texto = texto + [
             f"{numero} - {texto}" for numero, texto in enumerate(texto2, 1)
         ]
-        self.personagem = personagem
+        self._personagem = personagem
+        self._eventos_contador = Contador2(intervalo=4)
+        self._evento_especial = False
 
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""
         musicas = ["musicas/musica1.ogg", "musicas/musica2.mp3"]
-        musicas = [str(Path(item)) for item in musicas]
+        musicas = [item for item in musicas]
         mixer.music.load(choice(musicas))
         mixer.music.play()
         forma = f"{formas[227]} {{}} {formas[228]}"
         while True:
             tela.limpar_tela()
             for texto in self._texto:
-                tela.imprimir(forma.format(texto) + "\n", "cyan")
+                condicoes = [
+                    self._eventos_contador.usar,
+                    "eventos especiais" in texto,
+                ]
+                if all(condicoes):
+                    tela.imprimir(forma.format(texto) + "\n", "amarelo")
+                else:
+                    tela.imprimir(forma.format(texto) + "\n", "cyan")
             tela.imprimir(": ")
             caracter = tela.obter_string()
             if not caracter.isnumeric():
@@ -66,6 +76,7 @@ class Menu:
                     continuar = self._primeira_vez()
                     if continuar:
                         self.floresta()
+                        self._eventos_contador.acrescentar()
                     mixer.music.load(choice(musicas))
                     mixer.music.play()
                 case 2:
@@ -77,7 +88,7 @@ class Menu:
                             "com a lista de npcs."
                         )
                     vilarejo = Vilarejo(
-                        "Vila dos hobbits", self.personagem, npcs
+                        "Vila dos hobbits", self._personagem, npcs
                     )
                     vilarejo.explorar()
                 case 3:
@@ -86,7 +97,7 @@ class Menu:
                     self.desequipar()
                 case 5:
                     tela.limpar_tela()
-                    equipamentos = self.personagem.equipamentos.items()
+                    equipamentos = self._personagem.equipamentos.items()
                     for nome, item in equipamentos:
                         if bool(item):
                             frase = f"{nome}: {item}\n"
@@ -104,7 +115,7 @@ class Menu:
                 case 8:
                     tela.limpar_tela()
                     tela.imprimir(
-                        self._arrumar_status(self.personagem),
+                        self._arrumar_status(self._personagem),
                         "cyan",
                     )
                     tela.imprimir(
@@ -114,51 +125,56 @@ class Menu:
                 case 9:
                     self._obter_numero_quests()
                 case 10:
+                    mixer.music.stop()
+                    self.eventos_especiais()
+                    mixer.music.load(choice(musicas))
+                    mixer.music.play()
+                case 11:
                     npcs = filter(lambda x: x.salvar, self._npcs)
-                    salvar_jogo(self.personagem, npcs, self._nome_jogo)
+                    salvar_jogo(self._personagem, npcs, self._nome_jogo)
                     tela.imprimir(f"jogo salvo {formas[959]}", "cyan")
                     sleep(3)
-                case 11:
+                case 12:
                     quit()
 
     def equipar_equipamentos(self):
         """Método que equipa equipamentos do inventário do personagem."""
         equipamentos = list(
-            filter(lambda x: x, self.personagem.equipamentos.values())
+            filter(lambda x: x, self._personagem.equipamentos.values())
         )
         numero = self._obter_numero_equipamentos(
             "deseja equipar qual equipamento?: ",
-            equipamentos + self.personagem.inventario,
+            equipamentos + self._personagem.inventario,
         )
         while bool(numero):
             inventario = dict(
-                enumerate(equipamentos + self.personagem.inventario)
+                enumerate(equipamentos + self._personagem.inventario)
             )
             equipamento = inventario.get(int(numero))
-            if bool(equipamento) and equipamento in self.personagem.inventario:
-                self.personagem.equipar(equipamento)
+            if bool(equipamento) and equipamento in self._personagem.inventario:
+                self._personagem.equipar(equipamento)
             equipamentos = list(
-                filter(lambda x: x, self.personagem.equipamentos.values())
+                filter(lambda x: x, self._personagem.equipamentos.values())
             )
             numero = self._obter_numero_equipamentos(
                 "deseja equipar qual equipamento?: ",
-                equipamentos + self.personagem.inventario,
+                equipamentos + self._personagem.inventario,
             )
 
     def desequipar(self):
         """Método que desequipa um equipamento do personagem."""
         numero = self._obter_numero_equipamentos(
             "deseja desequipar qual equipamento?: ",
-            list(self.personagem.equipamentos.values()),
+            list(self._personagem.equipamentos.values()),
         )
         while bool(numero):
-            inventario = dict(enumerate(self.personagem.equipamentos.values()))
+            inventario = dict(enumerate(self._personagem.equipamentos.values()))
             equipamento = inventario.get(int(numero))
             if equipamento is not None:
-                self.personagem.desequipar(equipamento)
+                self._personagem.desequipar(equipamento)
             numero = self._obter_numero_equipamentos(
                 "deseja desequipar qual equipamento?: ",
-                list(self.personagem.equipamentos.values()),
+                list(self._personagem.equipamentos.values()),
             )
 
     def floresta(self):
@@ -182,15 +198,15 @@ class Menu:
         tela.imprimir(": ")
         numero = tela.obter_string()
         if numero.isnumeric() and int(numero) in nomes_florestas_dict:
-            path = Path("musicas/som_da_floresta.ogg")
-            mixer.music.load(str(path))
+            musica = "musicas/som_da_floresta.ogg"
+            mixer.music.load(musica)
             mixer.music.play()
             numero = int(numero)
             floresta = nomes_florestas_dict[int(numero)]
-            floresta = Floresta(floresta, self.personagem, numero)
+            floresta = Floresta(floresta, self._personagem, numero)
             floresta.explorar()
-            self.personagem.recuperar_magia_stamina_cem_porcento()
-            self.personagem.ressucitar()
+            self._personagem.recuperar_magia_stamina_cem_porcento()
+            self._personagem.ressucitar()
             mixer.music.stop()
 
     def _obter_numero_equipamentos(self, mensagem: str, itens: list):
@@ -234,7 +250,7 @@ class Menu:
                     else f"{numero} - {item}"
                 )
                 equipamento_equipado = map(
-                    lambda x: x is item, self.personagem.equipamentos.values()
+                    lambda x: x is item, self._personagem.equipamentos.values()
                 )
                 if any(equipamento_equipado):
                     tela.imprimir(mensagem2 + "\n", "amarelo")
@@ -245,7 +261,7 @@ class Menu:
         return numero
 
     def _obter_numero_quests(self):
-        quests = list(enumerate(self.personagem.quests))
+        quests = list(enumerate(self._personagem.quests))
         if len(quests) == 0:
             tela.imprimir("você não tem quests.", "cyan")
             sleep(2)
@@ -274,13 +290,13 @@ class Menu:
         pocoes = list(
             filter(
                 lambda x: x.nome in "poção de vida média",
-                self.personagem.inventario,
+                self._personagem.inventario,
             )
         )
         condicoes = [
-            self.personagem.level == 1,
-            int(self.personagem.experiencia) == 0,
-            len(pocoes) < 10,
+            self._personagem.level == 1,
+            int(self._personagem.experiencia) == 0,
+            sum([pocao.numero_de_pocoes for pocao in pocoes]) < 15,
         ]
         if all(condicoes):
             tela.imprimir(
@@ -293,6 +309,7 @@ class Menu:
                 return True
             else:
                 return False
+        # retorna True caso personagem tenha mais de 10 poções
         return True
 
     def _obter_numero(self, itens, mensagem):
@@ -320,7 +337,7 @@ class Menu:
     def abrir_caixas(self):
         tela.limpar_tela()
         caixas = list(
-            filter(lambda x: x.tipo == "Caixa", self.personagem.inventario)
+            filter(lambda x: x.tipo == "Caixa", self._personagem.inventario)
         )
         if len(caixas) == 0:
             tela.imprimir(
@@ -338,13 +355,13 @@ class Menu:
                 tela.imprimir(f"item adquirido: {item}\n")
                 sleep(3)
                 if item.nome == "Draconica":
-                    self.personagem.moedas["Draconica"] += item
+                    self._personagem.moedas["Draconica"] += item
                 else:
-                    self.personagem.inventario.append(item)
-                index = self.personagem.inventario.index(caixa)
-                self.personagem.inventario.pop(index)
+                    self._personagem.inventario.append(item)
+                index = self._personagem.inventario.index(caixa)
+                self._personagem.inventario.pop(index)
             caixas = list(
-                filter(lambda x: x.tipo == "Caixa", self.personagem.inventario)
+                filter(lambda x: x.tipo == "Caixa", self._personagem.inventario)
             )
             if len(caixas) == 0:
                 tela.imprimir("você não tem mais caixas\n")
@@ -355,7 +372,7 @@ class Menu:
     def equipar_pets(self):
         tela.limpar_tela()
         pets = [
-            item for item in self.personagem.inventario if item.tipo == "Pet"
+            item for item in self._personagem.inventario if item.tipo == "Pet"
         ]
         if len(pets) == 0:
             tela.imprimir("você não tem pets no inventario.\n", "cyan")
@@ -363,13 +380,13 @@ class Menu:
             return
         pet = self._obter_numero(pets, "deseja escolher qual pet: ")
         if bool(pet):
-            self.personagem.pet_equipado = pet
-            self.personagem.atualizar_status()
+            self._personagem.pet_equipado = pet
+            self._personagem.atualizar_status()
             tela.imprimir(f"Pet equipado: {pet}")
             sleep(3)
         else:
-            self.personagem.pet_equipado = SemPet()
-            self.personagem.atualizar_status()
+            self._personagem.pet_equipado = SemPet()
+            self._personagem.atualizar_status()
             tela.imprimir("Pet desequipado.")
             sleep(3)
 
@@ -413,6 +430,26 @@ class Menu:
         ]
         return "\n".join(textos) + "\n"
 
+    def eventos_especiais(self):
+        if self._eventos_contador.usar and not bool(self._evento_especial):
+            self._evento_especial = choice(["arauto"])
+        elif not self._eventos_contador.usar and bool(self._evento_especial):
+            self._evento_especial = False
+        tela.limpar_tela()
+        if bool(self._evento_especial):
+            artigo = Artigo(self._evento_especial)
+            tela.imprimir(f"evento d{artigo} {self._evento_especial}\n")
+            tela.imprimir("deseja entrar no evento? [s/n]: ")
+            resposta = tela.obter_string()
+            if resposta in ["s", "sim"]:
+                musica = "musicas/musica_combate1.ogg"
+                mixer.music.load(musica)
+                mixer.music.play()
+                covil = CovilDoArauto(self._personagem, self._personagem.level)
+                covil.explorar()
+                self._eventos_contador.acrescentar()
+                mixer.music.stop()
+
 
 # TODO: colocar mais npcs com quests.
 # TODO: poções, venenos.
@@ -423,13 +460,11 @@ class Menu:
 # TODO: histórias tem botão de skip (não sei se tem como fazer)
 # TODO: obsessão por primitivos na classe Humano (não tem como)
 # TODO: elixir deve ter um preço diferente para cada level.
-# TODO: implementar stun.
+# TODO: implementar stun?
 # TODO: interagir com cenários e destruílos?
 # TODO: fazer quests onde o personagem precise interagir com 2 ou mais npcs.
-# TODO: botar um simbolo diferente nas moedas glifo e draconica.
 # TODO: implementar baús que dropam itens?
 # TODO: ter um companheiro na campanha? (não sei se tem como implementar isso)
-# TODO: trols, cavaleiros negros, catatumbas[areas abertas, ala a direita, tunel]
-# TODO: eventos especiais acontecem de tempos em tempos
+# TODO: trols, cavaleiros negros, esqueletos, catatumbas[areas abertas, ala a direita, tunel]
 # TODO: implementar durabilidade nas armas?
 # TODO: sangramento por dano de armas ou mobs

@@ -3,11 +3,11 @@ from collections import Counter
 from random import choice, randint
 from time import sleep as sleep2
 
-from jogo.itens.armas import tudo as armas
+from jogo.itens.armas import armas_arauto, armas_comuns
 from jogo.itens.caixas import CaixaDraconica
-from jogo.itens.item_secundario import tudo as itens_secundarios
+from jogo.itens.item_secundario import itens_comuns
 from jogo.itens.quest import ItemQuest
-from jogo.itens.vestes import tudo as vestes
+from jogo.itens.vestes import roupas_comuns
 from jogo.tela.imprimir import Imprimir, efeito_digitando, formatar_status
 from jogo.utils import Contador, arrumar_porcentagem, menor_numero, regra_3
 
@@ -89,7 +89,7 @@ class Monstro:
         """Método que dá item e pratas ao personagem."""
         if randint(0, 2) == 1:
             efeito_digitando("Loot encontrado.")
-            Item = choice(vestes + armas + itens_secundarios)
+            Item = choice(roupas_comuns + armas_comuns + itens_comuns)
             match (Item.tipo, Item.classe):
                 case ("Arma", "Monge"):
                     status = [
@@ -288,7 +288,7 @@ class Boss(Monstro):
     def sortear_drops(self, personagem):
         """Método que dá item e pratas ao personagem."""
         efeito_digitando("Loot encontrado.")
-        Item = choice(vestes + armas)
+        Item = choice(roupas_comuns + armas_comuns)
         match (Item.tipo, Item.classe):
             case ("Arma", "Monge"):
                 status = [
@@ -391,7 +391,6 @@ class Tartaruga(Monstro):
         self.habilidades = [self.investida, self.garras_afiadas]
         self.nome = "Tartaruga"
         self.classe = "Monstro comum"
-        self.tipo = "Tatu bola"
 
     def investida(self, other):
         """Método que ataca o personagem."""
@@ -420,7 +419,6 @@ class Camaleao(Monstro):
         self.habilidades = [self.trapasseiro, self.roubo]
         self.nome = "Camaleão"
         self.classe = "Monstro comum"
-        self.tipo = "trolador"
 
     def trapasseiro(self, other):
         """Método que ataca o personagem."""
@@ -449,7 +447,6 @@ class Tamandua(Monstro):
         self.habilidades = [self.linguada, self.abraco]
         self.nome = "Tamandua"
         self.classe = "Monstro comum"
-        self.tipo = "trolador"
 
     def linguada(self, other):
         """Método que ataca o personagem."""
@@ -478,7 +475,6 @@ class Sapo(Monstro):
         self.habilidades = [self.linguada, self.salto]
         self.nome = "Sapo"
         self.classe = "Monstro comum"
-        self.tipo = "trolador"
 
     def linguada(self, other):
         """Método que ataca o personagem."""
@@ -501,13 +497,69 @@ class Sapo(Monstro):
         other.status["vida"] -= dano - subtrair_dano2
 
 
+# daqui pra baixo são monstros únicos.
+class DemonioDoCovil(Monstro):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.habilidades = [self.cuspir_fogo, self.garras_afiadas]
+        self.nome = "demônio do covil"
+        self.classe = "Monstro comum"
+
+    def cuspir_fogo(self, other):
+        """Método que ataca o personagem"""
+        dano = 4 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
+        subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
+        dano -= subtrair_dano
+        subtrair_dano2 = other.valor_de_bloqueio * dano
+        other.status["vida"] -= dano - subtrair_dano2
+
+    def garras_afiadas(self, other):
+        """Método que ataca o personagem."""
+        dano = 6 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
+        subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
+        dano -= subtrair_dano
+        subtrair_dano2 = other.valor_de_bloqueio * dano
+        other.status["vida"] -= dano - subtrair_dano2
+
+
+class FilhoDoArauto(Monstro):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.habilidades = [self.jato_de_fogo, self.explosao]
+        self.nome = "Filho do Arauto"
+        self.classe = "Monstro comum"
+
+    def jato_de_fogo(self, other):
+        """Método que ataca o personagem"""
+        dano = 4 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
+        subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
+        dano -= subtrair_dano
+        subtrair_dano2 = other.valor_de_bloqueio * dano
+        other.status["vida"] -= dano - subtrair_dano2
+
+    def explosao(self, other):
+        """Método que ataca o personagem."""
+        dano = 6 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
+        subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
+        dano -= subtrair_dano
+        subtrair_dano2 = other.valor_de_bloqueio * dano
+        other.status["vida"] -= dano - subtrair_dano2
+
+
 class Topera(Boss):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.habilidades = [self.pulo_fatal, self.terremoto]
         self.nome = "Topera"
         self.classe = "Monstro chefe"
-        self.tipo = "boss"
 
     def pulo_fatal(self, other):
         """Método que ataca o personagem."""
@@ -536,7 +588,6 @@ class Mico(Boss):
         self.habilidades = [self.tacar_banana, self.esmagar]
         self.nome = "Mico"
         self.classe = "Monstro chefe"
-        self.tipo = "boss"
 
     def tacar_banana(self, other):
         """Método que ataca o personagem."""
@@ -565,7 +616,6 @@ class Sucuri(Boss):
         self.habilidades = [self.lancamento_de_calda, self.bote]
         self.nome = "Sucuri"
         self.classe = "Monstro chefe"
-        self.tipo = "boss"
 
     def lancamento_de_calda(self, other):
         """Método que ataca o personagem."""
@@ -594,7 +644,6 @@ class ArvoreDeku(Boss):
         self.habilidades = [self.braçada, self.outono]
         self.nome = "Arvore Deku"
         self.classe = "Monstro chefe"
-        self.tipo = "boss"
 
     def braçada(self, other):
         """Método que ataca o personagem."""
@@ -617,13 +666,13 @@ class ArvoreDeku(Boss):
         other.status["vida"] -= dano - subtrair_dano2
 
 
+# daqui para baixo são bosses únicos.
 class Dragao(Boss):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.habilidades = [self.patada, self.fogo]
         self.nome = "Dragão ancião"
         self.classe = "Monstro chefe"
-        self.tipo = "boss"
 
     def patada(self, other):
         """Método que ataca o personagem."""
@@ -644,7 +693,6 @@ class Dragao(Boss):
         subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
         dano -= subtrair_dano
         subtrair_dano2 = other.valor_de_bloqueio * dano
-
         other.status["vida"] -= dano - subtrair_dano2
 
     def sortear_drops(self, personagem):
@@ -653,5 +701,84 @@ class Dragao(Boss):
         personagem.inventario.append(CaixaDraconica(personagem.level))
 
 
-monstros_comuns = [Tartaruga, Camaleao, Tamandua, Sapo]
-bosses_comuns = [Topera, Mico, Sucuri, ArvoreDeku]
+class Arauto(Boss):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.habilidades = [self.esmagar, self.explosao]
+        self.nome = "Arauto"
+        self.classe = "Monstro chefe"
+
+    def esmagar(self, other):
+        """Método que ataca o personagem."""
+        dano = 10 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        dano -= subtrair_dano
+        subtrair_dano2 = other.valor_de_bloqueio * dano
+        other.status["vida"] -= dano - subtrair_dano2
+
+    def explosao(self, other):
+        """Método que ataca o personagem."""
+        dano = 15 * self.level
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano *= 2
+        subtrair_dano = regra_3(100, dano, other.porcentagem_resistencia)
+        dano -= subtrair_dano
+        subtrair_dano2 = other.valor_de_bloqueio * dano
+        other.status["vida"] -= dano - subtrair_dano2
+
+    def sortear_drops(self, personagem):
+        """Método que dá item e pratas ao personagem."""
+        if randint(0, 100) in range(5):
+            efeito_digitando("Loot encontrado.")
+            Item = choice(armas_arauto)
+            if Item.classe == "Monge":
+                status = [
+                    randint(3, 6),
+                    randint(8, 16),
+                    randint(3, 6),
+                    randint(3, 6),
+                    randint(3, 6),
+                    self.level,
+                ]
+                status_nomes = [
+                    "dano",
+                    "aumento_critico",
+                    "critico",
+                    "armadura",
+                    "resistencia",
+                    "level",
+                ]
+                status_dict = dict(zip(status_nomes, status))
+                item = Item(**status_dict)
+            else:
+                status = [
+                    randint(3, 6),
+                    randint(8, 16),
+                    randint(3, 6),
+                    self.level,
+                ]
+                status_nomes = [
+                    "dano",
+                    "aumento_critico",
+                    "critico",
+                    "level",
+                ]
+                status_dict = dict(zip(status_nomes, status))
+                item = Item(**status_dict)
+            personagem.moedas["Pratas"] += randint(
+                300 * self.level, 500 * self.level
+            )
+            if personagem.e_possivel_guardar(item):
+                personagem.guardar_item(item)
+            else:
+                tela.imprimir(
+                    "não foi possível adicionar item ao inventario, "
+                    "inventario cheio.\n"
+                )
+                sleep2(3)
+
+
+monstros_da_floresta = [Tartaruga, Camaleao, Tamandua, Sapo]
+bosses_da_floresta = [Topera, Mico, Sucuri, ArvoreDeku]
