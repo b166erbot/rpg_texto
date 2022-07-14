@@ -1,10 +1,10 @@
 from asyncio import sleep
 from collections import Counter
 from copy import copy
-from functools import reduce
-from itertools import groupby
+from itertools import groupby, combinations, chain
 from random import randint
 from time import sleep as sleep2
+from functools import reduce
 
 from jogo.itens.itens import CalcularBonus, SemItemEquipado
 from jogo.itens.moedas import Draconica, Glifos, Pratas
@@ -206,27 +206,63 @@ class Humano:
             if bool(pocao):
                 self.status["vida"] += pocao.consumir(self.vida_maxima)
                 self.arrumar_vida()
-                if pocao.numero_de_pocoes == 0:
-                    index = self.inventario.index(pocao)
-                    self.inventario.pop(index)
 
     def _dropar_pocoes(self) -> list:
         """Método que retorna uma poção caso você tenha."""
-        nome_pocoes = list(map(lambda x: x.nome, curas))
-        poções = [x for x in self.inventario if x.nome in nome_pocoes]
-        if bool(poções):
-            poção = self.inventario[0]
-            return poção
-        return False
+        pilhas_de_pocoes = list(map(
+            lambda x: x.tipo == "Pilha de Poção",
+            self.inventario
+        ))
+        pocao = False
+        while bool(pilhas_de_pocoes):
+            pilha = self.inventario[0]
+            pocao = pilha.retornar_pocao()
+            if not bool(pocao):
+                index = self.inventario.index(pilha)
+                self.inventario.pop(index)
+            else:
+                break
+            pilhas_de_pocoes = list(map(
+                lambda x: x.tipo == "Pilha de Poção",
+                self.inventario
+            ))
+        return pocao
 
     def juntar_pocoes(self):
-        # daqui pra baixo eu não sei como funciona, mas funciona. que bruxaria é essa?
-        pocoes = [pocao for pocao in self.inventario if pocao.tipo == "Poções"]
+        pocoes = [
+            pilha
+            for pilha in self.inventario
+            if pilha.tipo == "Pilha de Poções"
+        ]
         grupos = groupby(pocoes, key=lambda x: x.nome)
         for key, grupo in grupos:
-            pocoes_ = chunk(list(grupo), 10)
-            for container in pocoes_:
-                pocao = reduce(lambda x, y: x.juntar(self, y), container)
+            grupo = list(grupo)
+            tamanho = len(grupo)
+            while bool(grupo):
+                lista = [
+                    combinations(grupo, numero)
+                    for numero in range(2, len(grupo) + 1)
+                ]
+                lista = chain(*lista)
+                for itens in lista:
+                    itens = list(itens)
+                    if sum([len(item) for item in itens]) == 10:
+                        grupo2 = reduce(lambda x, y: x.juntar_pilha(y), itens)
+                        for item in itens:
+                            index = grupo.index(item)
+                            grupo.pop(index)
+                            index = self.inventario.index(item)
+                            self.inventario.pop(index)
+                        self.inventario.append(grupo2)
+                if len(grupo) == tamanho:
+                    grupo2 = reduce(lambda x, y: x.juntar_pilha(y), grupo)
+                    for item in grupo:
+                        index = self.inventario.index(item)
+                        self.inventario.pop(index)
+                    self.inventario.append(grupo2)
+                    break
+                else:
+                    tamanho = len(grupo)
 
     def recuperar_magia_stamina_cem_porcento(self):
         """Método que recupera a magia e stamina para máximo."""
@@ -277,10 +313,9 @@ class Humano:
         self.status["critico"] = self._critico
         self.aumento_dano_critico = self._aumento_critico
         self.valor_de_bloqueio = self._bloqueio
-        self.atualizar_porcentagem()
-        # bonus do pet precisa ser antes do bonus do set.
         self.pet_equipado.calcular_bonus(self)
         self._calcular_bonus.calcular(self.equipamentos.values())
+        self.atualizar_porcentagem()
 
     def atualizar_porcentagem(self):
         """Método que atualiza as porcentagens."""

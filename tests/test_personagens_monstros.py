@@ -30,8 +30,24 @@ from jogo.itens.item_secundario import (
     Livro,
 )
 from jogo.itens.quest import ItemQuest
-from jogo.itens.vestes import Amuleto, Anel, Botas, Calca, Elmo, Luvas, Peitoral
-from jogo.personagens.classes import Arqueiro
+from jogo.itens.vestes import (
+    Amuleto,
+    Anel,
+    Botas,
+    Calca,
+    Elmo,
+    Luvas,
+    Peitoral,
+    AnelDoCeifador,
+)
+from jogo.personagens.classes import (
+    Arqueiro,
+    Guerreiro,
+    Mago,
+    Assassino,
+    Clerigo,
+    Monge,
+)
 from jogo.personagens.monstros import (
     Arauto,
     ArvoreDeku,
@@ -39,6 +55,7 @@ from jogo.personagens.monstros import (
     DemonioDoCovil,
     Dragao,
     FilhoDoArauto,
+    Esqueleto,
     Mico,
     Monstro,
     Sapo,
@@ -46,6 +63,7 @@ from jogo.personagens.monstros import (
     Tamandua,
     Tartaruga,
     Topera,
+    Ceifador,
 )
 
 
@@ -413,6 +431,35 @@ class TestCriticoFilhoDoArauto(TestCase):
         self.assertEqual(self.personagem.status["vida"], 94)
 
 
+class TestCriticoEsqueleto(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro("nome", True)
+        self.monstro = Esqueleto()
+        self.monstro.porcentagem_critico = 100
+
+    @mock.patch("jogo.personagens.monstros.randint", return_value=100)
+    def test_critico_em_personagem_golpe_com_escudo(self, mocked):
+        self.monstro.golpe_com_escudo(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], 92)
+
+    @mock.patch("jogo.personagens.monstros.randint", return_value=100)
+    def test_critico_em_personagem_golpe_com_espada(self, mocked):
+        self.monstro.golpe_com_espada(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], 88)
+
+    @mock.patch("jogo.personagens.monstros.randint", return_value=100)
+    def test_sem_critico_em_personagem_golpe_com_escudo(self, mocked):
+        self.monstro.porcentagem_critico = 0
+        self.monstro.golpe_com_escudo(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], 96)
+
+    @mock.patch("jogo.personagens.monstros.randint", return_value=100)
+    def test_sem_critico_em_personagem_golpe_com_espada(self, mocked):
+        self.monstro.porcentagem_critico = 0
+        self.monstro.golpe_com_espada(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], 94)
+
+
 # só precisa de um monstro boss para testar o método da classe Boss
 @mock.patch("jogo.personagens.monstros.tela")
 @mock.patch("jogo.personagens.monstros.efeito_digitando")
@@ -521,42 +568,58 @@ class TestBossDropandoItensCorretamenteItensPrincipais(TestCase):
 
 @mock.patch("jogo.personagens.monstros.tela")
 @mock.patch("jogo.personagens.monstros.efeito_digitando")
-@mock.patch("jogo.personagens.monstros.choice", return_value=MagicMock())
 @mock.patch("jogo.personagens.monstros.randint", return_value=1)
 class TestBossDropandoItensCorretamenteItensPrincipaisArauto(TestCase):
     def setUp(self):
         self.monstro = Arauto()
-        self.personagem = Arqueiro("nome", True)
 
-    def test_sortear_drops_retorna_adaga(self, randint, choice, *_):
-        choice.return_value = MachadoArauto
-        self.monstro.sortear_drops(self.personagem)
-        self.assertIsInstance(self.personagem.inventario[0], MachadoArauto)
+    def test_sortear_drops_retorna_machado(self, randint, *_):
+        personagem = Guerreiro("nome", True)
+        self.monstro.sortear_drops(personagem)
+        self.assertIsInstance(personagem.inventario[0], MachadoArauto)
 
-    def test_sortear_drops_retorna_arco_curto(self, randint, choice, *_):
-        choice.return_value = CajadoArauto
-        self.monstro.sortear_drops(self.personagem)
-        self.assertIsInstance(self.personagem.inventario[0], CajadoArauto)
+    def test_sortear_drops_retorna_cajado_mago(self, randint, *_):
+        personagem = Mago("nome", True)
+        self.monstro.sortear_drops(personagem)
+        self.assertIsInstance(personagem.inventario[0], CajadoArauto)
+    
+    def test_sortear_drops_retorna_cajado_clerigo(self, randint, *_):
+        personagem = Clerigo("nome", True)
+        self.monstro.sortear_drops(personagem)
+        self.assertIsInstance(personagem.inventario[0], CajadoArauto)
 
-    def test_sortear_drops_retorna_arco_longo(self, randint, choice, *_):
-        choice.return_value = ArcoArauto
-        self.monstro.sortear_drops(self.personagem)
-        self.assertIsInstance(self.personagem.inventario[0], ArcoArauto)
+    def test_sortear_drops_retorna_arco(self, randint, *_):
+        personagem = Arqueiro("nome", True)
+        self.monstro.sortear_drops(personagem)
+        self.assertIsInstance(personagem.inventario[0], ArcoArauto)
 
-    def test_sortear_drops_retorna_botas_de_ferro(self, randint, choice, *_):
-        choice.return_value = AdagaArauto
-        self.monstro.sortear_drops(self.personagem)
-        self.assertIsInstance(self.personagem.inventario[0], AdagaArauto)
+    def test_sortear_drops_retorna_adaga(self, randint, *_):
+        personagem = Assassino("nome", True)
+        self.monstro.sortear_drops(personagem)
+        self.assertIsInstance(personagem.inventario[0], AdagaArauto)
 
-    def test_sortear_drops_retorna_cajado(self, randint, choice, *_):
-        choice.return_value = LuvasArauto
-        self.monstro.sortear_drops(self.personagem)
-        self.assertIsInstance(self.personagem.inventario[0], LuvasArauto)
+    def test_sortear_drops_retorna_luvas(self, randint, *_):
+        personagem = Monge("nome", True)
+        self.monstro.sortear_drops(personagem)
+        self.assertIsInstance(personagem.inventario[0], (LuvasArauto, BotasArauto))
 
-    def test_sortear_drops_retorna_cajado_negro(self, randint, choice, *_):
-        choice.return_value = BotasArauto
-        self.monstro.sortear_drops(self.personagem)
-        self.assertIsInstance(self.personagem.inventario[0], BotasArauto)
+    def test_sortear_drops_retorna_botas(self, randint, *_):
+        personagem = Monge("nome", True)
+        self.monstro.sortear_drops(personagem)
+        self.assertIsInstance(personagem.inventario[0], (LuvasArauto, BotasArauto))
+
+
+@mock.patch("jogo.personagens.monstros.tela")
+@mock.patch("jogo.personagens.monstros.efeito_digitando")
+@mock.patch("jogo.personagens.monstros.randint", return_value=1)
+class TestBossDropandoItensCorretamenteItensPrincipaisCeifador(TestCase):
+    def setUp(self):
+        self.monstro = Ceifador()
+
+    def test_sortear_drops_retorna_machado(self, randint, *_):
+        personagem = Guerreiro("nome", True)
+        self.monstro.sortear_drops(personagem)
+        self.assertIsInstance(personagem.inventario[0], AnelDoCeifador)
 
 
 @mock.patch("jogo.personagens.monstros.tela")
@@ -814,6 +877,35 @@ class TestCriticoArauto(TestCase):
     def test_sem_critico_em_personagem_explosao(self, mocked):
         self.monstro.porcentagem_critico = 0
         self.monstro.explosao(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], 85)
+
+
+class TestCriticoCeifador(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro("nome", True)
+        self.monstro = Ceifador()
+        self.monstro.porcentagem_critico = 100
+
+    @mock.patch("jogo.personagens.monstros.randint", return_value=100)
+    def test_critico_em_personagem_corte_com_foice(self, mocked):
+        self.monstro.corte_com_foice(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], 80)
+
+    @mock.patch("jogo.personagens.monstros.randint", return_value=100)
+    def test_critico_em_personagem_invocando_fantasmas(self, mocked):
+        self.monstro.invocando_fantasmas(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], 70)
+
+    @mock.patch("jogo.personagens.monstros.randint", return_value=100)
+    def test_sem_critico_em_personagem_corte_com_foice(self, mocked):
+        self.monstro.porcentagem_critico = 0
+        self.monstro.corte_com_foice(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], 90)
+
+    @mock.patch("jogo.personagens.monstros.randint", return_value=100)
+    def test_sem_critico_em_personagem_invocando_fantasmas(self, mocked):
+        self.monstro.porcentagem_critico = 0
+        self.monstro.invocando_fantasmas(self.personagem)
         self.assertEqual(self.personagem.status["vida"], 85)
 
 
@@ -1158,6 +1250,32 @@ class TestBloqueioDandoMenosDanoFilhoDoArauto(TestCase):
 
 
 @mock.patch("jogo.personagens.monstros.randint", return_value=100)
+class TestBloqueioDandoMenosDanoEsqueleto(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro("nome", True)
+        self.monstro = Esqueleto()
+        self.personagem.porcentagem_armadura = 0
+        self.personagem.porcentagem_resistencia = 0
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_golpe_com_escudo(
+        self, *_
+    ):
+        dano = 4
+        # vida do personagem - (dano do monstro - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.golpe_com_escudo(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], esperado)
+
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_golpe_com_espada(self, *_):
+        dano = 6
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.golpe_com_espada(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], esperado)
+
+
+@mock.patch("jogo.personagens.monstros.randint", return_value=100)
 class TestBloqueioDandoMenosDanoTopera(TestCase):
     def setUp(self):
         self.personagem = Arqueiro("nome", True)
@@ -1306,6 +1424,30 @@ class TestBloqueioDandoMenosDanoArauto(TestCase):
         dano = 15
         esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
         self.monstro.explosao(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], esperado)
+
+
+@mock.patch("jogo.personagens.monstros.randint", return_value=100)
+class TestBloqueioDandoMenosDanoCeifador(TestCase):
+    def setUp(self):
+        self.personagem = Arqueiro("nome", True)
+        self.monstro = Ceifador()
+        self.personagem.porcentagem_armadura = 0
+        self.personagem.porcentagem_resistencia = 0
+        self.personagem.valor_de_bloqueio = 0.80
+        self.monstro.porcentagem_critico = 0
+
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_corte_com_foice(self, *_):
+        dano = 10
+        # vida do monstro - (dano do personagem - porcentagem do bloqueio)
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.corte_com_foice(self.personagem)
+        self.assertEqual(self.personagem.status["vida"], esperado)
+
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_invocando_fantasmas(self, *_):
+        dano = 15
+        esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
+        self.monstro.invocando_fantasmas(self.personagem)
         self.assertEqual(self.personagem.status["vida"], esperado)
 
 

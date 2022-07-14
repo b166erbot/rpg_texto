@@ -5,7 +5,6 @@ from jogo.utils import Artigo, arrumar_porcentagem
 
 class SemItemEquipado:
     def __init__(self, nome_do_equipamento, tipo, tipo_equipar):
-        # nome_do_equipamento precisa ser obrigatoriamente o tipo do item
         self.nome_do_equipamento = nome_do_equipamento
         self.tipo = tipo
         self.tipo_equipar = tipo_equipar
@@ -49,18 +48,9 @@ class Atributo:
 
     def calcular(self, personagem):
         if self._tipo == "porcentagem":
-            if self._atributo == "armadura":
-                porcentagem = arrumar_porcentagem(
-                    personagem.porcentagem_armadura + self._valor
-                )
-                personagem.porcentagem_armadura = porcentagem
-            elif self._atributo == "resistencia":
-                porcentagem = arrumar_porcentagem(
-                    personagem.porcentagem_resistencia + self._valor
-                )
-                personagem.porcentagem_resistencia = porcentagem
-            # elif self._atributo == 'vida': # implementar
-            # elif self._atributo == 'dano': # implementar
+            valor = personagem.status[self._atributo]
+            adicionar_valor = (valor * self._valor) // 100
+            personagem.status[self._atributo] += adicionar_valor
         elif self._tipo == "valor real":
             personagem.status[self._atributo] += self._valor
 

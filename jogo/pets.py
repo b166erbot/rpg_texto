@@ -1,3 +1,6 @@
+from jogo.utils import arrumar_porcentagem
+
+
 class Pet:
     def __init__(self, nome: str, atributo: str, valor: int):
         self.nome = nome

@@ -303,5 +303,64 @@ class CalcaDraconica(RoupaDraconica):
         self.tipo_equipar = "Calça"
 
 
+class AnelDoCeifador:
+    tipo: str = "Anel"
+    classe: str = "Todos"
+    nome = "Anel"
+
+    def __init__(
+        self,
+        dano: int,
+        vida: int,
+        resistencia: int,
+        armadura: int,
+        level: int = 1,
+    ):
+        self.dano = dano * level
+        self.vida = vida * level
+        self.resistencia = resistencia * level
+        self.armadura = armadura * level
+        self._valores_base = {
+            "dano": dano,
+            "vida": vida,
+            "resistencia": resistencia,
+            "armadura": armadura,
+            "level": level,
+        }
+        self.bonus = [Atributo("dano", 5, "porcentagem", 1)]
+        self.conjunto = "item comum"
+        self.tipo_equipar = "Anel"
+        self.preco = Draconica((dano + (vida // 2) + resistencia + armadura) * 8)
+        self.glifos = Glifos(500 * level)
+        self.level = level
+        leveis = [300, 400, 500, 600, 700, 800, 900, 1000]
+        self.glifos_level = Acumulador(0, leveis, level)
+
+    def __repr__(self):
+        retorno = (
+            f"{self.nome}(vid: {self.vida}, resis: {self.resistencia}"
+            f", arm: {self.armadura}, dan: {self.dano}, lvl: {self.level})"
+        )
+        return retorno
+
+    def receber_glifos(self, glifos):
+        self.glifos_level.depositar_valor(int(glifos))
+        self.level = self.glifos_level.level
+        self.dano = self._valores_base["dano"] * self.level
+        self.vida = self._valores_base["vida"] * self.level
+        self.armadura = self._valores_base["armadura"] * self.level
+        self.resistencia = self._valores_base["resistencia"] * self.level
+
+    def remover_glifos(self):
+        glifos = Glifos(self.glifos_level.valor_glifos())
+        self.glifos_level.resetar()
+        self.level = self._valores_base["level"]
+        self.dano = self._valores_base["dano"] * self.level
+        self.vida = self._valores_base["vida"] * self.level
+        self.armadura = self._valores_base["armadura"] * self.level
+        self.resistencia = self._valores_base["resistencia"] * self.level
+        return glifos
+
+
 roupas_comuns = [Peitoral, Elmo, Calca, Botas, Luvas, Anel, Amuleto]
 roupas_draconicas = [PeitoralDraconico, ElmoDraconico, CalcaDraconica]

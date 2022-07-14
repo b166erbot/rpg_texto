@@ -1,41 +1,81 @@
 from jogo.itens.moedas import Pratas
 
 
+class PilhaDePocoes:
+    def __init__(self, pocoes: list, nome: str):
+        self.pocoes = pocoes
+        self.nome = nome
+        self.tipo = "Pilha de Poções"
+        self.classe = "Pilha de Poções"
+        self.numero_maximo_pocoes = 10
+        if len(pocoes) > 10:
+            raise Exception('Excedeu o valor máximo de poções')
+
+    def retornar_pocao(self):
+        if len(self.pocoes) >= 0:
+            return self.pocoes.pop()
+        else:
+            return False
+
+    def e_possivel_juntar(self, other):
+        condicoes = [
+            self.tipo == other.tipo,
+            (
+                len(self.pocoes)
+                + len(other.pocoes)
+                <= self.numero_maximo_pocoes
+            )
+        ]
+        if all(condicoes):
+            return True
+        else:
+            return False
+
+    def juntar_pilha(self, other):
+        pocoes = self.pocoes + other.pocoes
+        return self.__class__(pocoes, self.nome)
+    
+    def e_possivel_adicionar_pocao(self):
+        if len(self.pocoes) < self.numero_maximo_pocoes:
+            return True
+        else:
+            return False
+    
+    def adicionar_pocao(self, pocao):
+        self.pocoes.append(pocao)
+    
+    def __len__(self):
+        return len(self.pocoes)
+
+    def __repr__(self):
+        retorno = (
+            f"pilha de poções({self.nome}, {len(self)})"
+        )
+        return retorno
+
+
 class PocaoDeCura:
     tipo = "Poções"
 
     def __init__(self, pontos_cura: int):
         self.pontos_cura = pontos_cura
         self.classe = "Poções"
-        self.numero_maximo_pocoes = 10
-        self.numero_de_pocoes = 1
+        self.consumida = False
 
     def __repr__(self):
         retorno = (
             f"{self.nome.capitalize()} - "
-            f"Cura: {self.pontos_cura}, "
-            f"unidade: {self.numero_de_pocoes}"
+            f"Cura: {self.pontos_cura}"
         )
         return retorno
 
     def consumir(self, vida_maxima):
         """Método que consome a poção."""
         # a variável vida_maxima neste método não tem propósito mas é necessária, favor não remover.
-        if self.numero_de_pocoes > 0:
-            self.numero_de_pocoes -= 1
+        if self.consumida == False:
+            self.consumida = True
             return self.pontos_cura
         return 0
-
-    def juntar(self, personagem, pocao):
-        condicoes = [
-            isinstance(pocao, self.__class__),
-            self.numero_de_pocoes < self.numero_maximo_pocoes,
-        ]
-        if all(condicoes):
-            self.numero_de_pocoes += 1
-            index = personagem.inventario.index(pocao)
-            personagem.inventario.pop(index)
-        return self
 
 
 class PocaoDeVidaFraca(PocaoDeCura):
@@ -80,34 +120,21 @@ class Elixir:
     def __init__(self, porcentagem: int):
         self.porcentagem = porcentagem
         self.classe = "Poções"
-        self.numero_maximo_pocoes = 10
-        self.numero_de_pocoes = 1
+        self.consumida = False
 
     def __repr__(self):
         retorno = (
             f"{self.nome.capitalize()} - "
-            f"Cura: {self.porcentagem}%, "
-            f"unidade: {self.numero_de_pocoes}"
+            f"Cura: {self.porcentagem}%"
         )
         return retorno
 
     def consumir(self, vida_maxima):
         """Método que consome a poção."""
-        if self.numero_de_pocoes > 0:
-            self.numero_de_pocoes -= 1
+        if self.consumida == False:
+            self.consumida = True
             return (self.porcentagem * vida_maxima) // 100
         return 0
-
-    def juntar(self, personagem, pocao):
-        condicoes = [
-            isinstance(pocao, self.__class__),
-            self.numero_de_pocoes < self.numero_maximo_pocoes,
-        ]
-        if all(condicoes):
-            self.numero_de_pocoes += 1
-            index = personagem.inventario.index(pocao)
-            personagem.inventario.pop(index)
-        return self
 
 
 class ElixirDeVidaFraca(Elixir):

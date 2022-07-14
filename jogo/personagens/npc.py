@@ -6,6 +6,7 @@ from jogo.itens.quest import ItemQuest
 from jogo.pets import SemPet
 from jogo.tela.imprimir import Imprimir
 from jogo.utils import Artigo, chunk
+from jogo.itens.pocoes import PilhaDePocoes
 
 tela = Imprimir()
 
@@ -137,8 +138,14 @@ class Comerciante(Npc):
         if int(personagem.moedas[tipo_de_moeda]) >= preço:
             personagem.moedas[tipo_de_moeda] -= preço
             # ao comprar, guarda o item de qualquer forma.
-            for n in range(quantidade):
-                personagem.inventario.append(copy(item))
+            itens = [copy(item) for item in range(quantidade)]
+            if item.tipo == "Poções":
+                itens_cortados = chunk(itens, 10)
+                itens = [
+                    PilhaDePocoes(container, item.nome)
+                    for container in itens_cortados
+                ]
+            personagem.inventario += itens
         else:
             texto = "compra não realizada: dinheiro insuficiente"
             tela.imprimir(texto, "cyan")

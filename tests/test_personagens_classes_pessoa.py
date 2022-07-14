@@ -1,6 +1,6 @@
 from collections import Counter
 from unittest import TestCase, mock
-from unittest.mock import MagicMock
+from copy import copy
 
 from jogo.itens.armas import (
     Adaga,
@@ -30,6 +30,7 @@ from jogo.itens.item_secundario import (
     Livro,
 )
 from jogo.itens.pocoes import (
+    PilhaDePocoes,
     ElixirDeVidaExtraGrande,
     ElixirDeVidaFraca,
     ElixirDeVidaGrande,
@@ -70,42 +71,58 @@ class TestElixir(TestCase):
         self.mago2.status["vida"] = 30
 
     def test_elixir_recuperando_20_porcento_da_vida(self):
-        self.mago.inventario.append(ElixirDeVidaFraca())
+        elixir = ElixirDeVidaFraca()
+        pilha = PilhaDePocoes([elixir], elixir.nome)
+        self.mago.inventario.append(pilha)
         self.mago.consumir_pocoes()
         self.assertEqual(self.mago.status["vida"], 50)
 
     def test_elixir_recuperando_20_porcento_com_o_personagem_bot(self):
-        self.mago2.inventario.append(ElixirDeVidaFraca())
+        elixir = ElixirDeVidaFraca()
+        pilha = PilhaDePocoes([elixir], elixir.nome)
+        self.mago2.inventario.append(pilha)
         self.mago2.consumir_pocoes()
         self.assertEqual(self.mago2.status["vida"], 50)
 
     def test_elixir_recuperando_40_porcento_da_vida(self):
-        self.mago.inventario.append(ElixirDeVidaMedia())
+        elixir = ElixirDeVidaMedia()
+        pilha = PilhaDePocoes([elixir], elixir.nome)
+        self.mago.inventario.append(pilha)
         self.mago.consumir_pocoes()
         self.assertEqual(self.mago.status["vida"], 70)
 
     def test_elixir_recuperando_40_porcento_com_o_personagem_bot(self):
-        self.mago2.inventario.append(ElixirDeVidaMedia())
+        elixir = ElixirDeVidaMedia()
+        pilha = PilhaDePocoes([elixir], elixir.nome)
+        self.mago2.inventario.append(pilha)
         self.mago2.consumir_pocoes()
         self.assertEqual(self.mago2.status["vida"], 70)
 
     def test_elixir_recuperando_60_porcento_da_vida(self):
-        self.mago.inventario.append(ElixirDeVidaGrande())
+        elixir = ElixirDeVidaGrande()
+        pilha = PilhaDePocoes([elixir], elixir.nome)
+        self.mago.inventario.append(pilha)
         self.mago.consumir_pocoes()
         self.assertEqual(self.mago.status["vida"], 90)
 
     def test_elixir_recuperando_60_porcento_da_vida_com_personagem_bot(self):
-        self.mago2.inventario.append(ElixirDeVidaGrande())
+        elixir = ElixirDeVidaGrande()
+        pilha = PilhaDePocoes([elixir], elixir.nome)
+        self.mago2.inventario.append(pilha)
         self.mago2.consumir_pocoes()
         self.assertEqual(self.mago2.status["vida"], 90)
 
     def test_elixir_recuperando_80_porcento_da_vida(self):
-        self.mago.inventario.append(ElixirDeVidaExtraGrande())
+        elixir = ElixirDeVidaExtraGrande()
+        pilha = PilhaDePocoes([elixir], elixir.nome)
+        self.mago.inventario.append(pilha)
         self.mago.consumir_pocoes()
         self.assertEqual(self.mago.status["vida"], 100)
 
     def test_elixir_recuperando_80_porcento_da_vida_com_o_personagem_bot(self):
-        self.mago2.inventario.append(ElixirDeVidaExtraGrande())
+        elixir = ElixirDeVidaExtraGrande()
+        pilha = PilhaDePocoes([elixir], elixir.nome)
+        self.mago2.inventario.append(pilha)
         self.mago2.consumir_pocoes()
         self.assertEqual(self.mago2.status["vida"], 100)
 
@@ -2117,7 +2134,9 @@ class TestPersonagemDaMaisDanoComAumentoDeCriticoMonge(TestCase):
 class TestPersonagemConsumindoPocoes(TestCase):
     def setUp(self):
         self.personagem = Arqueiro("nome", True)
-        self.personagem.inventario.append(PocaoDeVidaMedia())
+        pocao = PocaoDeVidaMedia()
+        pilha = PilhaDePocoes([pocao], pocao.nome)
+        self.personagem.inventario.append(pilha)
 
     def test_personagem_nao_usando_pocoes_caso_vida_acima_de_30_porcento(self):
         self.personagem.status["vida"] = 31
@@ -2149,7 +2168,9 @@ class TestPersonagemConsumindoPocoesVida200(TestCase):
             "velo-movi": 1,
         }
         self.personagem = Arqueiro("nome", True, status=status)
-        self.personagem.inventario.append(PocaoDeVidaMedia())
+        pocao = PocaoDeVidaMedia()
+        pilha = PilhaDePocoes([pocao], pocao.nome)
+        self.personagem.inventario.append(pilha)
 
     # aqui precisa ser 62 e não 61 porque a porcentagem divide por inteiro
     def test_personagem_nao_usando_pocoes_caso_vida_acima_de_30_porcento(self):
@@ -2166,140 +2187,6 @@ class TestPersonagemConsumindoPocoesVida200(TestCase):
         self.personagem.status["vida"] = 59
         self.personagem.consumir_pocoes()
         self.assertEqual(self.personagem.status["vida"], 119)
-
-
-class TestPersonagemConsumindoPocoes2(TestCase):
-    def setUp(self):
-        self.personagem = Arqueiro("nome", True)
-        for _ in range(10):
-            self.personagem.inventario.append(PocaoDeVidaMedia())
-        for _ in range(10):
-            self.personagem.inventario.append(ElixirDeVidaMedia())
-        self.personagem.juntar_pocoes()
-
-    def test_inventario_do_personagem_contendo_somente_uma_pocao_e_um_elixir(
-        self,
-    ):
-        self.assertEqual(len(self.personagem.inventario), 2)
-        self.assertIsInstance(self.personagem.inventario[0], PocaoDeVidaMedia)
-        self.assertIsInstance(self.personagem.inventario[1], ElixirDeVidaMedia)
-
-    def test_consumindo_pocoes_retorna_numero_de_pocoes_igual_a_6(self):
-        pocao = self.personagem.inventario[0]
-        pocao.consumir(self.personagem.vida_maxima)
-        pocao.consumir(self.personagem.vida_maxima)
-        pocao.consumir(self.personagem.vida_maxima)
-        pocao.consumir(self.personagem.vida_maxima)
-        self.assertEqual(pocao.numero_de_pocoes, 6)
-
-    def test_consumir_remove_pocao_do_inventario(self):
-        pocao = self.personagem.inventario[0]
-        self.personagem.status["vida"] = 30
-        self.personagem.consumir_pocoes()
-        self.personagem.status["vida"] = 30
-        self.personagem.consumir_pocoes()
-        self.personagem.status["vida"] = 30
-        self.personagem.consumir_pocoes()
-        self.personagem.status["vida"] = 30
-        self.personagem.consumir_pocoes()
-        self.personagem.status["vida"] = 30
-        self.personagem.consumir_pocoes()
-        self.personagem.status["vida"] = 30
-        self.personagem.consumir_pocoes()
-        self.personagem.status["vida"] = 30
-        self.personagem.consumir_pocoes()
-        self.personagem.status["vida"] = 30
-        self.personagem.consumir_pocoes()
-        self.personagem.status["vida"] = 30
-        self.personagem.consumir_pocoes()
-        self.personagem.status["vida"] = 30
-        self.personagem.consumir_pocoes()
-        self.assertNotIn(pocao, self.personagem.inventario)
-
-    def test_consumir_remove_elixir_do_inventario(self):
-        self.personagem.inventario.pop(0)
-        pocao = self.personagem.inventario[0]
-        self.personagem.status["vida"] = 30
-        self.personagem.consumir_pocoes()
-        self.personagem.status["vida"] = 30
-        self.personagem.consumir_pocoes()
-        self.personagem.status["vida"] = 30
-        self.personagem.consumir_pocoes()
-        self.personagem.status["vida"] = 30
-        self.personagem.consumir_pocoes()
-        self.personagem.status["vida"] = 30
-        self.personagem.consumir_pocoes()
-        self.personagem.status["vida"] = 30
-        self.personagem.consumir_pocoes()
-        self.personagem.status["vida"] = 30
-        self.personagem.consumir_pocoes()
-        self.personagem.status["vida"] = 30
-        self.personagem.consumir_pocoes()
-        self.personagem.status["vida"] = 30
-        self.personagem.consumir_pocoes()
-        self.personagem.status["vida"] = 30
-        self.personagem.consumir_pocoes()
-        self.assertNotIn(pocao, self.personagem.inventario)
-
-    def test_juntar_pocoes_retorna_duas_pocoes_caso_pocoes_tenha_10_juntas_e_uma_solta(
-        self,
-    ):
-        self.personagem.inventario.append(PocaoDeVidaMedia())
-        self.personagem.juntar_pocoes()
-        pocao = self.personagem.inventario[0]
-        self.assertEqual(pocao.numero_de_pocoes, 10)
-        pocao = self.personagem.inventario[2]
-        self.assertEqual(pocao.numero_de_pocoes, 1)
-
-    def test_juntar_pocoes_retorna_duas_pocoes_caso_pocoes_tenha_10_juntas_e_6_solta(
-        self,
-    ):
-        for _ in range(6):
-            self.personagem.inventario.append(PocaoDeVidaMedia())
-        self.personagem.juntar_pocoes()
-        pocao = self.personagem.inventario[0]
-        self.assertEqual(pocao.numero_de_pocoes, 10)
-        pocao = self.personagem.inventario[2]
-        self.assertEqual(pocao.numero_de_pocoes, 6)
-
-    def test_juntar_pocoes_retorna_duas_pocoes_caso_pocoes_tenha_10_juntas_e_9_solta(
-        self,
-    ):
-        for _ in range(9):
-            self.personagem.inventario.append(PocaoDeVidaMedia())
-        self.personagem.juntar_pocoes()
-        pocao = self.personagem.inventario[0]
-        self.assertEqual(pocao.numero_de_pocoes, 10)
-        pocao = self.personagem.inventario[2]
-        self.assertEqual(pocao.numero_de_pocoes, 9)
-
-    def test_juntar_pocoes_retorna_3_pocoes_caso_pocoes_tenha_10_juntas_e_16_soltas(
-        self,
-    ):
-        for _ in range(16):
-            self.personagem.inventario.append(PocaoDeVidaMedia())
-        self.personagem.juntar_pocoes()
-        pocao = self.personagem.inventario[0]
-        self.assertEqual(pocao.numero_de_pocoes, 10)
-        pocao = self.personagem.inventario[2]
-        self.assertEqual(pocao.numero_de_pocoes, 10)
-        pocao = self.personagem.inventario[3]
-        self.assertEqual(pocao.numero_de_pocoes, 6)
-
-    def test_juntar_pocoes_retorna_1_pocao_caso_pocoes_tenha_9_soltas(self):
-        self.personagem.inventario = []
-        for _ in range(9):
-            self.personagem.inventario.append(PocaoDeVidaMedia())
-        self.personagem.juntar_pocoes()
-        pocao = self.personagem.inventario[0]
-        self.assertEqual(pocao.numero_de_pocoes, 9)
-
-    def test_juntar_pocoes_nao_gera_um_erro_caso_nao_tenha_pocoes_no_inventario(
-        self,
-    ):
-        self.personagem.inventario = []
-        self.personagem.juntar_pocoes()
-        self.assertEqual(self.personagem.inventario, [])
 
 
 # não precisa testar outras classes pois esse método é da classe Humano.

@@ -4,7 +4,7 @@ from time import sleep
 from unittest.mock import MagicMock
 
 from jogo.locais.areas_abertas import Floresta
-from jogo.locais.areas_fechadas import CovilDoArauto
+from jogo.locais.areas_fechadas import CovilDoArauto, Catatumbas
 from jogo.locais.habitaveis import Vilarejo
 from jogo.pets import SemPet
 from jogo.save import salvar_jogo
@@ -44,7 +44,7 @@ class Menu:
             f"{numero} - {texto}" for numero, texto in enumerate(texto2, 1)
         ]
         self._personagem = personagem
-        self._eventos_contador = Contador2(intervalo=4)
+        self._eventos_contador = Contador2(intervalo=3)
         self._evento_especial = False
 
     def ciclo(self):
@@ -432,23 +432,32 @@ class Menu:
 
     def eventos_especiais(self):
         if self._eventos_contador.usar and not bool(self._evento_especial):
-            self._evento_especial = choice(["arauto"])
+            self._evento_especial = choice(["Arauto", "Catatumbas"])
         elif not self._eventos_contador.usar and bool(self._evento_especial):
             self._evento_especial = False
         tela.limpar_tela()
         if bool(self._evento_especial):
             artigo = Artigo(self._evento_especial)
-            tela.imprimir(f"evento d{artigo} {self._evento_especial}\n")
-            tela.imprimir("deseja entrar no evento? [s/n]: ")
+            tela.imprimir(
+                f"evento d{artigo} {self._evento_especial}\n",
+                'cyan',
+            )
+            tela.imprimir("deseja entrar no evento? [s/n]: ", 'cyan')
             resposta = tela.obter_string()
             if resposta in ["s", "sim"]:
                 musica = "musicas/musica_combate1.ogg"
                 mixer.music.load(musica)
                 mixer.music.play()
-                covil = CovilDoArauto(self._personagem, self._personagem.level)
-                covil.explorar()
+                if self._evento_especial == "Arauto":
+                    local = CovilDoArauto(self._personagem, self._personagem.level)
+                elif self._evento_especial == "Catatumbas":
+                    local = Catatumbas(self._personagem, self._personagem.level)
+                local.explorar()
                 self._eventos_contador.acrescentar()
                 mixer.music.stop()
+        else:
+            tela.imprimir("não há eventos especiais no momento", 'cyan')
+            sleep(3)
 
 
 # TODO: colocar mais npcs com quests.
@@ -465,6 +474,6 @@ class Menu:
 # TODO: fazer quests onde o personagem precise interagir com 2 ou mais npcs.
 # TODO: implementar baús que dropam itens?
 # TODO: ter um companheiro na campanha? (não sei se tem como implementar isso)
-# TODO: trols, cavaleiros negros, esqueletos, catatumbas[areas abertas, ala a direita, tunel]
+# TODO: trols, cavaleiros negros, TemploDoCeifador, esqueletos, catatumbas[areas abertas, ala a direita, tunel]
 # TODO: implementar durabilidade nas armas?
 # TODO: sangramento por dano de armas ou mobs
