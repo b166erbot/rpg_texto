@@ -12,7 +12,7 @@ class PilhaDePocoes:
             raise Exception('Excedeu o valor máximo de poções')
 
     def retornar_pocao(self):
-        if len(self.pocoes) >= 0:
+        if len(self.pocoes) > 0:
             return self.pocoes.pop()
         else:
             return False

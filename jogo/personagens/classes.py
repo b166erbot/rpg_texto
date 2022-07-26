@@ -209,21 +209,21 @@ class Humano:
 
     def _dropar_pocoes(self) -> list:
         """Método que retorna uma poção caso você tenha."""
-        pilhas_de_pocoes = list(map(
-            lambda x: x.tipo == "Pilha de Poção",
+        pilhas_de_pocoes = list(filter(
+            lambda x: x.tipo == "Pilha de Poções",
             self.inventario
         ))
         pocao = False
         while bool(pilhas_de_pocoes):
-            pilha = self.inventario[0]
+            pilha = pilhas_de_pocoes[0]
             pocao = pilha.retornar_pocao()
             if not bool(pocao):
                 index = self.inventario.index(pilha)
                 self.inventario.pop(index)
             else:
                 break
-            pilhas_de_pocoes = list(map(
-                lambda x: x.tipo == "Pilha de Poção",
+            pilhas_de_pocoes = list(filter(
+                lambda x: x.tipo == "Pilha de Poções",
                 self.inventario
             ))
         return pocao

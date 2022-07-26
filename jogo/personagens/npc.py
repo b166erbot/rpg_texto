@@ -138,7 +138,7 @@ class Comerciante(Npc):
         if int(personagem.moedas[tipo_de_moeda]) >= preço:
             personagem.moedas[tipo_de_moeda] -= preço
             # ao comprar, guarda o item de qualquer forma.
-            itens = [copy(item) for item in range(quantidade)]
+            itens = [copy(item) for _ in range(quantidade)]
             if item.tipo == "Poções":
                 itens_cortados = chunk(itens, 10)
                 itens = [

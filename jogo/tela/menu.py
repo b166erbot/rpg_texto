@@ -139,26 +139,26 @@ class Menu:
 
     def equipar_equipamentos(self):
         """Método que equipa equipamentos do inventário do personagem."""
-        equipamentos = list(
+        equipamentos_equipados = list(
             filter(lambda x: x, self._personagem.equipamentos.values())
         )
         numero = self._obter_numero_equipamentos(
             "deseja equipar qual equipamento?: ",
-            equipamentos + self._personagem.inventario,
+            equipamentos_equipados + self._personagem.inventario,
         )
         while bool(numero):
             inventario = dict(
-                enumerate(equipamentos + self._personagem.inventario)
+                enumerate(equipamentos_equipados + self._personagem.inventario)
             )
             equipamento = inventario.get(int(numero))
             if bool(equipamento) and equipamento in self._personagem.inventario:
                 self._personagem.equipar(equipamento)
-            equipamentos = list(
+            equipamentos_equipados = list(
                 filter(lambda x: x, self._personagem.equipamentos.values())
             )
             numero = self._obter_numero_equipamentos(
                 "deseja equipar qual equipamento?: ",
-                equipamentos + self._personagem.inventario,
+                equipamentos_equipados + self._personagem.inventario,
             )
 
     def desequipar(self):
@@ -287,7 +287,7 @@ class Menu:
 
     def _primeira_vez(self):
         tela.limpar_tela()
-        pocoes = list(
+        pilha_de_pocoes = list(
             filter(
                 lambda x: x.nome in "poção de vida média",
                 self._personagem.inventario,
@@ -296,7 +296,7 @@ class Menu:
         condicoes = [
             self._personagem.level == 1,
             int(self._personagem.experiencia) == 0,
-            sum([pocao.numero_de_pocoes for pocao in pocoes]) < 15,
+            sum([len(pilha) for pilha in pilha_de_pocoes]) < 15,
         ]
         if all(condicoes):
             tela.imprimir(
