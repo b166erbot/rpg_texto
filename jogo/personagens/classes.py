@@ -239,6 +239,7 @@ class Humano:
             grupo = list(grupo)
             tamanho = len(grupo)
             while bool(grupo):
+                # aqui o combinations verifica qual combinação dá uma soma igual a 10
                 lista = [
                     combinations(grupo, numero)
                     for numero in range(2, len(grupo) + 1)
@@ -254,6 +255,13 @@ class Humano:
                             index = self.inventario.index(item)
                             self.inventario.pop(index)
                         self.inventario.append(grupo2)
+                grupo_de_10 = list(filter(lambda x: len(x) == 10, grupo))
+                for pilha in grupo_de_10:
+                    index = grupo.index(pilha)
+                    grupo.pop(index)
+                    index = self.inventario.index(pilha)
+                    self.inventario.pop(index)
+                    self.inventario.append(pilha)
                 if len(grupo) == tamanho:
                     grupo2 = reduce(lambda x, y: x.juntar_pilha(y), grupo)
                     for item in grupo:

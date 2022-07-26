@@ -98,5 +98,18 @@ class TestPilhaDePocao(TestCase):
         self.assertEqual(len(pilha9), 10)
         self.assertEqual(len(pilha10), 5)
     
+    def test_personagem_juntando_pilhas_caso_tenha_uma_pilha_com_10_e_uma_pilha_com_5(self):
+        pocoes = [PocaoDeVidaFraca() for _ in range(10)]
+        pocoes2 = [PocaoDeVidaFraca() for _ in range(5)]
+        pilha = PilhaDePocoes(pocoes, pocoes[0].nome)
+        pilha2 = PilhaDePocoes(pocoes2, pocoes2[0].nome)
+        self.personagem.inventario.append(pilha)
+        self.personagem.inventario.append(pilha2)
+        self.personagem.juntar_pocoes()
+        pilha3 = self.personagem.inventario[0]
+        pilha4 = self.personagem.inventario[1]
+        self.assertEqual(len(pilha3), 10)
+        self.assertEqual(len(pilha4), 5)
+    
     def test_personagem_nao_gerando_erro_caso_juntar_pilhas_for_chamado_sem_pilhas(self):
         self.personagem.juntar_pocoes()
