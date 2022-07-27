@@ -19,6 +19,8 @@ from jogo.itens.armas import (
     LuvasArauto,
     Machado,
     MachadoArauto,
+    CajadoDaFloresta,
+    CajadoVerdejanteArauto,
 )
 from jogo.itens.caixas import CaixaDraconica
 from jogo.itens.item_secundario import Adaga as AdagaSecundaria
@@ -28,6 +30,7 @@ from jogo.itens.item_secundario import (
     Buckler,
     Escudo,
     Livro,
+    EscudoDeTroncoDeArvore,
 )
 from jogo.itens.quest import ItemQuest
 from jogo.itens.vestes import (
@@ -47,6 +50,7 @@ from jogo.personagens.classes import (
     Assassino,
     Clerigo,
     Monge,
+    Druida,
 )
 from jogo.personagens.monstros import (
     Arauto,
@@ -106,6 +110,11 @@ class TestMonstroDropandoItensCorretamenteItensSecundarios(TestCase):
         choice.return_value = Escudo
         self.monstro.sortear_drops(self.personagem)
         self.assertIsInstance(self.personagem.inventario[0], Escudo)
+    
+    def test_sortear_drops_retorna_escudo_de_tronco_de_arvore(self, randint, choice, *_):
+        choice.return_value = EscudoDeTroncoDeArvore
+        self.monstro.sortear_drops(self.personagem)
+        self.assertIsInstance(self.personagem.inventario[0], EscudoDeTroncoDeArvore)
 
 
 @mock.patch("jogo.personagens.monstros.tela")
@@ -171,6 +180,11 @@ class TestMonstroDropandoItensCorretamenteArmasPrincipais(TestCase):
         choice.return_value = AdornoDeArma
         self.monstro.sortear_drops(self.personagem)
         self.assertIsInstance(self.personagem.inventario[0], AdornoDeArma)
+    
+    def test_sortear_drops_retorna_cajado_da_floresta(self, randint, choice, *_):
+        choice.return_value = CajadoDaFloresta
+        self.monstro.sortear_drops(self.personagem)
+        self.assertIsInstance(self.personagem.inventario[0], CajadoDaFloresta)
 
 
 @mock.patch("jogo.personagens.monstros.tela")
@@ -499,6 +513,11 @@ class TestBossDropandoItensCorretamenteItensSecundarios(TestCase):
         choice.return_value = Escudo
         self.monstro.sortear_drops(self.personagem)
         self.assertIsInstance(self.personagem.inventario[0], Escudo)
+    
+    def test_sortear_drops_retorna_escudo_de_tronco_de_arvore(self, randint, choice, *_):
+        choice.return_value = EscudoDeTroncoDeArvore
+        self.monstro.sortear_drops(self.personagem)
+        self.assertIsInstance(self.personagem.inventario[0], EscudoDeTroncoDeArvore)
 
 
 @mock.patch("jogo.personagens.monstros.tela")
@@ -564,6 +583,11 @@ class TestBossDropandoItensCorretamenteItensPrincipais(TestCase):
         choice.return_value = AdornoDeArma
         self.monstro.sortear_drops(self.personagem)
         self.assertIsInstance(self.personagem.inventario[0], AdornoDeArma)
+    
+    def test_sortear_drops_retorna_cajado_da_floresta(self, randint, choice, *_):
+        choice.return_value = CajadoDaFloresta
+        self.monstro.sortear_drops(self.personagem)
+        self.assertIsInstance(self.personagem.inventario[0], CajadoDaFloresta)
 
 
 @mock.patch("jogo.personagens.monstros.tela")
@@ -607,6 +631,11 @@ class TestBossDropandoItensCorretamenteItensPrincipaisArauto(TestCase):
         personagem = Monge("nome", True)
         self.monstro.sortear_drops(personagem)
         self.assertIsInstance(personagem.inventario[0], (LuvasArauto, BotasArauto))
+    
+    def test_sortear_drops_retorna_cajado_verdejante(self, randint, *_):
+        personagem = Druida("nome", True)
+        self.monstro.sortear_drops(personagem)
+        self.assertIsInstance(personagem.inventario[0], CajadoVerdejanteArauto)
 
 
 @mock.patch("jogo.personagens.monstros.tela")
