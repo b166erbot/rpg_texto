@@ -770,5 +770,59 @@ class Monge(Humano):
         self.atualizar_status()
 
 
-# druida?
+class Druida(Humano):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        habilidades = [self.invocando_galhos_do_chao, self.grito_da_floresta]
+        self.habilidades_nomes = [
+            "invocando_galhos_do_chão", "grito_da_floresta"
+        ]
+        self.habilidades = {str(x): y for x, y in enumerate(habilidades, 1)}
+        self.classe = "Druida"
+
+    def invocando_galhos_do_chao(self, other):
+        """Método que ataca o oponente."""
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano = (5 * self.aumento_dano_critico * self.level) + self.status[
+                "dano"
+            ]
+        else:
+            dano = 5 * self.level + self.status["dano"]
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        other.status["vida"] -= dano - subtrair_dano
+
+    def grito_da_floresta(self, other):
+        """Método que ataca o oponente."""
+        if randint(1, 100) <= self.porcentagem_critico:
+            dano = (10 * self.aumento_dano_critico * self.level) + self.status[
+                "dano"
+            ]
+        else:
+            dano = 10 * self.level + self.status["dano"]
+        subtrair_dano = regra_3(100, dano, other.porcentagem_armadura)
+        other.status["vida"] -= dano - subtrair_dano
+
+    def consumir_magia_stamina(self):
+        """Método que consome a magia ou stamina."""
+        if self.status["magia"] >= 20:
+            self.status["magia"] -= 20
+            return True
+        return False
+
+    def equipar(self, equipamento):
+        """Método que equipa um equipamento."""
+        if equipamento.classe in ["Todos", "Druida"]:
+            # tira o equipamento do inventario
+            index = self.inventario.index(equipamento)
+            self.inventario.pop(index)
+            # se tiver equipamento equipado, mova-o para o inventario
+            if bool(self.equipamentos[equipamento.tipo_equipar]):
+                self.inventario.append(
+                    self.equipamentos[equipamento.tipo_equipar]
+                )
+            # equipa o equipamento
+            self.equipamentos[equipamento.tipo_equipar] = equipamento
+        self.atualizar_status()
+
+
 # dual blade?

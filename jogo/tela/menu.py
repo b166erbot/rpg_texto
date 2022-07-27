@@ -50,7 +50,6 @@ class Menu:
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""
         musicas = ["musicas/musica1.ogg", "musicas/musica2.mp3"]
-        musicas = [item for item in musicas]
         mixer.music.load(choice(musicas))
         mixer.music.play()
         forma = f"{formas[227]} {{}} {formas[228]}"

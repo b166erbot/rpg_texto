@@ -23,6 +23,7 @@ from jogo.personagens.classes import (
     Guerreiro,
     Mago,
     Monge,
+    Druida,
 )
 from jogo.personagens.npc import (
     Banqueiro,
@@ -142,7 +143,15 @@ class JogoController:
             tela.limpar_tela()
             tela.imprimir("qual é o nome do seu personagem?: ", "cyan")
             nome = tela.obter_string()
-        classes = [Arqueiro, Guerreiro, Mago, Assassino, Clerigo, Monge]
+        classes = [
+            Arqueiro,
+            Guerreiro,
+            Mago,
+            Assassino,
+            Clerigo,
+            Monge,
+            Druida,
+        ]
         classes_nomes = [
             "Arqueiro",
             "Guerreiro",
@@ -150,6 +159,7 @@ class JogoController:
             "Assassino",
             "Clerigo",
             "Monge",
+            "Druida",
         ]
         classes_dict = dict(zip(classes_nomes, classes))
         classes_dict2 = {str(x): y for x, y in enumerate(classes_nomes)}

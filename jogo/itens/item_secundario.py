@@ -162,4 +162,19 @@ class Adaga(ItemDeDano):
         super().__init__(*args, nome="Adaga sec.", **kwargs)
 
 
-itens_comuns = [Escudo, BolaDeCristal, Livro, Buckler, Aljava, Adaga]
+class EscudoDeTroncoDeArvore(ItemDeDefesa):
+    classe = "Druida"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, nome="Escudo Tronco Arvore", **kwargs)
+
+
+itens_comuns = [
+    Escudo,
+    BolaDeCristal,
+    Livro,
+    Buckler,
+    Aljava,
+    Adaga,
+    EscudoDeTroncoDeArvore,
+]

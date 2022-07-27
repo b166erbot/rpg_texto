@@ -123,6 +123,13 @@ class Adaga(Arma):
         super().__init__(*args, nome="Adaga", **kwargs)
 
 
+class CajadoDaFloresta(Arma):
+    classe = "Druida"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, nome="Cajado da Floresta", **kwargs)
+
+
 class ArmaMonge:
     # tipo precisa ficar aqui em cima
     tipo = "Arma"
@@ -473,6 +480,15 @@ class BotasArauto(ArmaArautoMonge):
         self.tipo = "Arma"
 
 
+class CajadoVerdejanteArauto(ArmaArauto):
+    classe = "Druida"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, nome="Cajado Verdejante Arauto", **kwargs)
+        self.tipo = "Arma"
+        self.tipo_equipar = "Arma"
+
+
 armas_comuns = [
     Espada_longa,
     Machado,
@@ -485,6 +501,7 @@ armas_comuns = [
     Luvas_de_ferro,
     Botas_de_ferro,
     AdornoDeArma,
+    CajadoDaFloresta,
 ]
 
 armas_arauto = [
@@ -494,4 +511,5 @@ armas_arauto = [
     AdagaArauto,
     LuvasArauto,
     BotasArauto,
+    CajadoVerdejanteArauto,
 ]

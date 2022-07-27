@@ -16,6 +16,7 @@ from jogo.itens.armas import (
     Espada_longa,
     Luvas_de_ferro,
     Machado,
+    CajadoDaFloresta,
 )
 from jogo.itens.item_secundario import Adaga as AdagaSecundaria
 from jogo.itens.item_secundario import (
@@ -24,6 +25,7 @@ from jogo.itens.item_secundario import (
     Buckler,
     Escudo,
     Livro,
+    EscudoDeTroncoDeArvore,
 )
 from jogo.itens.pocoes import curas
 from jogo.itens.vestes import (
@@ -147,6 +149,14 @@ class TestVenderArmasDaoPratas(TestCase):
         esperado = (5 + 5 + 5) * 8
         machado = Machado(dano=5, critico=5, aumento_critico=5)
         self.personagem.inventario.append(machado)
+        self.comerciante.interagir(self.personagem)
+        self.assertEqual(int(self.personagem.moedas["Pratas"]), 1500 + esperado)
+    
+    def test_vendendo_cajado_da_floresta_e_recebendo_dinheiro(self, tela, *_):
+        tela.obter_string.side_effect = ["2", "0", ""]
+        esperado = (5 + 5 + 5) * 8
+        cajado = CajadoDaFloresta(dano=5, critico=5, aumento_critico=5)
+        self.personagem.inventario.append(cajado)
         self.comerciante.interagir(self.personagem)
         self.assertEqual(int(self.personagem.moedas["Pratas"]), 1500 + esperado)
 
@@ -293,5 +303,13 @@ class TestVenderItemsSecundariosDaoPratas(TestCase):
         livro = Livro(dano=5, critico=5, aumento_critico=5)
         esperado = (5 + 5 + (5 // 2)) * 8
         self.personagem.inventario.append(livro)
+        self.comerciante.interagir(self.personagem)
+        self.assertEqual(int(self.personagem.moedas["Pratas"]), 1500 + esperado)
+    
+    def test_vendendo_escudo_de_tronco_de_arvore_e_recebendo_dinheiro(self, tela, *_):
+        tela.obter_string.side_effect = ["2", "0", ""]
+        escudo = EscudoDeTroncoDeArvore(vida=5, armadura=5, resistencia=5, bloqueio=80)
+        esperado = ((5 // 2) + 5 + 5) * 8
+        self.personagem.inventario.append(escudo)
         self.comerciante.interagir(self.personagem)
         self.assertEqual(int(self.personagem.moedas["Pratas"]), 1500 + esperado)

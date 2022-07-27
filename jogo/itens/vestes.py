@@ -105,7 +105,7 @@ class Luvas(Roupa):
 class Anel:
     tipo: str = "Anel"
     classe: str = "Todos"
-    nome = "Anel"
+    nome: str = "Anel"
 
     def __init__(
         self,
@@ -164,7 +164,7 @@ class Anel:
 class Amuleto:
     tipo: str = "Amuleto"
     classe: str = "Todos"
-    nome = "Amuleto"
+    nome: str = "Amuleto"
 
     def __init__(
         self,
@@ -306,7 +306,7 @@ class CalcaDraconica(RoupaDraconica):
 class AnelDoCeifador:
     tipo: str = "Anel"
     classe: str = "Todos"
-    nome = "Anel"
+    nome: str = "Anel"
 
     def __init__(
         self,

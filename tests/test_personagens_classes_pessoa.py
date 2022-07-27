@@ -20,6 +20,8 @@ from jogo.itens.armas import (
     LuvasArauto,
     Machado,
     MachadoArauto,
+    CajadoDaFloresta,
+    CajadoVerdejanteArauto,
 )
 from jogo.itens.item_secundario import Adaga as AdagaSecundaria
 from jogo.itens.item_secundario import (
@@ -28,6 +30,7 @@ from jogo.itens.item_secundario import (
     Buckler,
     Escudo,
     Livro,
+    EscudoDeTroncoDeArvore,
 )
 from jogo.itens.pocoes import (
     PilhaDePocoes,
@@ -58,6 +61,7 @@ from jogo.personagens.classes import (
     Guerreiro,
     Mago,
     Monge,
+    Druida,
 )
 from jogo.personagens.monstros import Tartaruga
 
@@ -1842,6 +1846,249 @@ class TestEquipandoEquipamentosOuNaoEmMongeItemSecundario(TestCase):
 class TestEquipandoEquipamentosOuNaoEmMongeVestes(TestCase):
     def setUp(self):
         self.personagem = Monge("nome", True)
+
+    def test_equipando_amuleto(self):
+        item = Amuleto(dano=5, vida=5, resistencia=5, armadura=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_equipando_anel(self):
+        item = Anel(dano=5, vida=5, resistencia=5, armadura=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_equipando_botas(self):
+        item = Botas(vida=5, resistencia=5, armadura=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_equipando_calca(self):
+        item = Calca(vida=5, resistencia=5, armadura=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_equipando_elmo(self):
+        item = Elmo(vida=5, resistencia=5, armadura=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_equipando_luvas(self):
+        item = Luvas(vida=5, resistencia=5, armadura=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_equipando_peitoral(self):
+        item = Peitoral(vida=5, resistencia=5, armadura=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_equipando_peitoral_draconico(self):
+        item = PeitoralDraconico(vida=5, resistencia=5, armadura=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_equipando_calca_draconico(self):
+        item = CalcaDraconica(vida=5, resistencia=5, armadura=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_equipando_elmo_draconico(self):
+        item = ElmoDraconico(vida=5, resistencia=5, armadura=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
+
+
+class TestEquipandoEquipamentosOuNaoEmDruidaArmas(TestCase):
+    def setUp(self):
+        self.personagem = Druida("nome", True)
+
+    def test_nao_equipando_arco_curto(self):
+        item = Arco_curto(dano=5, critico=5, aumento_critico=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_nao_equipando_arco_longo(self):
+        item = Arco_longo(dano=5, critico=5, aumento_critico=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_equipando_adorno_de_arma(self):
+        item = AdornoDeArma(critico=5, aumento_critico=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_nao_equipando_adaga(self):
+        item = Adaga(dano=5, critico=5, aumento_critico=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    # esse teste tem que ser alterado pois equipamento não equipa no tipo_equipar
+    def test_nao_equipando_botas_de_ferro(self):
+        item = Botas_de_ferro(
+            dano=5,
+            critico=5,
+            aumento_critico=5,
+            armadura=6,
+            resistencia=6,
+        )
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIsNot(self.personagem.equipamentos["Botas"], item)
+
+    def test_nao_equipando_cajado(self):
+        item = Cajado(dano=5, critico=5, aumento_critico=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_nao_equipando_cajado_negro(self):
+        item = Cajado_negro(dano=5, critico=5, aumento_critico=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_nao_equipando_espada_curta(self):
+        item = Espada_curta(dano=5, critico=5, aumento_critico=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_nao_equipando_espada_longa(self):
+        item = Espada_longa(dano=5, critico=5, aumento_critico=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    # esse teste tem que ser alterado pois equipamento não equipa no tipo_equipar
+    def test_nao_equipando_luvas_de_ferro(self):
+        item = Luvas_de_ferro(
+            dano=5,
+            critico=5,
+            aumento_critico=5,
+            armadura=6,
+            resistencia=6,
+        )
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIsNot(self.personagem.equipamentos["Luvas"], item)
+
+    def test_nao_equipando_machado(self):
+        item = Machado(dano=5, critico=5, aumento_critico=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_nao_equipando_luvas_arauto(self):
+        item = LuvasArauto(
+            dano=5,
+            critico=5,
+            aumento_critico=5,
+            armadura=5,
+            resistencia=5,
+        )
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIsNot(self.personagem.equipamentos["Luvas"], item)
+
+    def test_nao_equipando_botas_arauto(self):
+        item = BotasArauto(
+            dano=5,
+            critico=5,
+            aumento_critico=5,
+            armadura=5,
+            resistencia=5,
+        )
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIsNot(self.personagem.equipamentos["Botas"], item)
+    
+    def test_equipando_cajado_da_floresta(self):
+        item = CajadoDaFloresta(
+            dano = 5,
+            critico = 5,
+            aumento_critico = 5,
+        )
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
+    
+    def test_equipando_cajado_verdejante_arauto(self):
+        item = CajadoVerdejanteArauto(
+            dano = 5,
+            critico = 5,
+            aumento_critico = 5,
+        )
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
+
+
+class TestEquipandoEquipamentosOuNaoEmDruidaItemSecundario(TestCase):
+    def setUp(self):
+        self.personagem = Druida("nome", True)
+
+    def test_nao_equipando_aljava(self):
+        item = Aljava(dano=5, critico=5, aumento_critico=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_nao_equipando_buckler(self):
+        item = Buckler(vida=5, armadura=5, resistencia=5, bloqueio=80)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_nao_equipando_adaga_secundaria(self):
+        item = AdagaSecundaria(dano=5, critico=5, aumento_critico=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_nao_equipando_bola_de_cristal(self):
+        item = BolaDeCristal(vida=5, armadura=5, resistencia=5, bloqueio=80)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_nao_equipando_escudo(self):
+        item = Escudo(vida=5, armadura=5, resistencia=5, bloqueio=80)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
+
+    def test_nao_equipando_livro(self):
+        item = Livro(dano=5, critico=5, aumento_critico=5)
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
+    
+    def test_equipando_escudo_de_tronco_de_arvore(self):
+        item = EscudoDeTroncoDeArvore(
+            vida=5, armadura=5, resistencia=5, bloqueio=80
+        )
+        self.personagem.inventario.append(item)
+        self.personagem.equipar(item)
+        self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
+
+
+class TestEquipandoEquipamentosOuNaoEmDruidaVestes(TestCase):
+    def setUp(self):
+        self.personagem = Druida("nome", True)
 
     def test_equipando_amuleto(self):
         item = Amuleto(dano=5, vida=5, resistencia=5, armadura=5)
