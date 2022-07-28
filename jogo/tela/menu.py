@@ -4,17 +4,16 @@ from time import sleep
 from unittest.mock import MagicMock
 
 from jogo.locais.areas_abertas import Floresta
-from jogo.locais.areas_fechadas import CovilDoArauto, Catatumbas
+from jogo.locais.areas_fechadas import Catatumbas, CovilDoArauto
 from jogo.locais.habitaveis import Vilarejo
 from jogo.pets import SemPet
 from jogo.save import salvar_jogo
 from jogo.tela.imprimir import Imprimir, formas
-from jogo.utils import Artigo, Contador2, chunk
+from jogo.utils import Artigo, chunk
 
 # Silenciar o pygame para não imprimir nada na tela
 sys.stdout = MagicMock()
 from pygame import mixer
-
 sys.stdout = sys.__stdout__
 
 
@@ -23,7 +22,7 @@ tela = Imprimir()
 
 
 class Menu:
-    def __init__(self, personagem, nome_jogo: str):
+    def __init__(self, personagem, nome_jogo: str, contador):
         self._nome_jogo = nome_jogo
         texto = ["O que deseja fazer?"]
         texto2 = [
@@ -44,7 +43,7 @@ class Menu:
             f"{numero} - {texto}" for numero, texto in enumerate(texto2, 1)
         ]
         self._personagem = personagem
-        self._eventos_contador = Contador2(intervalo=3)
+        self._eventos_contador = contador
         self._evento_especial = False
 
     def ciclo(self):
@@ -75,7 +74,6 @@ class Menu:
                     continuar = self._primeira_vez()
                     if continuar:
                         self.floresta()
-                        self._eventos_contador.acrescentar()
                     mixer.music.load(choice(musicas))
                     mixer.music.play()
                 case 2:
@@ -130,7 +128,12 @@ class Menu:
                     mixer.music.play()
                 case 11:
                     npcs = filter(lambda x: x.salvar, self._npcs)
-                    salvar_jogo(self._personagem, npcs, self._nome_jogo)
+                    salvar_jogo(
+                        self._personagem,
+                        npcs,
+                        self._eventos_contador,
+                        self._nome_jogo,
+                    )
                     tela.imprimir(f"jogo salvo {formas[959]}", "cyan")
                     sleep(3)
                 case 12:
@@ -204,6 +207,7 @@ class Menu:
             floresta = nomes_florestas_dict[int(numero)]
             floresta = Floresta(floresta, self._personagem, numero)
             floresta.explorar()
+            self._eventos_contador.acrescentar()
             self._personagem.recuperar_magia_stamina_cem_porcento()
             self._personagem.ressucitar()
             mixer.music.stop()
@@ -439,23 +443,25 @@ class Menu:
             artigo = Artigo(self._evento_especial)
             tela.imprimir(
                 f"evento d{artigo} {self._evento_especial}\n",
-                'cyan',
+                "cyan",
             )
-            tela.imprimir("deseja entrar no evento? [s/n]: ", 'cyan')
+            tela.imprimir("deseja entrar no evento? [s/n]: ", "cyan")
             resposta = tela.obter_string()
             if resposta in ["s", "sim"]:
                 musica = "musicas/musica_combate1.ogg"
                 mixer.music.load(musica)
                 mixer.music.play()
                 if self._evento_especial == "Arauto":
-                    local = CovilDoArauto(self._personagem, self._personagem.level)
+                    local = CovilDoArauto(
+                        self._personagem, self._personagem.level
+                    )
                 elif self._evento_especial == "Catatumbas":
                     local = Catatumbas(self._personagem, self._personagem.level)
                 local.explorar()
                 self._eventos_contador.acrescentar()
                 mixer.music.stop()
         else:
-            tela.imprimir("não há eventos especiais no momento", 'cyan')
+            tela.imprimir("não há eventos especiais no momento", "cyan")
             sleep(3)
 
 

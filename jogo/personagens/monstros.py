@@ -3,16 +3,11 @@ from collections import Counter
 from random import choice, randint
 from time import sleep as sleep2
 
-from jogo.itens.armas import (
-    armas_arauto,
-    CajadoArauto,
-    armas_comuns,
-)
-from jogo.itens.vestes import AnelDoCeifador
+from jogo.itens.armas import CajadoArauto, armas_arauto, armas_comuns
 from jogo.itens.caixas import CaixaDraconica
 from jogo.itens.item_secundario import itens_comuns
 from jogo.itens.quest import ItemQuest
-from jogo.itens.vestes import roupas_comuns
+from jogo.itens.vestes import AnelDoCeifador, roupas_comuns
 from jogo.tela.imprimir import Imprimir, efeito_digitando, formatar_status
 from jogo.utils import Contador, arrumar_porcentagem, menor_numero, regra_3
 
@@ -191,9 +186,7 @@ class Monstro:
                     "Inventario cheio.\n"
                 )
                 sleep2(3)
-        personagem.moedas["Pratas"] += randint(
-            30 * self.level, 50 * self.level
-        )
+        personagem.moedas["Pratas"] += randint(30 * self.level, 50 * self.level)
 
     def sortear_drops_quest(self, personagem):
         """Método que dá itens de quests para o personagem."""
@@ -741,7 +734,7 @@ class Arauto(Boss):
         self.drops = {item.classe: [] for item in armas_arauto}
         for item in armas_arauto:
             self.drops[item.classe].append(item)
-        self.drops['Clerigo'] = [CajadoArauto]
+        self.drops["Clerigo"] = [CajadoArauto]
 
     def esmagar(self, other):
         """Método que ataca o personagem."""

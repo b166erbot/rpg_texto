@@ -9,7 +9,7 @@ class PilhaDePocoes:
         self.classe = "Pilha de Poções"
         self.numero_maximo_pocoes = 10
         if len(pocoes) > 10:
-            raise Exception('Excedeu o valor máximo de poções')
+            raise Exception("Excedeu o valor máximo de poções")
 
     def retornar_pocao(self):
         if len(self.pocoes) > 0:
@@ -20,11 +20,7 @@ class PilhaDePocoes:
     def e_possivel_juntar(self, other):
         condicoes = [
             self.tipo == other.tipo,
-            (
-                len(self.pocoes)
-                + len(other.pocoes)
-                <= self.numero_maximo_pocoes
-            )
+            (len(self.pocoes) + len(other.pocoes) <= self.numero_maximo_pocoes),
         ]
         if all(condicoes):
             return True
@@ -34,23 +30,21 @@ class PilhaDePocoes:
     def juntar_pilha(self, other):
         pocoes = self.pocoes + other.pocoes
         return self.__class__(pocoes, self.nome)
-    
+
     def e_possivel_adicionar_pocao(self):
         if len(self.pocoes) < self.numero_maximo_pocoes:
             return True
         else:
             return False
-    
+
     def adicionar_pocao(self, pocao):
         self.pocoes.append(pocao)
-    
+
     def __len__(self):
         return len(self.pocoes)
 
     def __repr__(self):
-        retorno = (
-            f"pilha de poções({self.nome}, {len(self)})"
-        )
+        retorno = f"pilha de poções({self.nome}, {len(self)})"
         return retorno
 
 
@@ -63,10 +57,7 @@ class PocaoDeCura:
         self.consumida = False
 
     def __repr__(self):
-        retorno = (
-            f"{self.nome.capitalize()} - "
-            f"Cura: {self.pontos_cura}"
-        )
+        retorno = f"{self.nome.capitalize()} - " f"Cura: {self.pontos_cura}"
         return retorno
 
     def consumir(self, vida_maxima):
@@ -123,10 +114,7 @@ class Elixir:
         self.consumida = False
 
     def __repr__(self):
-        retorno = (
-            f"{self.nome.capitalize()} - "
-            f"Cura: {self.porcentagem}%"
-        )
+        retorno = f"{self.nome.capitalize()} - " f"Cura: {self.porcentagem}%"
         return retorno
 
     def consumir(self, vida_maxima):

@@ -2,11 +2,11 @@ from copy import copy
 from time import sleep
 
 from jogo.itens.moedas import Draconica
+from jogo.itens.pocoes import PilhaDePocoes
 from jogo.itens.quest import ItemQuest
 from jogo.pets import SemPet
 from jogo.tela.imprimir import Imprimir
 from jogo.utils import Artigo, chunk
-from jogo.itens.pocoes import PilhaDePocoes
 
 tela = Imprimir()
 

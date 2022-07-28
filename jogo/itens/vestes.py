@@ -330,7 +330,9 @@ class AnelDoCeifador:
         self.bonus = [Atributo("dano", 5, "porcentagem", 1)]
         self.conjunto = "item comum"
         self.tipo_equipar = "Anel"
-        self.preco = Draconica((dano + (vida // 2) + resistencia + armadura) * 8)
+        self.preco = Draconica(
+            (dano + (vida // 2) + resistencia + armadura) * 8
+        )
         self.glifos = Glifos(500 * level)
         self.level = level
         leveis = [300, 400, 500, 600, 700, 800, 900, 1000]

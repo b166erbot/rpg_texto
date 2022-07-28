@@ -1,6 +1,6 @@
 from collections import Counter
-from unittest import TestCase, mock
 from copy import copy
+from unittest import TestCase, mock
 
 from jogo.itens.armas import (
     Adaga,
@@ -14,14 +14,14 @@ from jogo.itens.armas import (
     Cajado,
     Cajado_negro,
     CajadoArauto,
+    CajadoDaFloresta,
+    CajadoVerdejanteArauto,
     Espada_curta,
     Espada_longa,
     Luvas_de_ferro,
     LuvasArauto,
     Machado,
     MachadoArauto,
-    CajadoDaFloresta,
-    CajadoVerdejanteArauto,
 )
 from jogo.itens.item_secundario import Adaga as AdagaSecundaria
 from jogo.itens.item_secundario import (
@@ -29,15 +29,15 @@ from jogo.itens.item_secundario import (
     BolaDeCristal,
     Buckler,
     Escudo,
-    Livro,
     EscudoDeTroncoDeArvore,
+    Livro,
 )
 from jogo.itens.pocoes import (
-    PilhaDePocoes,
     ElixirDeVidaExtraGrande,
     ElixirDeVidaFraca,
     ElixirDeVidaGrande,
     ElixirDeVidaMedia,
+    PilhaDePocoes,
     PocaoDeVidaMedia,
 )
 from jogo.itens.vestes import (
@@ -58,10 +58,10 @@ from jogo.personagens.classes import (
     Arqueiro,
     Assassino,
     Clerigo,
+    Druida,
     Guerreiro,
     Mago,
     Monge,
-    Druida,
 )
 from jogo.personagens.monstros import Tartaruga
 
@@ -2015,22 +2015,22 @@ class TestEquipandoEquipamentosOuNaoEmDruidaArmas(TestCase):
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIsNot(self.personagem.equipamentos["Botas"], item)
-    
+
     def test_equipando_cajado_da_floresta(self):
         item = CajadoDaFloresta(
-            dano = 5,
-            critico = 5,
-            aumento_critico = 5,
+            dano=5,
+            critico=5,
+            aumento_critico=5,
         )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
-    
+
     def test_equipando_cajado_verdejante_arauto(self):
         item = CajadoVerdejanteArauto(
-            dano = 5,
-            critico = 5,
-            aumento_critico = 5,
+            dano=5,
+            critico=5,
+            aumento_critico=5,
         )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
@@ -2076,7 +2076,7 @@ class TestEquipandoEquipamentosOuNaoEmDruidaItemSecundario(TestCase):
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIsNot(self.personagem.equipamentos[item.tipo_equipar], item)
-    
+
     def test_equipando_escudo_de_tronco_de_arvore(self):
         item = EscudoDeTroncoDeArvore(
             vida=5, armadura=5, resistencia=5, bloqueio=80

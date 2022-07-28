@@ -1,10 +1,10 @@
 from asyncio import sleep
 from collections import Counter
 from copy import copy
-from itertools import groupby, combinations, chain
+from functools import reduce
+from itertools import chain, combinations, groupby
 from random import randint
 from time import sleep as sleep2
-from functools import reduce
 
 from jogo.itens.itens import CalcularBonus, SemItemEquipado
 from jogo.itens.moedas import Draconica, Glifos, Pratas
@@ -209,10 +209,9 @@ class Humano:
 
     def _dropar_pocoes(self) -> list:
         """Método que retorna uma poção caso você tenha."""
-        pilhas_de_pocoes = list(filter(
-            lambda x: x.tipo == "Pilha de Poções",
-            self.inventario
-        ))
+        pilhas_de_pocoes = list(
+            filter(lambda x: x.tipo == "Pilha de Poções", self.inventario)
+        )
         pocao = False
         while bool(pilhas_de_pocoes):
             pilha = pilhas_de_pocoes[0]
@@ -222,10 +221,13 @@ class Humano:
                 self.inventario.pop(index)
             else:
                 break
-            pilhas_de_pocoes = list(filter(
-                lambda x: x.tipo == "Pilha de Poções",
-                self.inventario
-            ))
+            pilhas_de_pocoes = list(
+                filter(lambda x: x.tipo == "Pilha de Poções", self.inventario)
+            )
+        if bool(pilhas_de_pocoes):
+            if len(pilha) == 0:
+                index = self.inventario.index(pilha)
+                self.inventario.pop(index)
         return pocao
 
     def juntar_pocoes(self):
@@ -775,7 +777,8 @@ class Druida(Humano):
         super().__init__(*args, **kwargs)
         habilidades = [self.invocando_galhos_do_chao, self.grito_da_floresta]
         self.habilidades_nomes = [
-            "invocando_galhos_do_chão", "grito_da_floresta"
+            "invocando_galhos_do_chão",
+            "grito_da_floresta",
         ]
         self.habilidades = {str(x): y for x, y in enumerate(habilidades, 1)}
         self.classe = "Druida"

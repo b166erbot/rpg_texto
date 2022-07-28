@@ -1,14 +1,14 @@
+from itertools import chain
 from random import choice, randint
 from time import sleep
-from itertools import chain
 
 from jogo.assincrono.combate import combate
 from jogo.personagens.monstros import (
     Arauto,
-    DemonioDoCovil,
-    FilhoDoArauto,
-    Esqueleto,
     Ceifador,
+    DemonioDoCovil,
+    Esqueleto,
+    FilhoDoArauto,
     bosses_da_floresta,
     monstros_da_floresta,
 )
@@ -177,7 +177,7 @@ class CovilDoArauto:
         boss = Arauto(self.level, status)
         tela.limpar_tela()
         tela.imprimir("Boss encontrado!\n", "vermelho")
-        tela.imprimir('Chance de dropar item raro\n')
+        tela.imprimir("Chance de dropar item raro\n")
         tela.imprimir(str(boss) + "\n")
         lutar = self._lutar_ou_fugir()
         if lutar:
@@ -274,7 +274,7 @@ class Catatumbas:
         boss = Ceifador(self.level, status)
         tela.limpar_tela()
         tela.imprimir("Boss encontrado!\n", "vermelho")
-        tela.imprimir('Chance de dropar item raro\n')
+        tela.imprimir("Chance de dropar item raro\n")
         tela.imprimir(str(boss) + "\n")
         lutar = self._lutar_ou_fugir()
         if lutar:

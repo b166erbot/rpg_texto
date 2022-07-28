@@ -12,11 +12,11 @@ from jogo.itens.armas import (
     Botas_de_ferro,
     Cajado,
     Cajado_negro,
+    CajadoDaFloresta,
     Espada_curta,
     Espada_longa,
     Luvas_de_ferro,
     Machado,
-    CajadoDaFloresta,
 )
 from jogo.itens.item_secundario import Adaga as AdagaSecundaria
 from jogo.itens.item_secundario import (
@@ -24,8 +24,8 @@ from jogo.itens.item_secundario import (
     BolaDeCristal,
     Buckler,
     Escudo,
-    Livro,
     EscudoDeTroncoDeArvore,
+    Livro,
 )
 from jogo.itens.pocoes import curas
 from jogo.itens.vestes import (
@@ -151,7 +151,7 @@ class TestVenderArmasDaoPratas(TestCase):
         self.personagem.inventario.append(machado)
         self.comerciante.interagir(self.personagem)
         self.assertEqual(int(self.personagem.moedas["Pratas"]), 1500 + esperado)
-    
+
     def test_vendendo_cajado_da_floresta_e_recebendo_dinheiro(self, tela, *_):
         tela.obter_string.side_effect = ["2", "0", ""]
         esperado = (5 + 5 + 5) * 8
@@ -305,10 +305,14 @@ class TestVenderItemsSecundariosDaoPratas(TestCase):
         self.personagem.inventario.append(livro)
         self.comerciante.interagir(self.personagem)
         self.assertEqual(int(self.personagem.moedas["Pratas"]), 1500 + esperado)
-    
-    def test_vendendo_escudo_de_tronco_de_arvore_e_recebendo_dinheiro(self, tela, *_):
+
+    def test_vendendo_escudo_de_tronco_de_arvore_e_recebendo_dinheiro(
+        self, tela, *_
+    ):
         tela.obter_string.side_effect = ["2", "0", ""]
-        escudo = EscudoDeTroncoDeArvore(vida=5, armadura=5, resistencia=5, bloqueio=80)
+        escudo = EscudoDeTroncoDeArvore(
+            vida=5, armadura=5, resistencia=5, bloqueio=80
+        )
         esperado = ((5 // 2) + 5 + 5) * 8
         self.personagem.inventario.append(escudo)
         self.comerciante.interagir(self.personagem)

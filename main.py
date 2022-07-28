@@ -20,10 +20,10 @@ from jogo.personagens.classes import (
     Arqueiro,
     Assassino,
     Clerigo,
+    Druida,
     Guerreiro,
     Mago,
     Monge,
-    Druida,
 )
 from jogo.personagens.npc import (
     Banqueiro,
@@ -36,6 +36,7 @@ from jogo.quests import quests_da_lorena, quests_do_eivor
 from jogo.save import carregar_jogo_tela, existe_saves, salvar_jogo, saves
 from jogo.tela.imprimir import Imprimir
 from jogo.tela.menu import Menu
+from jogo.utils import Contador2
 
 tela = Imprimir()
 
@@ -45,6 +46,7 @@ class JogoController:
         self.nomes = nomes
         self.personagem = None
         self.npcs = None
+        self.contador = None
         self.nome_do_jogo = ""
 
     def novo_jogo_saves(self):
@@ -75,7 +77,7 @@ class JogoController:
         if existe_saves():
             personagens = carregar_jogo_tela(self.nomes)
             tela.imprimir("jogo carregado", "cyan")
-            personagens_, nome_do_save = personagens
+            personagens_, self.contador, nome_do_save = personagens
             self.personagem, *self.npcs = personagens_
             self.nome_do_jogo = nome_do_save
             sleep(2)
@@ -105,7 +107,8 @@ class JogoController:
                 sleep(3)
         npcs = [azura, eivor, tavon]
         nome_jogo += ".pkl"
-        salvar_jogo(personagem, npcs, nome_jogo)
+        self.contador = Contador2(intervalo=3)
+        salvar_jogo(personagem, npcs, self.contador, nome_jogo)
         self.personagem = personagem
         self.npcs = npcs
         self.nome_do_jogo = nome_jogo
@@ -183,6 +186,9 @@ class JogoController:
     def retornar_nome_do_jogo(self):
         return self.nome_do_jogo
 
+    def retornar_contador(self):
+        return self.contador
+
 
 def main():
     nome_das_pessoas_que_tem_que_salvar = [
@@ -195,6 +201,7 @@ def main():
     jogo.novo_jogo_saves()
     personagem = jogo.retornar_personagem()
     azura, eivor, tavon = jogo.retornar_npcs()
+    contador = jogo.retornar_contador()
     nome_jogo = jogo.retornar_nome_do_jogo()
     bram = ComercianteItemQuest(
         "Bram", [Draconica], [ItemQuest("Coração de Dragão")]
@@ -202,7 +209,7 @@ def main():
     hagar = Ferreiro("Hagar")
     itens = curas + roupas_draconicas
     farkas = Comerciante("Farkas", itens)
-    menu = Menu(personagem, nome_jogo)
+    menu = Menu(personagem, nome_jogo, contador)
     menu.obter_npcs([azura, farkas, tavon, eivor, bram, hagar])
     menu.ciclo()
 

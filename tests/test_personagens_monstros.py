@@ -13,14 +13,14 @@ from jogo.itens.armas import (
     Cajado,
     Cajado_negro,
     CajadoArauto,
+    CajadoDaFloresta,
+    CajadoVerdejanteArauto,
     Espada_curta,
     Espada_longa,
     Luvas_de_ferro,
     LuvasArauto,
     Machado,
     MachadoArauto,
-    CajadoDaFloresta,
-    CajadoVerdejanteArauto,
 )
 from jogo.itens.caixas import CaixaDraconica
 from jogo.itens.item_secundario import Adaga as AdagaSecundaria
@@ -29,37 +29,38 @@ from jogo.itens.item_secundario import (
     BolaDeCristal,
     Buckler,
     Escudo,
-    Livro,
     EscudoDeTroncoDeArvore,
+    Livro,
 )
 from jogo.itens.quest import ItemQuest
 from jogo.itens.vestes import (
     Amuleto,
     Anel,
+    AnelDoCeifador,
     Botas,
     Calca,
     Elmo,
     Luvas,
     Peitoral,
-    AnelDoCeifador,
 )
 from jogo.personagens.classes import (
     Arqueiro,
-    Guerreiro,
-    Mago,
     Assassino,
     Clerigo,
-    Monge,
     Druida,
+    Guerreiro,
+    Mago,
+    Monge,
 )
 from jogo.personagens.monstros import (
     Arauto,
     ArvoreDeku,
     Camaleao,
+    Ceifador,
     DemonioDoCovil,
     Dragao,
-    FilhoDoArauto,
     Esqueleto,
+    FilhoDoArauto,
     Mico,
     Monstro,
     Sapo,
@@ -67,7 +68,6 @@ from jogo.personagens.monstros import (
     Tamandua,
     Tartaruga,
     Topera,
-    Ceifador,
 )
 
 
@@ -110,11 +110,15 @@ class TestMonstroDropandoItensCorretamenteItensSecundarios(TestCase):
         choice.return_value = Escudo
         self.monstro.sortear_drops(self.personagem)
         self.assertIsInstance(self.personagem.inventario[0], Escudo)
-    
-    def test_sortear_drops_retorna_escudo_de_tronco_de_arvore(self, randint, choice, *_):
+
+    def test_sortear_drops_retorna_escudo_de_tronco_de_arvore(
+        self, randint, choice, *_
+    ):
         choice.return_value = EscudoDeTroncoDeArvore
         self.monstro.sortear_drops(self.personagem)
-        self.assertIsInstance(self.personagem.inventario[0], EscudoDeTroncoDeArvore)
+        self.assertIsInstance(
+            self.personagem.inventario[0], EscudoDeTroncoDeArvore
+        )
 
 
 @mock.patch("jogo.personagens.monstros.tela")
@@ -180,8 +184,10 @@ class TestMonstroDropandoItensCorretamenteArmasPrincipais(TestCase):
         choice.return_value = AdornoDeArma
         self.monstro.sortear_drops(self.personagem)
         self.assertIsInstance(self.personagem.inventario[0], AdornoDeArma)
-    
-    def test_sortear_drops_retorna_cajado_da_floresta(self, randint, choice, *_):
+
+    def test_sortear_drops_retorna_cajado_da_floresta(
+        self, randint, choice, *_
+    ):
         choice.return_value = CajadoDaFloresta
         self.monstro.sortear_drops(self.personagem)
         self.assertIsInstance(self.personagem.inventario[0], CajadoDaFloresta)
@@ -513,11 +519,15 @@ class TestBossDropandoItensCorretamenteItensSecundarios(TestCase):
         choice.return_value = Escudo
         self.monstro.sortear_drops(self.personagem)
         self.assertIsInstance(self.personagem.inventario[0], Escudo)
-    
-    def test_sortear_drops_retorna_escudo_de_tronco_de_arvore(self, randint, choice, *_):
+
+    def test_sortear_drops_retorna_escudo_de_tronco_de_arvore(
+        self, randint, choice, *_
+    ):
         choice.return_value = EscudoDeTroncoDeArvore
         self.monstro.sortear_drops(self.personagem)
-        self.assertIsInstance(self.personagem.inventario[0], EscudoDeTroncoDeArvore)
+        self.assertIsInstance(
+            self.personagem.inventario[0], EscudoDeTroncoDeArvore
+        )
 
 
 @mock.patch("jogo.personagens.monstros.tela")
@@ -583,8 +593,10 @@ class TestBossDropandoItensCorretamenteItensPrincipais(TestCase):
         choice.return_value = AdornoDeArma
         self.monstro.sortear_drops(self.personagem)
         self.assertIsInstance(self.personagem.inventario[0], AdornoDeArma)
-    
-    def test_sortear_drops_retorna_cajado_da_floresta(self, randint, choice, *_):
+
+    def test_sortear_drops_retorna_cajado_da_floresta(
+        self, randint, choice, *_
+    ):
         choice.return_value = CajadoDaFloresta
         self.monstro.sortear_drops(self.personagem)
         self.assertIsInstance(self.personagem.inventario[0], CajadoDaFloresta)
@@ -606,7 +618,7 @@ class TestBossDropandoItensCorretamenteItensPrincipaisArauto(TestCase):
         personagem = Mago("nome", True)
         self.monstro.sortear_drops(personagem)
         self.assertIsInstance(personagem.inventario[0], CajadoArauto)
-    
+
     def test_sortear_drops_retorna_cajado_clerigo(self, randint, *_):
         personagem = Clerigo("nome", True)
         self.monstro.sortear_drops(personagem)
@@ -625,13 +637,17 @@ class TestBossDropandoItensCorretamenteItensPrincipaisArauto(TestCase):
     def test_sortear_drops_retorna_luvas(self, randint, *_):
         personagem = Monge("nome", True)
         self.monstro.sortear_drops(personagem)
-        self.assertIsInstance(personagem.inventario[0], (LuvasArauto, BotasArauto))
+        self.assertIsInstance(
+            personagem.inventario[0], (LuvasArauto, BotasArauto)
+        )
 
     def test_sortear_drops_retorna_botas(self, randint, *_):
         personagem = Monge("nome", True)
         self.monstro.sortear_drops(personagem)
-        self.assertIsInstance(personagem.inventario[0], (LuvasArauto, BotasArauto))
-    
+        self.assertIsInstance(
+            personagem.inventario[0], (LuvasArauto, BotasArauto)
+        )
+
     def test_sortear_drops_retorna_cajado_verdejante(self, randint, *_):
         personagem = Druida("nome", True)
         self.monstro.sortear_drops(personagem)
@@ -1297,7 +1313,9 @@ class TestBloqueioDandoMenosDanoEsqueleto(TestCase):
         self.monstro.golpe_com_escudo(self.personagem)
         self.assertEqual(self.personagem.status["vida"], esperado)
 
-    def test_personagem_deve_receber_menos_dano_com_bloqueio_golpe_com_espada(self, *_):
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_golpe_com_espada(
+        self, *_
+    ):
         dano = 6
         esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
         self.monstro.golpe_com_espada(self.personagem)
@@ -1466,14 +1484,18 @@ class TestBloqueioDandoMenosDanoCeifador(TestCase):
         self.personagem.valor_de_bloqueio = 0.80
         self.monstro.porcentagem_critico = 0
 
-    def test_personagem_deve_receber_menos_dano_com_bloqueio_corte_com_foice(self, *_):
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_corte_com_foice(
+        self, *_
+    ):
         dano = 10
         # vida do monstro - (dano do personagem - porcentagem do bloqueio)
         esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
         self.monstro.corte_com_foice(self.personagem)
         self.assertEqual(self.personagem.status["vida"], esperado)
 
-    def test_personagem_deve_receber_menos_dano_com_bloqueio_invocando_fantasmas(self, *_):
+    def test_personagem_deve_receber_menos_dano_com_bloqueio_invocando_fantasmas(
+        self, *_
+    ):
         dano = 15
         esperado = 100 - (dano - (dano * self.personagem.valor_de_bloqueio))
         self.monstro.invocando_fantasmas(self.personagem)

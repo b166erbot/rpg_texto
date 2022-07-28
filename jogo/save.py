@@ -44,12 +44,14 @@ def carregar_jogo_tela(nomes: list[str]):
         resposta = tela.obter_string()
     return (
         [_carregar_jogo(nome, arquivos[resposta]) for nome in nomes],
+        _carregar_jogo("contador", arquivos[resposta]),
         arquivos[resposta],
     )
 
 
-def salvar_jogo(personagem, npcs, nome_jogo):
+def salvar_jogo(personagem, npcs, contador, nome_jogo):
     # tem que salvar com o nome de personagem pois fica fácil de recuperar com esse nome
     _salvar_jogo("Personagem", personagem, nome_jogo)
+    _salvar_jogo("contador", contador, nome_jogo)
     for npc in npcs:
         _salvar_jogo(npc.nome, npc, nome_jogo)
