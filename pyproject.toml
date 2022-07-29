@@ -6,7 +6,6 @@ authors = ["b166erobot <bernard0freitas@outlook.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-readchar = "2.0.1"
 pygame = "2.1.2"
 
 [tool.poetry.dev-dependencies]

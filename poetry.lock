@@ -269,14 +269,6 @@ future = "*"
 mando = ">=0.6,<0.7"
 
 [[package]]
-name = "readchar"
-version = "2.0.1"
-description = "Utilities to read single characters and key-strokes"
-category = "main"
-optional = false
-python-versions = "*"
-
-[[package]]
 name = "requests"
 version = "2.27.1"
 description = "Python HTTP for Humans."
@@ -334,7 +326,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "e872c29bfeb3df78779a69fa08911966bee0280ca82292c3a6f9fa85a3ca38d5"
+content-hash = "c4acf25607c965d809675ee0fb2ff804a04e5ee7f3bb07ca471fcf76730bef0e"
 
 [metadata.files]
 black = [
@@ -589,10 +581,6 @@ pyxdg = [
 radon = [
     {file = "radon-5.1.0-py2.py3-none-any.whl", hash = "sha256:fa74e018197f1fcb54578af0f675d8b8e2342bd8e0b72bef8197bc4c9e645f36"},
     {file = "radon-5.1.0.tar.gz", hash = "sha256:cb1d8752e5f862fb9e20d82b5f758cbc4fb1237c92c9a66450ea0ea7bf29aeee"},
-]
-readchar = [
-    {file = "readchar-2.0.1-py2-none-any.whl", hash = "sha256:ed00b7a49bb12f345319d9fa393f289f03670310ada2beb55e8c3f017c648f1e"},
-    {file = "readchar-2.0.1-py3-none-any.whl", hash = "sha256:3ac34aab28563bc895f73233d5c08b28f951ca190d5850b8d4bec973132a8dca"},
 ]
 requests = [
     {file = "requests-2.27.1-py2.py3-none-any.whl", hash = "sha256:f22fa1e554c9ddfd16e6e41ac79759e17be9e492b3587efa038054674760e72d"},
