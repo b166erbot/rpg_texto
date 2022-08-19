@@ -538,7 +538,7 @@ class Ferreiro(Npc):
     def interagir(self, personagem):
         """Método que interage com o personagem."""
         textos = [
-            "derreter arma",
+            "derreter equipamentos",
             "acrescentar glifos",
             "remover glifos",
         ]
@@ -671,7 +671,7 @@ class Ferreiro(Npc):
         for equipamento in personagem.equipamentos.values():
             if (
                 bool(equipamento)
-                and equipamento.glifos_level.valor_glifos() > 0
+                and equipamento.glifos_level.valor_atual() > 0
             ):
                 equipamentos.append(equipamento)
         equipamentos_ = list(
@@ -681,7 +681,7 @@ class Ferreiro(Npc):
             )
         )
         equipamentos_ = filter(
-            lambda x: x.glifos_level.valor_glifos() > 0, equipamentos_
+            lambda x: x.glifos_level.valor_atual() > 0, equipamentos_
         )
         equipamentos += equipamentos_
         if len(equipamentos) == 0:
@@ -703,7 +703,7 @@ class Ferreiro(Npc):
                 f"seus glifos: {personagem.moedas['Glifos']} "
                 f"suas pratas: {personagem.moedas['Pratas']}\n"
             )
-            valor = int(item.glifos_level.valor_glifos() * 0.30)
+            valor = int(item.glifos_level.valor_atual() * 0.30)
             tela.imprimir(
                 "tem certeza que deseja remover os glifos? "
                 f"Pratas {valor} [s/n]: "
@@ -723,7 +723,7 @@ class Ferreiro(Npc):
             for equipamento in personagem.equipamentos.values():
                 if (
                     bool(equipamento)
-                    and equipamento.glifos_level.valor_glifos() > 0
+                    and equipamento.glifos_level.valor_atual() > 0
                 ):
                     equipamentos.append(equipamento)
             equipamentos_ = list(
@@ -733,7 +733,7 @@ class Ferreiro(Npc):
                 )
             )
             equipamentos_ = filter(
-                lambda x: x.glifos_level.valor_glifos() > 0, equipamentos_
+                lambda x: x.glifos_level.valor_atual() > 0, equipamentos_
             )
             equipamentos += equipamentos_
             if len(equipamentos) == 0:

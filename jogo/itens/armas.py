@@ -484,7 +484,7 @@ class CajadoVerdejanteArauto(ArmaArauto):
     classe = "Druida"
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, nome="Cajado Verdejante Arauto", **kwargs)
+        super().__init__(*args, nome="Cajado V. Arauto", **kwargs)
         self.tipo = "Arma"
         self.tipo_equipar = "Arma"
 
