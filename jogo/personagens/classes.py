@@ -265,11 +265,12 @@ class Humano:
                     self.inventario.pop(index)
                     self.inventario.append(pilha)
                 if len(grupo) == tamanho:
-                    grupo2 = reduce(lambda x, y: x.juntar_pilha(y), grupo)
-                    for item in grupo:
-                        index = self.inventario.index(item)
-                        self.inventario.pop(index)
-                    self.inventario.append(grupo2)
+                    if sum([len(item) for item in grupo]) <= 10:
+                        grupo2 = reduce(lambda x, y: x.juntar_pilha(y), grupo)
+                        for item in grupo:
+                            index = self.inventario.index(item)
+                            self.inventario.pop(index)
+                        self.inventario.append(grupo2)
                     break
                 else:
                     tamanho = len(grupo)
@@ -334,17 +335,11 @@ class Humano:
         )
         self.porcentagem_resistencia = arrumar_porcentagem(
             regra_3(
-                self._porcentagem_total[self.level],
-                100,
-                self._resistencia,
+                self._porcentagem_total[self.level], 100, self._resistencia,
             )
         )
         self.porcentagem_critico = arrumar_porcentagem(
-            regra_3(
-                self._porcentagem_total[self.level],
-                100,
-                self._critico,
-            )
+            regra_3(self._porcentagem_total[self.level], 100, self._critico,)
         )
 
     def e_possivel_guardar(self, item):

@@ -234,10 +234,7 @@ class AdornoDeArma:
     classe = "Todos"
 
     def __init__(
-        self,
-        critico: int,
-        aumento_critico: int,
-        level: int = 1,
+        self, critico: int, aumento_critico: int, level: int = 1,
     ):
         self.nome = "Adorno de arma"
         self.critico = critico * level
@@ -459,10 +456,7 @@ class LuvasArauto(ArmaArautoMonge):
 
     def __init__(self, *args, **kwargs):
         super().__init__(
-            *args,
-            nome="Luvas Arauto",
-            tipo_equipar="Luvas",
-            **kwargs,
+            *args, nome="Luvas Arauto", tipo_equipar="Luvas", **kwargs,
         )
         self.tipo = "Arma"
 
@@ -472,10 +466,7 @@ class BotasArauto(ArmaArautoMonge):
 
     def __init__(self, *args, **kwargs):
         super().__init__(
-            *args,
-            nome="Botas Arauto",
-            tipo_equipar="Botas",
-            **kwargs,
+            *args, nome="Botas Arauto", tipo_equipar="Botas", **kwargs,
         )
         self.tipo = "Arma"
 

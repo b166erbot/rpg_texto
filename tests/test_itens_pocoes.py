@@ -133,11 +133,29 @@ class TestPilhaDePocao(TestCase):
         self.assertEqual(len(pilha3), 3)
         self.assertEqual(len(self.personagem.inventario), 1)
 
-    def test_pilha_de_pocoes_sendo_removida_caso_nao_tenha_mais_pocoes_dentro_dela(self):
+    def test_personagem_juntando_pilhas_caso_tenha_pilhas_com_6_e_5_pocoes_respectivamente(
+        self,
+    ):
+        pocoes = [PocaoDeVidaFraca() for _ in range(6)]
+        pocoes2 = [PocaoDeVidaFraca() for _ in range(5)]
+        pilha = PilhaDePocoes(pocoes, pocoes[0].nome)
+        pilha2 = PilhaDePocoes(pocoes2, pocoes2[0].nome)
+        self.personagem.inventario.append(pilha)
+        self.personagem.inventario.append(pilha2)
+        self.personagem.juntar_pocoes()
+        pilha3 = self.personagem.inventario[0]
+        pilha4 = self.personagem.inventario[1]
+        self.assertEqual(len(pilha3), 6)
+        self.assertEqual(len(pilha4), 5)
+        # deveria ser assert 10 e assert 1?
+
+    def test_pilha_de_pocoes_sendo_removida_caso_nao_tenha_mais_pocoes_dentro_dela(
+        self,
+    ):
         pocoes = [PocaoDeVidaFraca()]
         pilha = PilhaDePocoes(pocoes, pocoes[0].nome)
         self.personagem.inventario.append(pilha)
-        self.personagem.status['vida'] = 30
+        self.personagem.status["vida"] = 30
         self.personagem.consumir_pocoes()
         self.assertNotIn(pilha, self.personagem.inventario)
 

@@ -88,11 +88,7 @@ class TestVenderArmasDaoPratas(TestCase):
         tela.obter_string.side_effect = ["2", "0", ""]
         esperado = (5 + 5 + 5 + 5 + 5) * 8
         botas_de_ferro = Botas_de_ferro(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-            armadura=5,
-            resistencia=5,
+            dano=5, critico=5, aumento_critico=5, armadura=5, resistencia=5,
         )
         self.personagem.inventario.append(botas_de_ferro)
         self.comerciante.interagir(self.personagem)
@@ -134,11 +130,7 @@ class TestVenderArmasDaoPratas(TestCase):
         tela.obter_string.side_effect = ["2", "0", ""]
         esperado = (5 + 5 + 5 + 5 + 5) * 8
         luvas_de_ferro = Luvas_de_ferro(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-            armadura=5,
-            resistencia=5,
+            dano=5, critico=5, aumento_critico=5, armadura=5, resistencia=5,
         )
         self.personagem.inventario.append(luvas_de_ferro)
         self.comerciante.interagir(self.personagem)

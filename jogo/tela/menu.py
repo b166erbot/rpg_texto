@@ -3,6 +3,7 @@ from random import choice
 from time import sleep
 from unittest.mock import MagicMock
 
+from jogo.itens.pocoes import PilhaDePocoes, PocaoDeVidaFraca
 from jogo.locais.areas_abertas import Floresta
 from jogo.locais.areas_fechadas import Catatumbas, CovilDoArauto
 from jogo.locais.habitaveis import Vilarejo
@@ -14,9 +15,11 @@ from jogo.utils import Artigo, chunk
 # Silenciar o pygame para não imprimir nada na tela
 sys.stdout = MagicMock()
 from pygame import mixer
+
 sys.stdout = sys.__stdout__
 
 
+mixer = MagicMock()  # remover esta linha
 mixer.init()
 tela = Imprimir()
 
@@ -45,6 +48,13 @@ class Menu:
         self._personagem = personagem
         self._eventos_contador = contador
         self._evento_especial = False
+        pocoes = [PocaoDeVidaFraca() for _ in range(6)]
+        pocoes2 = [PocaoDeVidaFraca() for _ in range(5)]
+        pilha = PilhaDePocoes(pocoes, pocoes[0].nome)
+        pilha2 = PilhaDePocoes(pocoes2, pocoes2[0].nome)
+        personagem.inventario.append(pilha)
+        personagem.inventario.append(pilha2)
+        personagem.juntar_pocoes()
 
     def ciclo(self):
         """Método onde é exibido o menu principal para o usuário."""

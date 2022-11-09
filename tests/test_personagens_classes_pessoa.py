@@ -748,11 +748,7 @@ class TestEquipandoEquipamentosOuNaoEmArqueiroArmas(TestCase):
 
     def test_nao_equipando_botas_de_ferro(self):
         item = Botas_de_ferro(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-            armadura=5,
-            resistencia=5,
+            dano=5, critico=5, aumento_critico=5, armadura=5, resistencia=5,
         )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
@@ -784,11 +780,7 @@ class TestEquipandoEquipamentosOuNaoEmArqueiroArmas(TestCase):
 
     def test_nao_equipando_luvas_de_ferro(self):
         item = Luvas_de_ferro(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-            armadura=5,
-            resistencia=5,
+            dano=5, critico=5, aumento_critico=5, armadura=5, resistencia=5,
         )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
@@ -943,11 +935,7 @@ class TestEquipandoEquipamentosOuNaoEmGuerreiroArmas(TestCase):
 
     def test_nao_equipando_botas_de_ferro(self):
         item = Botas_de_ferro(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-            armadura=5,
-            resistencia=5,
+            dano=5, critico=5, aumento_critico=5, armadura=5, resistencia=5,
         )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
@@ -979,11 +967,7 @@ class TestEquipandoEquipamentosOuNaoEmGuerreiroArmas(TestCase):
 
     def test_nao_equipando_luvas_de_ferro(self):
         item = Luvas_de_ferro(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-            armadura=5,
-            resistencia=5,
+            dano=5, critico=5, aumento_critico=5, armadura=5, resistencia=5,
         )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
@@ -1138,11 +1122,7 @@ class TestEquipandoEquipamentosOuNaoEmMagoArmas(TestCase):
 
     def test_nao_equipando_botas_de_ferro(self):
         item = Botas_de_ferro(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-            armadura=5,
-            resistencia=5,
+            dano=5, critico=5, aumento_critico=5, armadura=5, resistencia=5,
         )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
@@ -1174,11 +1154,7 @@ class TestEquipandoEquipamentosOuNaoEmMagoArmas(TestCase):
 
     def test_nao_equipando_luvas_de_ferro(self):
         item = Luvas_de_ferro(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-            armadura=5,
-            resistencia=5,
+            dano=5, critico=5, aumento_critico=5, armadura=5, resistencia=5,
         )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
@@ -1333,11 +1309,7 @@ class TestEquipandoEquipamentosOuNaoEmAssassinoArmas(TestCase):
 
     def test_nao_equipando_botas_de_ferro(self):
         item = Botas_de_ferro(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-            armadura=5,
-            resistencia=5,
+            dano=5, critico=5, aumento_critico=5, armadura=5, resistencia=5,
         )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
@@ -1369,11 +1341,7 @@ class TestEquipandoEquipamentosOuNaoEmAssassinoArmas(TestCase):
 
     def test_nao_equipando_luvas_de_ferro(self):
         item = Luvas_de_ferro(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-            armadura=5,
-            resistencia=5,
+            dano=5, critico=5, aumento_critico=5, armadura=5, resistencia=5,
         )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
@@ -1528,11 +1496,7 @@ class TestEquipandoEquipamentosOuNaoEmClerigoArmas(TestCase):
 
     def test_nao_equipando_botas_de_ferro(self):
         item = Botas_de_ferro(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-            armadura=5,
-            resistencia=5,
+            dano=5, critico=5, aumento_critico=5, armadura=5, resistencia=5,
         )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
@@ -1564,11 +1528,7 @@ class TestEquipandoEquipamentosOuNaoEmClerigoArmas(TestCase):
 
     def test_nao_equipando_luvas_de_ferro(self):
         item = Luvas_de_ferro(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-            armadura=5,
-            resistencia=5,
+            dano=5, critico=5, aumento_critico=5, armadura=5, resistencia=5,
         )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
@@ -1724,11 +1684,7 @@ class TestEquipandoEquipamentosOuNaoEmMongeArmas(TestCase):
     # esse teste tem que ser alterado pois equipamento não equipa no tipo_equipar
     def test_equipando_botas_de_ferro(self):
         item = Botas_de_ferro(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-            armadura=6,
-            resistencia=6,
+            dano=5, critico=5, aumento_critico=5, armadura=6, resistencia=6,
         )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
@@ -1761,11 +1717,7 @@ class TestEquipandoEquipamentosOuNaoEmMongeArmas(TestCase):
     # esse teste tem que ser alterado pois equipamento não equipa no tipo_equipar
     def test_equipando_luvas_de_ferro(self):
         item = Luvas_de_ferro(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-            armadura=6,
-            resistencia=6,
+            dano=5, critico=5, aumento_critico=5, armadura=6, resistencia=6,
         )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
@@ -1779,11 +1731,7 @@ class TestEquipandoEquipamentosOuNaoEmMongeArmas(TestCase):
 
     def test_equipando_luvas_arauto(self):
         item = LuvasArauto(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-            armadura=5,
-            resistencia=5,
+            dano=5, critico=5, aumento_critico=5, armadura=5, resistencia=5,
         )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
@@ -1791,11 +1739,7 @@ class TestEquipandoEquipamentosOuNaoEmMongeArmas(TestCase):
 
     def test_equipando_botas_arauto(self):
         item = BotasArauto(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-            armadura=5,
-            resistencia=5,
+            dano=5, critico=5, aumento_critico=5, armadura=5, resistencia=5,
         )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
@@ -1939,11 +1883,7 @@ class TestEquipandoEquipamentosOuNaoEmDruidaArmas(TestCase):
     # esse teste tem que ser alterado pois equipamento não equipa no tipo_equipar
     def test_nao_equipando_botas_de_ferro(self):
         item = Botas_de_ferro(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-            armadura=6,
-            resistencia=6,
+            dano=5, critico=5, aumento_critico=5, armadura=6, resistencia=6,
         )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
@@ -1976,11 +1916,7 @@ class TestEquipandoEquipamentosOuNaoEmDruidaArmas(TestCase):
     # esse teste tem que ser alterado pois equipamento não equipa no tipo_equipar
     def test_nao_equipando_luvas_de_ferro(self):
         item = Luvas_de_ferro(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-            armadura=6,
-            resistencia=6,
+            dano=5, critico=5, aumento_critico=5, armadura=6, resistencia=6,
         )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
@@ -1994,11 +1930,7 @@ class TestEquipandoEquipamentosOuNaoEmDruidaArmas(TestCase):
 
     def test_nao_equipando_luvas_arauto(self):
         item = LuvasArauto(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-            armadura=5,
-            resistencia=5,
+            dano=5, critico=5, aumento_critico=5, armadura=5, resistencia=5,
         )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
@@ -2006,32 +1938,20 @@ class TestEquipandoEquipamentosOuNaoEmDruidaArmas(TestCase):
 
     def test_nao_equipando_botas_arauto(self):
         item = BotasArauto(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-            armadura=5,
-            resistencia=5,
+            dano=5, critico=5, aumento_critico=5, armadura=5, resistencia=5,
         )
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIsNot(self.personagem.equipamentos["Botas"], item)
 
     def test_equipando_cajado_da_floresta(self):
-        item = CajadoDaFloresta(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-        )
+        item = CajadoDaFloresta(dano=5, critico=5, aumento_critico=5,)
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
 
     def test_equipando_cajado_verdejante_arauto(self):
-        item = CajadoVerdejanteArauto(
-            dano=5,
-            critico=5,
-            aumento_critico=5,
-        )
+        item = CajadoVerdejanteArauto(dano=5, critico=5, aumento_critico=5,)
         self.personagem.inventario.append(item)
         self.personagem.equipar(item)
         self.assertIs(self.personagem.equipamentos[item.tipo_equipar], item)
@@ -2335,19 +2255,11 @@ class TestPersonagemDaMaisDanoComAumentoDeCriticoMonge(TestCase):
         item = AdornoDeArma(critico=6, aumento_critico=16)
         self.personagem.inventario.append(item)
         item2 = Luvas_de_ferro(
-            dano=6,
-            critico=6,
-            aumento_critico=16,
-            armadura=6,
-            resistencia=6,
+            dano=6, critico=6, aumento_critico=16, armadura=6, resistencia=6,
         )
         self.personagem.inventario.append(item2)
         item3 = Botas_de_ferro(
-            dano=6,
-            critico=6,
-            aumento_critico=16,
-            armadura=6,
-            resistencia=6,
+            dano=6, critico=6, aumento_critico=16, armadura=6, resistencia=6,
         )
         self.personagem.inventario.append(item3)
         self.monstro = Tartaruga()

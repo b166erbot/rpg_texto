@@ -65,9 +65,7 @@ class Comerciante(Npc):
             return
         itens = chunk(itens, 16)
         numero = self._obter_numero(
-            "deseja vender qual equipamento?: ",
-            personagem,
-            itens,
+            "deseja vender qual equipamento?: ", personagem, itens,
         )
         while bool(numero):
             tela.limpar_tela()
@@ -99,9 +97,7 @@ class Comerciante(Npc):
             ]
             itens = chunk(itens, 16)
             numero = self._obter_numero(
-                "deseja vender qual equipamento?: ",
-                personagem,
-                itens,
+                "deseja vender qual equipamento?: ", personagem, itens,
             )
 
     def interagir_comprar(self, personagem):
@@ -110,9 +106,7 @@ class Comerciante(Npc):
         self.tabela_cortada = self._criar_tabela()
         tela.limpar_tela()
         numero = self._obter_numero(
-            "O que deseja comprar?: ",
-            personagem,
-            self.tabela_cortada,
+            "O que deseja comprar?: ", personagem, self.tabela_cortada,
         )
         while numero in self.itens:
             tela.imprimir("Quantidade: ", "cyan")
@@ -123,9 +117,7 @@ class Comerciante(Npc):
             self.comprar(item, int(quantidade), personagem, item.preco.nome)
             tela.limpar_tela()
             numero = self._obter_numero(
-                "Deseja mais alguma coisa?: ",
-                personagem,
-                self.tabela_cortada,
+                "Deseja mais alguma coisa?: ", personagem, self.tabela_cortada,
             )
         personagem.juntar_pocoes()
         tela.limpar_tela()
@@ -562,19 +554,14 @@ class Ferreiro(Npc):
     def derreter_item(self, personagem):
         """Método que escolhe itens e os derretem."""
         equipamentos = list(
-            filter(
-                _retornar_itens_equipaveis,
-                personagem.inventario,
-            )
+            filter(_retornar_itens_equipaveis, personagem.inventario,)
         )
         if len(equipamentos) == 0:
             tela.imprimir("você não tem itens no inventario.", "cyan")
             sleep(3)
             return
         item = self._obter_numero_equipamentos(
-            equipamentos,
-            "deseja derreter qual item?: ",
-            personagem,
+            equipamentos, "deseja derreter qual item?: ", personagem,
         )
         while bool(item):
             if item.glifos_level.level > 1 or item.glifos_level.valor > 0:
@@ -586,17 +573,12 @@ class Ferreiro(Npc):
                 index = personagem.inventario.index(item)
                 personagem.inventario.pop(index)
             equipamentos = list(
-                filter(
-                    _retornar_itens_equipaveis,
-                    personagem.inventario,
-                )
+                filter(_retornar_itens_equipaveis, personagem.inventario,)
             )
             if len(equipamentos) == 0:
                 break
             item = self._obter_numero_equipamentos(
-                equipamentos,
-                "deseja derreter qual item?: ",
-                personagem,
+                equipamentos, "deseja derreter qual item?: ", personagem,
             )
 
     def acrescentar_glifos(self, personagem):
@@ -607,10 +589,7 @@ class Ferreiro(Npc):
             if bool(equipamento)
         ]
         equipamentos += list(
-            filter(
-                _retornar_itens_equipaveis,
-                personagem.inventario,
-            )
+            filter(_retornar_itens_equipaveis, personagem.inventario,)
         )
         if len(equipamentos) == 0:
             tela.imprimir(
@@ -654,10 +633,7 @@ class Ferreiro(Npc):
                 if bool(equipamento)
             ]
             equipamentos += list(
-                filter(
-                    _retornar_itens_equipaveis,
-                    personagem.inventario,
-                )
+                filter(_retornar_itens_equipaveis, personagem.inventario,)
             )
             item = self._obter_numero_equipamentos(
                 equipamentos,
@@ -669,16 +645,10 @@ class Ferreiro(Npc):
         """Método que escolhe um item e remove os glifos dele."""
         equipamentos = []
         for equipamento in personagem.equipamentos.values():
-            if (
-                bool(equipamento)
-                and equipamento.glifos_level.valor_atual() > 0
-            ):
+            if bool(equipamento) and equipamento.glifos_level.valor_atual() > 0:
                 equipamentos.append(equipamento)
         equipamentos_ = list(
-            filter(
-                _retornar_itens_equipaveis,
-                personagem.inventario,
-            )
+            filter(_retornar_itens_equipaveis, personagem.inventario,)
         )
         equipamentos_ = filter(
             lambda x: x.glifos_level.valor_atual() > 0, equipamentos_
@@ -693,9 +663,7 @@ class Ferreiro(Npc):
             sleep(3)
             return
         item = self._obter_numero_equipamentos(
-            equipamentos,
-            "deseja retirar de qual equipamento?: ",
-            personagem,
+            equipamentos, "deseja retirar de qual equipamento?: ", personagem,
         )
         while bool(item):
             tela.limpar_tela()
@@ -727,10 +695,7 @@ class Ferreiro(Npc):
                 ):
                     equipamentos.append(equipamento)
             equipamentos_ = list(
-                filter(
-                    _retornar_itens_equipaveis,
-                    personagem.inventario,
-                )
+                filter(_retornar_itens_equipaveis, personagem.inventario,)
             )
             equipamentos_ = filter(
                 lambda x: x.glifos_level.valor_atual() > 0, equipamentos_

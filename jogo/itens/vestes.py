@@ -10,11 +10,7 @@ class Roupa:
     classe: str = "Todos"
 
     def __init__(
-        self,
-        vida: int,
-        resistencia: int,
-        armadura: int,
-        level: int = 1,
+        self, vida: int, resistencia: int, armadura: int, level: int = 1,
     ):
         self.vida = vida * level
         self.resistencia = resistencia * level
@@ -226,11 +222,7 @@ class RoupaDraconica:
     classe: str = "Todos"
 
     def __init__(
-        self,
-        vida: int,
-        resistencia: int,
-        armadura: int,
-        level: int = 1,
+        self, vida: int, resistencia: int, armadura: int, level: int = 1,
     ):
         self.vida = vida * level
         self.resistencia = resistencia * level
