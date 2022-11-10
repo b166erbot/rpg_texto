@@ -19,7 +19,6 @@ from pygame import mixer
 sys.stdout = sys.__stdout__
 
 
-mixer = MagicMock()  # remover esta linha
 mixer.init()
 tela = Imprimir()
 
