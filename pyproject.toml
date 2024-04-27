@@ -1,22 +1,20 @@
 [tool.poetry]
-name = "rpg_texto"
+name = "rpg-texto"
 version = "0.1.0"
 description = ""
 authors = ["b166erobot <bernard0freitas@outlook.com>"]
+readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
-pygame = "2.1.2"
-
-[tool.poetry.dev-dependencies]
-radon = "^5.1.0"
-isort = "^5.10.1"
-black = "^22.3.0"
-flake8 = "^4.0.1"
+python = "^3.11"
+pygame = "^2.1.2"
 
 [tool.poetry.group.dev.dependencies]
 radon = "^6.0.1"
+isort = "^5.13.2"
+black = "^24.4.2"
+flake8 = "^7.0.0"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
