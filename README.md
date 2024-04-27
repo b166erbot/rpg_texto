@@ -3,7 +3,7 @@ um jogo de rpg onde você pode desfrutar de uma história.
 
 ## como instalar
     - ter o poetry instalado na máquina.
-    - `pip install poetry` ou `sudo apt install -y python3-poetry`
+    - `pip install poetry` ou `sudo apt install python3-poetry`
     - no diretório do rpg_texto, use o comando "poetry install"
 
 ## como rodar
