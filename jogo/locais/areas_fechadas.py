@@ -94,10 +94,10 @@ class Caverna:
         }
         boss = Boss(self.level, status)
         combate(self.personagem, boss)
-        if self.personagem.status["vida"] == 0:
+        if self.personagem.morto():
             self.morto()
             return
-        elif self.personagem.status["vida"] > 0:
+        else:
             self.personagem.experiencia.depositar_valor(boss.experiencia)
             boss.sortear_drops(self.personagem)
             boss.sortear_drops_quest(self.personagem)
@@ -113,7 +113,7 @@ class Caverna:
                 Inimigo = choice(self._mostros)
                 inimigo = Inimigo(level=self.level)
                 combate(self.personagem, inimigo)
-                if self.personagem.status["vida"] == 0:
+                if self.personagem.morto():
                     return True
                 self.personagem.experiencia.depositar_valor(inimigo.experiencia)
                 inimigo.sortear_drops(self.personagem)
@@ -182,10 +182,10 @@ class CovilDoArauto:
         lutar = self._lutar_ou_fugir()
         if lutar:
             combate(self.personagem, boss)
-            if self.personagem.status["vida"] == 0:
+            if self.personagem.morto():
                 self.morto()
                 return
-            elif self.personagem.status["vida"] > 0:
+            else:
                 self.personagem.experiencia.depositar_valor(boss.experiencia)
                 boss.sortear_drops(self.personagem)
                 boss.sortear_drops_quest(self.personagem)
@@ -201,7 +201,7 @@ class CovilDoArauto:
                 Inimigo = choice(self._mostros)
                 inimigo = Inimigo(level=self.level)
                 combate(self.personagem, inimigo)
-                if self.personagem.status["vida"] == 0:
+                if self.personagem.morto():
                     return True
                 self.personagem.experiencia.depositar_valor(inimigo.experiencia)
                 inimigo.sortear_drops(self.personagem)
@@ -279,7 +279,7 @@ class Catatumbas:
         lutar = self._lutar_ou_fugir()
         if lutar:
             combate(self.personagem, boss)
-            if self.personagem.status["vida"] == 0:
+            if self.personagem.morto():
                 self.morto()
                 return
             elif self.personagem.status["vida"] > 0:
@@ -298,7 +298,7 @@ class Catatumbas:
                 Inimigo = choice(self._mostros)
                 inimigo = Inimigo(level=self.level)
                 combate(self.personagem, inimigo)
-                if self.personagem.status["vida"] == 0:
+                if self.personagem.morto():
                     return True
                 self.personagem.experiencia.depositar_valor(inimigo.experiencia)
                 inimigo.sortear_drops(self.personagem)

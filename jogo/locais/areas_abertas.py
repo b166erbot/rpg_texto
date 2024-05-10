@@ -99,7 +99,7 @@ class Floresta:
             lutar = self._lutar_ou_fugir()
             if lutar:
                 combate(self.personagem, boss)
-                if self.personagem.status["vida"] == 0:
+                if self.personagem.morto():
                     self.morto()
                     return "morto"
                 else:
@@ -127,7 +127,7 @@ class Floresta:
                 Inimigo = choice(monstros_da_floresta)
                 inimigo = Inimigo(level=self.level)
                 combate(self.personagem, inimigo)
-                if self.personagem.status["vida"] == 0:
+                if self.personagem.morto():
                     return True
                 else:
                     self.personagem.experiencia.depositar_valor(
@@ -189,14 +189,14 @@ class Floresta:
             lutar = self._lutar_ou_fugir()
             if lutar:
                 combate(self.personagem, boss)
-                if not self.personagem.status["vida"] == 0:
+                if not self.personagem.morto():
                     boss.sortear_drops(self.personagem)
                     boss.sortear_drops_quest(self.personagem)
             else:
                 tela.imprimir("Dragão foi embora.\n", "vermelho")
                 sleep(2)
                 tela.limpar_tela()
-            if self.personagem.status["vida"] == 0:
+            if self.personagem.morto():
                 return "morto"
 
     def _lutar_ou_fugir(self):

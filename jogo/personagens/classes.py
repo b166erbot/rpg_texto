@@ -463,6 +463,8 @@ class Humano:
         if self.porcentagem_resistencia < 0:
             self.porcentagem_resistencia = 0
 
+    def morto(self):
+        return self.status["vida"] == 0
 
 class Arqueiro(Humano):
     def __init__(self, *args, **kwargs):
